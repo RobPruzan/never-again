@@ -56,13 +56,13 @@ const execAsync = promisify(exec)
 const t = tipc.create()
 
 export const createRouter = ({
-  portsManager,
+  // portsManager,
   browser,
   terminalManager,
   devRelayService,
   bufferService
 }: {
-  portsManager: PortsManager
+  // portsManager: PortsManager
   browser: BrowserController
   terminalManager: TerminalManagerV2
   bufferService: ProjectBufferService
@@ -82,6 +82,11 @@ export const createRouter = ({
     let t1, t2, t3, t4
 
     t1 = Date.now()
+    console.log(
+      'creating a project!!! do we have items in the buffer available?',
+      bufferService.listBuffer()
+    )
+
     const meta = await bufferService.create()
     t2 = Date.now()
     if (!meta) {
@@ -98,7 +103,7 @@ export const createRouter = ({
     const url = `http://localhost:${meta.port}`
     await bufferService.httpOk(url)
     try {
-      await browser.loadUrl({ tabId: meta.dir, url })
+      // await browser.loadUrl({ tabId: meta.dir, url })
     } catch (e) {
       console.log('e', e)
     }
@@ -317,12 +322,12 @@ export const createRouter = ({
       return { success: false as const, error: (error as Error).message }
     }
   }),
-  getPorts: t.procedure.action(async () => {
-    return portsManager.getAll()
-  }),
-  refreshPorts: t.procedure.action(async () => {
-    return portsManager.refresh()
-  }),
+  // getPorts: t.procedure.action(async () => {
+  //   return portsManager.getAll()
+  // }),
+  // refreshPorts: t.procedure.action(async () => {
+  //   return portsManager.refresh()
+  // }),
 
   getBrowserState: t.procedure.action(async () => {
     return browser.getCurrentState()

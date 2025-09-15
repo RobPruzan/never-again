@@ -14,7 +14,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { nativeImage } from 'electron'
 import { TerminalManagerV2 } from './terminal-manager-v2'
-import { PortsManager } from './ports-manager'
+// import { PortsManager } from './ports-manager'
 import { registerIpcMain, getRendererHandlers } from '@egoist/tipc/main'
 import { createRouter } from './tipc'
 import { browserController, layoutAllBrowserViews } from './browser-controller'
@@ -33,7 +33,7 @@ export const activeBrowserViewId: { current: string | null } = { current: null }
 // export let terminalManager: TerminalManagerV2
 export let terminalManagerV2: TerminalManagerV2
 export let bufferService: ProjectBufferService
-export let portsManager: PortsManager
+// export let portsManager: PortsManager
 
 export const startProjectIndexing = (
   callback: (projects: Project[]) => void,
@@ -235,8 +235,8 @@ app.whenReady().then(async () => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  portsManager = new PortsManager()
-  await portsManager.startWatching()
+  // portsManager = new PortsManager()
+  // await portsManager.startWatching()
 
   startProjectIndexing((projects: Project[]) => {
     const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
@@ -262,22 +262,20 @@ app.whenReady().then(async () => {
     bufferService = new ProjectBufferService()
     // terminalManager.setMainWindow(mainWindow)
     // terminalManagerV2.setMainWindow(mainWindow)
-    portsManager.setMainWindow(mainWindow)
-    setInterval(() => {
-      console.log('children up', mainWindow?.contentView.children)
-      console.log('vs', mainWindow?.getChildWindows())
-    }, 3000)
+    // portsManager.setMainWindow(mainWindow)
     registerIpcMain(
       createRouter({
-        portsManager,
+        // portsManager,
         browser: browserController,
         terminalManager: null!,
         devRelayService,
         bufferService
       })
     )
+    console.log('do we need to seed, how many items in buffer:', bufferService.listBuffer().length)
+
     if (bufferService.listBuffer().length === 0) {
-      console.log('')
+      console.log('seeding')
 
       bufferService.seed(1)
     }
@@ -289,38 +287,38 @@ app.whenReady().then(async () => {
       startReloadServer()
     }
 
-    console.log('ports?', portsManager.getAll())
+    // console.log('ports?', portsManager.getAll())
 
     // Restore existing terminal sessions and ensure project terminals exist
     // await terminalManager.restoreSessionsOnStartup()
     // await terminalManager.ensureProjectTerminals(portsManager.getAll())
 
-    const ports = Object.entries(portsManager.getAll())
-    const promises = ports.map(async ([port, data]) => {
-      // this will break if we change what project id is (currently its same as data.name so its fine)
-      // getProjects
-      return await browserController
-        .createTab({
-          tabId: data.cwd,
-          url: `http://localhost:${port}?wrapper=false`
-        })
-        .catch((e) => {
-          console.log('failed dis', e)
-        })
-    })
-    // eh this is blocking and bad, will cause white screen flash
-    await Promise.all(promises).catch((e) => {
-      console.log('noo', e)
-    })
+    // const ports = Object.entries(portsManager.getAll())
+    // const promises = ports.map(async ([port, data]) => {
+    //   // this will break if we change what project id is (currently its same as data.name so its fine)
+    //   // getProjects
+    //   return await browserController
+    //     .createTab({
+    //       tabId: data.cwd,
+    //       url: `http://localhost:${port}?wrapper=false`
+    //     })
+    //     .catch((e) => {
+    //       console.log('failed dis', e)
+    //     })
+    // })
+    // // eh this is blocking and bad, will cause white screen flash
+    // await Promise.all(promises).catch((e) => {
+    //   console.log('noo', e)
+    // })
 
-    const [firstPort, firstData] = ports[0]
-    await browserController
-      .loadUrl({ tabId: firstData.cwd, url: `http://localhost:${firstPort}?wrapper=false` })
-      .catch((e) => {
-        console.log('noo but agian', e)
-      })
+    // const [firstPort, firstData] = ports[0]
+    // await browserController
+    //   .loadUrl({ tabId: firstData.cwd, url: `http://localhost:${firstPort}?wrapper=false` })
+    //   .catch((e) => {
+    //     console.log('noo but agian', e)
+    //   })
 
-    await browserController.switchTab(firstData.name)
+    // await browserController.switchTab(firstData.name)
   }
 
   const menu = Menu.buildFromTemplate([
@@ -607,9 +605,9 @@ app.on('before-quit', () => {
   //   terminalManagerV2.destroyAll()
   // }
 
-  if (portsManager) {
-    portsManager.destroy()
-  }
+  // if (portsManager) {
+  //   portsManager.destroy()
+  // }
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

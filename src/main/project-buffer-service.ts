@@ -3,6 +3,7 @@ import { promisify } from 'node:util'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve, basename } from 'node:path'
 import { browserController } from './browser-controller'
+import { browserViews } from '.'
 
 const execFile = promisify(_execFile)
 
@@ -98,6 +99,8 @@ export class ProjectBufferService {
     // i mean should be parallel but fine
     const metas: BufferedMeta[] = []
     for (let i = 0; i < count; i++) {
+      console.log('seeding da buffer')
+
       const meta = await this.createBufferedProject()
       if (meta) {
         const url = `http://localhost:${meta.port}`
@@ -107,9 +110,13 @@ export class ProjectBufferService {
           url
         })
         await browserController.loadUrl({ tabId, url })
+        console.log('loaded and created', browserViews)
+
         metas.push(meta)
       }
     }
+    console.log('metas now', metas)
+
     return metas
   }
   // need to test miss case
@@ -146,7 +153,7 @@ export class ProjectBufferService {
   async createMiss(
     targetDir?: string,
     port?: number
-  ): Promise<{ url: string; copyMs: number; startMs: number; dir: string } | null> {
+  ): Promise<{ url: string; copyMs: number; startMs: number; dir: string; port: number } | null> {
     const dest = targetDir ? resolve(targetDir) : join(this.projectsRoot, `proj-${Date.now()}`) // thats concerning
     const copy = await this.cpCOW(this.templateRoot, dest)
     if (!copy.ok) return null
@@ -156,7 +163,8 @@ export class ProjectBufferService {
       url: `http://localhost:${started.port}`,
       copyMs: copy.ms,
       startMs: started.ms,
-      dir: dest
+      dir: dest,
+      port: started.port
     }
   }
 
@@ -262,6 +270,8 @@ export class ProjectBufferService {
       port: started.port,
       createdAt: Date.now()
     }
+    console.log('we have meta, this view should exist now', meta)
+
     try {
       writeFileSync(join(dir, '.buffer-meta.json'), JSON.stringify(meta), 'utf8')
     } catch {}
@@ -344,13 +354,31 @@ export class ProjectBufferService {
         : await this.pickPortFromRange(this.basePort, this.portRangeEnd)
     if (!chosen) return { pid: null, port: null, ms: 0 }
     const t0 = Date.now()
-    const child = _spawn('pnpm', ['run', 'dev', '--', '--port', String(chosen), '--strictPort'], {
-      // this might work generally now that we are deriving directly from the os and not relying on process tracking or spawned project ports, noice
+    const devArgs = ['run', 'dev', '--port', String(chosen)]
+    const child = _spawn('pnpm', devArgs, {
       cwd: dir,
-      stdio: 'ignore',
+      stdio: ['ignore', 'pipe', 'pipe'],
       detached: false
     })
+    if (child.stdout) {
+      child.stdout.on('data', (data) => {
+        console.log(`[dev stdout ${chosen}]`, data.toString())
+      })
+    }
+    if (child.stderr) {
+      child.stderr.on('data', (data) => {
+        console.error(`[dev stderr ${chosen}]`, data.toString())
+      })
+    }
+    console.log('starting dev on', chosen, dir)
+
     await this.waitForReady(chosen, 1500)
+    console.log('DONE!')
+    // okay do we need to create/load tab here?
+    // todo: do we need the double i don't think so this is probably not needed
+    browserController.createTab({ tabId: dir, url: `http://localhost:${port}` })
+    browserController.loadUrl({ tabId: dir, url: `http://localhost:${port}` })
+
     return { pid: child.pid ?? null, port: chosen, ms: Date.now() - t0 }
   }
 
@@ -358,6 +386,8 @@ export class ProjectBufferService {
     const start = Date.now()
     while (Date.now() - start < timeoutMs) {
       const ok = await this.httpOk(`http://127.0.0.1:${port}/@vite/client`)
+      // console.log('is it okay like wut', ok)
+
       if (ok) return true
       await new Promise((r) => setTimeout(r, 120))
     }
@@ -414,10 +444,9 @@ export class ProjectBufferService {
   }
 
   private async pickPortFromRange(start: number, end: number): Promise<number> {
-    const used = await this.listListeningPorts()
-    for (let p = start; p <= end; p++) {
-      if (!used.has(p)) return p
-    }
-    return 0
+    const range = end - start + 1
+    if (range <= 0) return 0
+    const port = Math.floor(Math.random() * range) + start
+    return port
   }
 }

@@ -45,6 +45,8 @@ export function useWebContentViewUrl(id: string, url: string, isReady: boolean) 
       }
     }
 
+    console.log('updating url', id);
+    
     updateUrl()
   }, [id, url, isReady])
 }
