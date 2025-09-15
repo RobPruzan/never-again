@@ -333,7 +333,7 @@ app.whenReady().then(async () => {
           label: 'New Tab',
           accelerator: process.platform === 'darwin' ? 'Cmd+T' : 'Ctrl+T',
           click: () => {
-            if (terminalManager) {
+            if (terminalManagerV2) {
               const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
               handlers.menuNewTab.send()
             }
@@ -344,7 +344,7 @@ app.whenReady().then(async () => {
           label: 'Next Item',
           accelerator: 'Ctrl+N',
           click: () => {
-            if (terminalManager) {
+            if (terminalManagerV2) {
               const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
               handlers.menuNextItem.send()
             }
@@ -354,7 +354,7 @@ app.whenReady().then(async () => {
           label: 'Previous Item',
           accelerator: 'Ctrl+P',
           click: () => {
-            if (terminalManager) {
+            if (terminalManagerV2) {
               const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
               handlers.menuPreviousItem.send()
             }
@@ -364,7 +364,7 @@ app.whenReady().then(async () => {
           label: 'Select Item',
           accelerator: 'Return',
           click: () => {
-            if (terminalManager) {
+            if (terminalManagerV2) {
               const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
               handlers.menuSelectItem.send()
             }
@@ -595,11 +595,11 @@ app.on('before-quit', () => {
   })
   browserViews.clear()
 
-  if (terminalManagerV2) {
-    terminalManagerV2.destroyAll()
-  } else if (terminalManager) {
-    terminalManager.destroyAll()
-  }
+  // if (terminalManagerV2) {
+  terminalManagerV2.destroyAll()
+  // } else if (terminalManagerV2) {
+  //   terminalManagerV2.destroyAll()
+  // }
 
   if (portsManager) {
     portsManager.destroy()
@@ -610,13 +610,13 @@ app.on('before-quit', () => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (terminalManagerV2) {
-    terminalManagerV2.destroyAll()
-    bufferService.kill()
-  } else if (terminalManager) {
-    terminalManager.destroyAll()
-    bufferService.kill()
-  }
+  // if (terminalManagerV2) {
+  terminalManagerV2.destroyAll()
+  bufferService.kill()
+  // } else if (terminalManager) {
+  //   terminalManager.destroyAll()
+  //   bufferService.kill()
+  // }
 
   if (process.platform !== 'darwin') {
     app.quit()
