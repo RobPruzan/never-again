@@ -12,7 +12,6 @@ export type RunningProject = {
   port: number
   pid: number
   cwd: string
-  command: string
   kind: DevServerKind
 }
 export type DevServerKind = 'vite' | 'next' | 'webpack-dev-server' | 'unknown'

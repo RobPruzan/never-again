@@ -78,37 +78,64 @@ export const createRouter = ({
     // i wish i had an easy kill button
     // maybe i can just do that eh
 
+    const t0 = Date.now()
+    let t1, t2, t3, t4
+
+    t1 = Date.now()
     const meta = await bufferService.create()
+    t2 = Date.now()
     if (!meta) {
+      console.log('wtf')
+
       throw new Error('oh no') // i assume this just forwards it hopefully
     }
     console.log('created new project', meta)
 
-    browser.createTab({ tabId: meta.dir, url: `http://localhost:${meta.port}` })
+    /**
+     *
+     * TODO: this should be instant, and no flicker, currently there's a flicker which makes no sense
+     */
+    const url = `http://localhost:${meta.port}`
+    await bufferService.httpOk(url)
+    try {
+      await browser.loadUrl({ tabId: meta.dir, url })
+    } catch (e) {
+      console.log('e', e)
+    }
 
-    // should promisify this or something
-    // lol
-    const project = (await findProjectsBFS(meta.dir)).at(0)
+    t3 = Date.now()
+
+    const project = (await findProjectsBFS(meta.dir)).at(0) // this is too slow
+    t4 = Date.now()
     if (!project) {
       throw new Error(
         'Invariant, if you just created a project at a dir, there of course should be a found project at that dir'
       )
     }
 
-    // this is ridiculously stupid there shouldn't be this transform, should be one data type moving throughout the pipeline
+    // this is there shouldn't be this transform, should be one data type moving throughout the pipeline
     const runningProject: RunningProject = {
       cwd: meta.dir,
-      command: 'nr dev', // who cares
       kind: 'vite',
       pid: meta.pid,
       port: meta.port
     }
 
-    console.log('new running project', runningProject)
+    const totalMs = t4 - t0
+    const report = {
+      totalMs,
+      steps: {
+        bufferServiceCreateMs: t2 - t1,
+        browserCreateTabMs: t3 - t2,
+        findProjectsBfsMs: t4 - t3
+      }
+    }
+    console.table(report)
 
     return {
       project,
-      runningProject
+      runningProject,
+      timing: report
     }
   }),
 
@@ -154,7 +181,7 @@ export const createRouter = ({
     const devServers = await detectDevServersForDir(homedir())
     await logToFile(devServers)
     const buffer = await bufferService.listBuffer()
-    console.log(' the current buffer', buffer)
+    // console.log(' the current buffer', buffer)
 
     return devServers.filter(
       (server) =>
@@ -310,6 +337,7 @@ export const createRouter = ({
   closeTab: t.procedure.input<string>().action(async ({ input }) => {
     return browser.closeTab(input)
   }),
+
   loadUrl: t.procedure.input<{ tabId: string; url: string }>().action(async ({ input }) => {
     let url = input.url
     const urlObj = new URL(url)

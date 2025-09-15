@@ -144,7 +144,7 @@ const detectTags = (dir: string, pkg: any): string[] => {
 const shouldIgnoreDir = (name: string) => {
   if (!name) return true
   const n = name.toLowerCase()
-  if (n.startsWith('.') && n !== '.xtra') return true
+  if (n.startsWith('.') && n !== '.zenbu-buffer') return true
   if (n === 'node_modules') return true
   if (n === '.git') return true
   if (n === '.hg') return true

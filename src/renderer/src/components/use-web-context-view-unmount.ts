@@ -6,10 +6,16 @@ export const useWebContentViewUnmount = (id: string) => {
   const abortSignal = useUnmountSignal()
 
   useEffect(() => {
+    const handler =() => {
+      client.hideTab(id) // set timeout may jank stuff tbd
+    }
+    abortSignal.addEventListener('abort', handler)
+
+
     return () => {
-      console.log('clsoing tab', id);
-      
-      client.hideTab(id)
+      abortSignal.removeEventListener('abort' ,handler)
+
+
     }
   }, [id, abortSignal])
 }

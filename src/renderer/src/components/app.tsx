@@ -1,4 +1,4 @@
-import { Suspense, useState, useEffect } from 'react'
+import { Suspense, useState, useEffect, useRef } from 'react'
 // import { AppLayout } from './components/AppLayout'
 // import { AppContext, FocusedProject, TerminalInstance } from './components/app-context'
 import { QueryClient, QueryClientProvider, useSuspenseQuery } from '@tanstack/react-query'
@@ -79,6 +79,7 @@ const AppLoader = () => {
   const [focusedProject, setFocusedProject] = useState<FocusedProject | null>(null)
   const [recentTabs, setRecentTabs] = useState<string[]>([]) // Start empty, only track actual navigation
   const [tabSwitcherOpen, setTabSwitcherOpen] = useState(false)
+  const creatingTerminalsRef = useRef<Set<string>>(new Set())
 
   // Listen for menu events via tipc handlers
   useEffect(() => {
@@ -139,6 +140,47 @@ const AppLoader = () => {
       })
     }
   }, [firstProject, firstProjectTerminals])
+
+  // Ensure at least one terminal exists per running project (auto-spawn)
+  useEffect(() => {
+    const run = async () => {
+      try {
+        const running = devServersQuery.data
+        if (!Array.isArray(running) || running.length === 0) return
+
+        const byProject: Record<string, number> = {}
+        for (const t of terminals) byProject[t.projectId] = (byProject[t.projectId] || 0) + 1
+
+        const missing = running
+          .map((p) => p.cwd)
+          .filter((cwd) => !byProject[cwd] && !creatingTerminalsRef.current.has(cwd))
+
+        if (missing.length === 0) return
+
+        missing.forEach((cwd) => creatingTerminalsRef.current.add(cwd))
+
+        await Promise.all(
+          missing.map(async (cwd) => {
+            try {
+              const created = await v2Client.terminalV2Create({ cwd })
+              setTerminals((prev) => [...prev, { terminalId: created.id, projectId: cwd }])
+              setFocusedProject((prev) => {
+                if (!prev || prev.projectId === cwd) {
+                  return { projectId: cwd, focusedTerminalId: created.id }
+                }
+                return prev
+              })
+            } catch {
+            } finally {
+              creatingTerminalsRef.current.delete(cwd)
+            }
+          })
+        )
+      } catch {}
+    }
+
+    run()
+  }, [devServersQuery.data, terminals])
 
   // Ensure focused terminal is set if it's empty
   useEffect(() => {

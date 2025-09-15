@@ -37,7 +37,9 @@ export function useWebContentViewUrl(id: string, url: string, isReady: boolean) 
 
     const updateUrl = async () => {
       try {
-        await client.loadUrl({ tabId: id, url })
+        // for now we don't load to not clear the tab, since all tabs are preloaded
+        // later we will need to manage loaded state entirely client side via API
+        await client.switchTab(id)
       } catch (error) {
         console.error('Failed to load URL:', error)
       }

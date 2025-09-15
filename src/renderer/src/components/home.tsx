@@ -21,6 +21,8 @@ type Workspace = {
 
 export const Home = () => {
   const { projects, runningProjects } = useAppContext()
+  console.log('running projects', runningProjects)
+
   const [searchQuery, setSearchQuery] = useState('')
   const [currentWorkspace, setCurrentWorkspace] = useState('all')
   const [createPrompt, setCreatePrompt] = useState('')

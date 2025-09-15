@@ -263,6 +263,9 @@ app.whenReady().then(async () => {
     // terminalManager.setMainWindow(mainWindow)
     // terminalManagerV2.setMainWindow(mainWindow)
     portsManager.setMainWindow(mainWindow)
+    setInterval(() => {
+      console.log('children up', mainWindow?.contentView.children)
+    }, 3000)
     registerIpcMain(
       createRouter({
         portsManager,

@@ -31,16 +31,28 @@ export function TabBar() {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
   const { runningProjects, setCommandPaletteOpen, setRoute, setFocusedProject, route } =
     useAppContext()
-  console.log('whats this running projects', runningProjects)
+  // console.log('whats this running projects', runningProjects)
   const queryClient = useQueryClient()
 
   const createProjectMutation = useMutation({
     mutationFn: async () => client.createProject(),
     onSuccess: async ({ project, runningProject }) => {
-      await queryClient.invalidateQueries({
-        // idc whatever right way later
-        predicate: ({ queryKey }) => queryKey[0] === 'devServers' || queryKey[0] === 'projects'
-      })
+      // setRoute('webview')
+      // setFocusedProject({
+      //   projectId: runningProject.cwd,
+      //   focusedTerminalId: ''
+      // })
+      // await queryClient.invalidateQueries({
+      //   // idc whatever right way later
+      //   predicate: ({ queryKey }) => queryKey[0] === 'devServers' || queryKey[0] === 'projects'
+      // })
+      queryClient.setQueryData(['projects'], (old: any[] = []) => [...(old || []), project])
+      queryClient.setQueryData(['devServers'], (old: any[] = []) => [
+        ...(old || []),
+        runningProject
+      ])
+
+      setFocusedProject({ focusedTerminalId: null!, projectId: runningProject.cwd })
     }
   })
 
@@ -64,8 +76,9 @@ export function TabBar() {
             onClick={async () => {
               setRoute('home')
               setFocusedProject(null)
-              // Hide all web content views when clicking Home
-              await client.hideAll()
+              // no longer needed
+              // // Hide all web content views when clicking Home
+              // await client.hideAll()
             }}
             variant="ghost"
             size="icon"

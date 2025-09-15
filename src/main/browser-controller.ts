@@ -8,6 +8,8 @@ export const sidebarWidth = 48 // DevToolsSidebar width (w-12 = 3rem = 48px)
 export const tabBarHeight = 36 // TabBar height (h-9 = 2.25rem = 36px)
 export let currentPanelSize = 75 // Default browser panel size (75%) - LEGACY
 
+// er i kinda wish this was just a class, whatever
+
 const webContentViewBounds = new Map<
   string,
   { x: number; y: number; width: number; height: number }
@@ -59,11 +61,13 @@ export const browserController = {
       totalTabs: tabs.length
     }
   },
+  // async createOptimistictab({tabId,url}: { tabId: string; url: string }) {
+
+  // },
   async createTab(args: { tabId: string; url: string }) {
     // console.log('creating tab')
 
     if (!mainWindow) throw new Error('Window not ready')
-    console.log('next up')
 
     let existingView = browserViews.get(args.tabId)
     if (!existingView) {
@@ -84,7 +88,7 @@ export const browserController = {
         )
       })
       view.webContents.on('did-finish-load', () => {
-        console.log(`BrowserView ${args.tabId} finished loading`)
+        // console.log(`BrowserView ${args.tabId} finished loading`)
       })
 
       // Track URL changes
@@ -136,135 +140,45 @@ export const browserController = {
         menu.popup()
       })
       view.webContents.on('devtools-opened', () => {
-        const devToolsWebContents = view.webContents.devToolsWebContents
-        console.log('devtools web contents', devToolsWebContents)
-        if (!devToolsWebContents) return
-        devToolsWebContents
-          .executeJavaScript(
-            `
-          const div = document.createElement('div');
-          
-          document.body.style.backgroundColor = '#0A0A0A';
-          document.documentElement.style.backgroundColor = '#0A0A0A';
-          
-          const changeBackgroundColors = () => {
-            const allElements = document.querySelectorAll('*');
-            allElements.forEach(el => {
-              const computedStyle = window.getComputedStyle(el);
-              if (computedStyle.backgroundColor && computedStyle.backgroundColor !== 'transparent' && computedStyle.backgroundColor !== 'rgba(0, 0, 0, 0)') {
-                el.style.backgroundColor = '#0A0A0A !important';
-              }
-              if (!el.style.backgroundColor || el.style.backgroundColor === '') {
-                el.style.backgroundColor = '#0A0A0A !important';
-              }
-              
-              // Target common DevTools elements
-              if (el.classList.contains('tabbed-pane-header') || 
-                  el.classList.contains('tabbed-pane-header-tab') ||
-                  el.classList.contains('tabbed-pane-header-tabs-drop-down-container') ||
-                  el.classList.contains('toolbar') ||
-                  el.classList.contains('panel') ||
-                  el.classList.contains('widget') ||
-                  el.classList.contains('vbox') ||
-                  el.classList.contains('hbox') ||
-                  el.classList.contains('flex-auto') ||
-                  el.classList.contains('header') ||
-                  el.classList.contains('tab') ||
-                  el.getAttribute('role') === 'tablist' ||
-                  el.getAttribute('role') === 'tab' ||
-                  el.tagName === 'HEADER') {
-                el.style.backgroundColor = '#0A0A0A !important';
-              }
-              
-              // Override any remaining gray backgrounds
-              if (computedStyle.backgroundColor.includes('rgb(') && 
-                  (computedStyle.backgroundColor.includes('128') || 
-                   computedStyle.backgroundColor.includes('136') ||
-                   computedStyle.backgroundColor.includes('68') ||
-                   computedStyle.backgroundColor.includes('58') ||
-                   computedStyle.backgroundColor.includes('48') ||
-                   computedStyle.backgroundColor.includes('38'))) {
-                el.style.backgroundColor = '#0A0A0A !important';
-              }
-            });
-            
-            // Add CSS rule to override any remaining backgrounds
-            const style = document.createElement('style');
-            style.textContent = \`
-              * {
-                background-color: #0A0A0A !important;
-              }
-              .tabbed-pane-header,
-              .tabbed-pane-header-tab,
-              .tabbed-pane-header-tabs-drop-down-container,
-              .toolbar,
-              .panel,
-              .widget,
-              .vbox,
-              .hbox,
-              .flex-auto,
-              [role="tablist"],
-              [role="tab"],
-              header {
-                background-color: #0A0A0A !important;
-              }
-            \`;
-            document.head.appendChild(style);
-          };
-          
-          changeBackgroundColors();
-          
-          const observer = new MutationObserver(() => {
-            changeBackgroundColors();
-          });
-          observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
-          
-          // Force update after a short delay to catch dynamically loaded content
-          setTimeout(changeBackgroundColors, 100);
-          setTimeout(changeBackgroundColors, 500);
-          setTimeout(changeBackgroundColors, 1000);
-        `
-          )
-          .catch(() => {})
-
-        if (!devToolsWebContents) return
-        devToolsWebContents.on('before-input-event', (_e, input) => {
-          if ((input.control || input.meta) && input.key.toLowerCase() === 'c')
-            devToolsWebContents.copy()
-          else if ((input.control || input.meta) && input.key.toLowerCase() === 'v')
-            devToolsWebContents.paste()
-          else if ((input.control || input.meta) && input.key.toLowerCase() === 'x')
-            devToolsWebContents.cut()
-          else if ((input.control || input.meta) && input.key.toLowerCase() === 'a')
-            devToolsWebContents.selectAll()
-        })
-        devToolsWebContents.on('context-menu', (_e, params) => {
-          const menu = Menu.buildFromTemplate([
-            {
-              label: 'Copy',
-              enabled: params.selectionText.length > 0,
-              click: () => clipboard.writeText(params.selectionText)
-            },
-            { label: 'Paste', click: () => devToolsWebContents.paste() },
-            { type: 'separator' },
-            { label: 'Select All', click: () => devToolsWebContents.selectAll() }
-          ])
-          menu.popup()
-        })
+        //   const devToolsWebContents = view.webContents.devToolsWebContents
+        //   console.log('devtools web contents', devToolsWebContents)
+        //   if (!devToolsWebContents) return
+        //   // i dont think this is needed tbh
+        //   if (!devToolsWebContents) return
+        //   devToolsWebContents.on('before-input-event', (_e, input) => {
+        //     if ((input.control || input.meta) && input.key.toLowerCase() === 'c')
+        //       devToolsWebContents.copy()
+        //     else if ((input.control || input.meta) && input.key.toLowerCase() === 'v')
+        //       devToolsWebContents.paste()
+        //     else if ((input.control || input.meta) && input.key.toLowerCase() === 'x')
+        //       devToolsWebContents.cut()
+        //     else if ((input.control || input.meta) && input.key.toLowerCase() === 'a')
+        //       devToolsWebContents.selectAll()
+        //   })
+        //   devToolsWebContents.on('context-menu', (_e, params) => {
+        //     const menu = Menu.buildFromTemplate([
+        //       {
+        //         label: 'Copy',
+        //         enabled: params.selectionText.length > 0,
+        //         click: () => clipboard.writeText(params.selectionText)
+        //       },
+        //       { label: 'Paste', click: () => devToolsWebContents.paste() },
+        //       { type: 'separator' },
+        //       { label: 'Select All', click: () => devToolsWebContents.selectAll() }
+        //     ])
+        //     menu.popup()
+        //   })
       })
 
       browserViews.set(args.tabId, view)
-      console.log(`Loading URL for tab ${args.tabId}:`, args.url)
       await view.webContents.loadURL(args.url)
     } else {
-      console.log('skipped')
     }
 
     return { ok: true }
   },
   async switchTab(tabId: string) {
     if (!mainWindow) throw new Error('Window not ready')
-    console.log('switching tab', tabId)
 
     const view = browserViews.get(tabId)
     if (!view) return { ok: false, error: 'Tab not found' }
@@ -273,14 +187,24 @@ export const browserController = {
       const currentView = browserViews.get(activeBrowserViewId.current)
       if (currentView) {
         try {
-          mainWindow.contentView.removeChildView(currentView)
+          // Workaround for Electron removeChildView zombie view issue (#44652)
+          try {
+            currentView.setVisible(false)
+          } catch {}
+          try {
+            currentView.setBounds({ x: 0, y: 0, width: 0, height: 0 })
+          } catch {}
         } catch {}
       }
     }
-    mainWindow.contentView.addChildView(view)
+    try {
+      mainWindow.contentView.addChildView(view)
+    } catch {}
+    try {
+      view.setVisible(true)
+    } catch {}
     layoutBrowserView(view, tabId)
     activeBrowserViewId.current = tabId
-    console.log(`Switched to tab ${tabId}`)
     return { ok: true }
   },
   async closeTab(tabId: string) {
@@ -289,31 +213,33 @@ export const browserController = {
     if (view) {
       if (activeBrowserViewId.current === tabId) {
         try {
+          // Ensure the view is fully hidden before removal to avoid zombie views
+          try {
+            view.setVisible(false)
+          } catch {}
+          try {
+            view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
+          } catch {}
           mainWindow.contentView.removeChildView(view)
         } catch {}
         activeBrowserViewId.current = null
       }
       ;(view as any).webContents.destroy()
       browserViews.delete(tabId)
-      console.log(`Closed tab ${tabId}`)
     }
     return { ok: true }
   },
   async loadUrl(args: { tabId: string; url: string }) {
-    console.log('loading with args', args)
-
     const view = browserViews.get(args.tabId)
     if (!view) throw new Error(`Tab ${args.tabId} not found`)
 
     // if the url is the same, don't load it again
-    console.log('what is the url', view.webContents.getURL(), args.url)
 
     const normalizedCurrentUrl = view.webContents.getURL().replace(/\/$/, '')
     const normalizedNewUrl = args.url.replace(/\/$/, '')
 
     if (normalizedCurrentUrl !== normalizedNewUrl) {
       await view.webContents.loadURL(args.url)
-      console.log(`Loading new URL for tab ${args.tabId}:`, args.url)
     }
 
     return { ok: true }
@@ -402,8 +328,10 @@ export const browserController = {
     browserViews.forEach((view) => {
       try {
         // Force hide by setting bounds to 0x0 first
+        try {
+          view.setVisible(false)
+        } catch {}
         view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
-        mainWindow!.contentView.removeChildView(view)
       } catch {}
     })
 
@@ -414,32 +342,35 @@ export const browserController = {
   },
   async hideTab(tabId: string) {
     if (!mainWindow) {
-      console.log('no main window', tabId)
+      throw new Error('noo')
       return { ok: false }
     }
     const view = browserViews.get(tabId)
-    if (view) {
-      // Make the view 50% smaller before hiding
-      const bounds = view.getBounds()
-      view.setBounds({
-        x: bounds.x,
-        y: bounds.y,
-        width: Math.floor(bounds.width * 0.5),
-        height: Math.floor(bounds.height * 0.5)
-      })
-    }
-    console.log('browser views', browserViews)
+    // console.log('what browser views whats going on', browserViews)
 
-    if (view) {
-      console.log('removing view', tabId, view)
-      // await this.hideAll()
-
-      // also update bounsd to be super small
-      console.log('prev on content view', mainWindow.contentView.children)
-      // view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
-      mainWindow.contentView.removeChildView(view)
-      console.log('all views on content view', mainWindow.contentView.children)
+    if (!view) {
+      throw new Error('something awful has happened')
     }
+    // if (view) {
+    //   // Make the view 50% smaller before hiding
+    try {
+      view.setVisible(false)
+    } catch (e) {
+      console.log('sheet', e)
+    }
+    try {
+      view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
+    } catch (e) {
+      console.log('woop noop', e)
+    }
+    // }
+
+    console.log('hiding tab')
+
+    // await this.hideAll()
+
+    // also update bounsd to be super small
+    // view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
 
     return { ok: true }
   },
@@ -447,7 +378,12 @@ export const browserController = {
     if (!mainWindow || !activeBrowserViewId.current) return { ok: false }
     const view = browserViews.get(activeBrowserViewId.current)
     if (view) {
-      mainWindow.contentView.addChildView(view)
+      try {
+        mainWindow.contentView.addChildView(view)
+      } catch {}
+      try {
+        view.setVisible(true)
+      } catch {}
       layoutBrowserView(view, activeBrowserViewId.current)
     }
     return { ok: true }

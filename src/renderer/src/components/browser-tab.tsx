@@ -23,7 +23,10 @@ export function BrowserTab({ projectId }: { projectId: string }) {
     mutationFn: async (opts: { port: number }) => {
       await client.killProject(opts)
     },
-    onSuccess: async () => {
+    // onSuccess: async () => {
+
+    // },
+    onSettled: async (e) => {
       await queryClient.invalidateQueries({ queryKey: ['devServers'] })
     }
   })
@@ -56,6 +59,10 @@ export function BrowserTab({ projectId }: { projectId: string }) {
       <button
         onClick={async (e) => {
           e.stopPropagation()
+          // queryClient.setQueryData(['devServers'], (old: any) => {
+          //   if (!old || !Array.isArray(old)) return []
+          //   return old.filter((p: any) => p.cwd !== project.cwd)
+          // })
 
           killProjectMutation.mutate({
             port: project.port

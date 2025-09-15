@@ -2,6 +2,7 @@ import { execFile as _execFile, spawn as _spawn, exec as _exec } from 'node:chil
 import { promisify } from 'node:util'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve, basename } from 'node:path'
+import { browserController } from './browser-controller'
 
 const execFile = promisify(_execFile)
 
@@ -85,31 +86,58 @@ export class ProjectBufferService {
     if (!created) return false
     const installed = await this.execOk('pnpm', ['install'], { cwd: this.templateRoot }) // should be bun really but if we copy on write its fine and doing a miss basically never happens, good to know when something is fucked up i think
     if (!installed) return false
-    await this.execOk('pnpm', ['add', '-D', 'tailwindcss', 'postcss', 'autoprefixer'], {
-      cwd: this.templateRoot
-    })
-    await this.execOk('pnpx', ['--yes', 'tailwindcss', 'init', '-p'], { cwd: this.templateRoot })
+    // lol we can just set this up ahead of time what is it doing
+    // await this.execOk('pnpm', ['add', '-D', 'tailwindcss', 'postcss', 'autoprefixer'], { // wait what there is no way this is needed
+    //   cwd: this.templateRoot
+    // })
+    // await this.execOk('pnpx', ['--yes', 'tailwindcss', 'init', '-p'], { cwd: this.templateRoot })
     return true
   }
 
   async seed(count: number): Promise<BufferedMeta[]> {
+    // i mean should be parallel but fine
     const metas: BufferedMeta[] = []
     for (let i = 0; i < count; i++) {
       const meta = await this.createBufferedProject()
-      if (meta) metas.push(meta)
+      if (meta) {
+        const url = `http://localhost:${meta.port}`
+        const tabId = meta.dir
+        await browserController.createTab({
+          tabId,
+          url
+        })
+        await browserController.loadUrl({ tabId, url })
+        metas.push(meta)
+      }
     }
     return metas
   }
-  create() {
+  // need to test miss case
+  async create() {
+    // fine
     if (this.listBuffer().length === 0) {
+      const meta = await this.createMiss()
+
+      if (!meta) {
+        throw new Error("tood validate this earlier, but this shouldn't happen")
+      }
+
+      await browserController.createTab({
+        tabId: meta.dir,
+        url: meta.url
+      })
+      await browserController.loadUrl({ tabId: meta.dir, url: meta.url })
       this.seed(1)
+      return meta
     }
     const meta = this.instantCreate()
+
     this.seed(1)
     return meta
   }
 
   instantCreate() {
+    // not great but fine
     const meta = this.shiftIndex()
     if (!meta) return null
     return meta
@@ -118,13 +146,18 @@ export class ProjectBufferService {
   async createMiss(
     targetDir?: string,
     port?: number
-  ): Promise<{ url: string; copyMs: number; startMs: number } | null> {
-    const dest = targetDir ? resolve(targetDir) : join(this.projectsRoot, `proj-${Date.now()}`)
+  ): Promise<{ url: string; copyMs: number; startMs: number; dir: string } | null> {
+    const dest = targetDir ? resolve(targetDir) : join(this.projectsRoot, `proj-${Date.now()}`) // thats concerning
     const copy = await this.cpCOW(this.templateRoot, dest)
     if (!copy.ok) return null
     const started = await this.startDev(dest, port)
     if (!started.port) return null
-    return { url: `http://localhost:${started.port}`, copyMs: copy.ms, startMs: started.ms }
+    return {
+      url: `http://localhost:${started.port}`,
+      copyMs: copy.ms,
+      startMs: started.ms,
+      dir: dest
+    }
   }
 
   async assign(targetDir?: string, _port?: number): Promise<string | null> {
@@ -161,11 +194,62 @@ export class ProjectBufferService {
     await Promise.all(promises)
   }
 
+  genName() {
+    const adjectives = [
+      'happy',
+      'brave',
+      'silly',
+      'clever',
+      'fuzzy',
+      'swift',
+      'lucky',
+      'quiet',
+      'lively',
+      'shiny',
+      'gentle',
+      'bold',
+      'jolly',
+      'sunny',
+      'witty',
+      'zesty',
+      'breezy',
+      'snappy',
+      'quirky',
+      'mellow'
+    ]
+    const animals = [
+      'puppy',
+      'kitten',
+      'bunny',
+      'fox',
+      'panda',
+      'otter',
+      'tiger',
+      'lion',
+      'bear',
+      'wolf',
+      'owl',
+      'eagle',
+      'shark',
+      'whale',
+      'dolphin',
+      'moose',
+      'goose',
+      'duck',
+      'crab',
+      'frog'
+    ]
+    function pick(arr: string[]) {
+      return arr[Math.floor(Math.random() * arr.length)]
+    }
+    const num = Math.floor(Math.random() * 900) + 100
+    return `${pick(adjectives)}-${pick(animals)}-${num}`
+  }
   async createBufferedProject(): Promise<BufferedMeta | null> {
     const ok = await this.ensureTemplate()
     if (!ok) return null
     const id = String(Date.now())
-    const dir = join(this.bufferRoot, `inst-${id}`)
+    const dir = join(this.bufferRoot, this.genName())
     this.ensureDir(dir)
     const copy = await this.cpCOW(this.templateRoot, dir)
     if (!copy.ok) return null
@@ -205,6 +289,8 @@ export class ProjectBufferService {
     src: string,
     dest: string
   ): Promise<{ ok: boolean; method: 'cp-c' | 'cp-reflink' | 'cp-copy' | 'none'; ms: number }> {
+    // im confident some of this is nonsense/not needed but seems to work
+    // todo: yoink buns logic
     const t0 = Date.now()
     this.ensureDir(dest)
     const s = resolve(src)
@@ -259,6 +345,7 @@ export class ProjectBufferService {
     if (!chosen) return { pid: null, port: null, ms: 0 }
     const t0 = Date.now()
     const child = _spawn('pnpm', ['run', 'dev', '--', '--port', String(chosen), '--strictPort'], {
+      // this might work generally now that we are deriving directly from the os and not relying on process tracking or spawned project ports, noice
       cwd: dir,
       stdio: 'ignore',
       detached: false
@@ -277,7 +364,8 @@ export class ProjectBufferService {
     return false
   }
 
-  private async httpOk(url: string): Promise<boolean> {
+  async httpOk(url: string): Promise<boolean> {
+    // i don't really like this strat i rather just be able to connect but this probably will need to evolve
     try {
       const controller = new AbortController()
       const t = setTimeout(() => controller.abort(), 300)
@@ -297,7 +385,7 @@ export class ProjectBufferService {
       const cp = await this.cpCOW(src, dest)
       if (cp.ok) {
         try {
-          await execFile('/bin/rm', ['-rf', src])
+          await execFile('/bin/rm', ['-rf', src]) // kinda scary be careful
         } catch {}
         return true
       }
@@ -307,6 +395,7 @@ export class ProjectBufferService {
 
   private async listListeningPorts(): Promise<Set<number>> {
     try {
+      // okay, seems to be doing something similar to what dev server detector is doing
       const { stdout } = await execFile('lsof', ['-n', '-P', '-iTCP', '-sTCP:LISTEN', '-Fn'])
       const ports = new Set<number>()
       for (const line of stdout.split(/\r?\n/)) {
