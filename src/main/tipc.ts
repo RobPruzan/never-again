@@ -1,0 +1,478 @@
+import { tipc } from '@egoist/tipc/main'
+import type { PortsManager } from './ports-manager'
+// import type { TerminalManager } from './terminal-manager-v2'
+import { TerminalManagerV2 } from './terminal-manager-v2'
+import { BrowserController } from './browser-controller'
+import { mainWindow, portalViews, startProjectIndexing } from './index'
+import { join, resolve } from 'path'
+import { homedir } from 'os'
+import { access as fsAccess, readFile, readdir, appendFile } from 'fs/promises'
+import { constants as fsConstants } from 'fs'
+import { Project, RunningProject } from '../shared/types'
+// import { resolveProjectFavicon } from './utils/favicon'
+import { DevRelayService } from './dev-relay-service'
+import { detectDevServersForDir } from './dev-server-detector'
+import { setTimeout as delay } from 'timers/promises'
+import { ProjectBufferService } from './project-buffer-service'
+import { exec } from 'child_process'
+import { promisify } from 'util'
+import { findProjectsBFS } from '../utility/index-projects'
+import { resolveProjectFavicon } from './utilts/favicon'
+
+const logToFile = async (message: any) => {
+  const logFile = join(process.cwd(), 'log.txt')
+  const safeStringify = (obj: any) => {
+    const seen = new Set()
+    return JSON.stringify(
+      obj,
+      (_key, value) => {
+        if (typeof value === 'object' && value !== null) {
+          if (seen.has(value)) {
+            return '[Circular]'
+          }
+          seen.add(value)
+        }
+        return value
+      },
+      2
+    )
+  }
+  await appendFile(logFile, safeStringify(message) + '\n')
+}
+
+const killProcessOnPort = async (port: number) => {
+  try {
+    console.log('killing port', port)
+    await execAsync(`npx kill-port ${port}`)
+    console.log(`Successfully killed process on port ${port}`)
+  } catch (error: any) {
+    console.error(`Error killing process on port ${port}:`, error.message)
+    throw error
+  }
+}
+
+const execAsync = promisify(exec)
+
+const t = tipc.create()
+
+export const createRouter = ({
+  portsManager,
+  browser,
+  terminalManager,
+  devRelayService,
+  bufferService
+}: {
+  portsManager: PortsManager
+  browser: BrowserController
+  terminalManager: TerminalManagerV2
+  bufferService: ProjectBufferService
+
+  devRelayService: DevRelayService
+}) => ({
+  killProject: t.procedure.input<{ port: number }>().action(async ({ input }) => {
+    await killProcessOnPort(input.port)
+  }),
+  createProject: t.procedure.action(async () => {
+    // well really we want a similar process to below, i wish we didn't have so many servers started it makes
+    // this debugging process icky. Maybe i just kill everything... gg
+    // i wish i had an easy kill button
+    // maybe i can just do that eh
+
+    const meta = await bufferService.create()
+    if (!meta) {
+      throw new Error('oh no') // i assume this just forwards it hopefully
+    }
+    console.log('created new project', meta)
+
+    browser.createTab({ tabId: meta.dir, url: `http://localhost:${meta.port}` })
+
+    // should promisify this or something
+    // lol
+    const project = (await findProjectsBFS(meta.dir)).at(0)
+    if (!project) {
+      throw new Error(
+        'Invariant, if you just created a project at a dir, there of course should be a found project at that dir'
+      )
+    }
+
+    // this is ridiculously stupid there shouldn't be this transform, should be one data type moving throughout the pipeline
+    const runningProject: RunningProject = {
+      cwd: meta.dir,
+      command: 'nr dev', // who cares
+      kind: 'vite',
+      pid: meta.pid,
+      port: meta.port
+    }
+
+    console.log('new running project', runningProject)
+
+    return {
+      project,
+      runningProject
+    }
+  }),
+
+  startDevRelay: t.procedure.input<{ projectPath: string }>().action(async ({ input }) => {
+    await devRelayService.start(input.projectPath)
+    await delay(1000) // hacky for now
+    const serverFromPath = await detectDevServersForDir(input.projectPath)
+
+    // should promisify this or something
+    const project = await new Promise<Project>((res) => {
+      startProjectIndexing((projects) => {
+        const project = projects.find((p) => p.path === input.projectPath)
+        if (!project) throw new Error('Invariant no project found')
+        res(project)
+      }, input.projectPath)
+    })
+
+    console.log('the server from path', serverFromPath)
+
+    const preferredServer = serverFromPath.find((s) => s.kind !== 'unknown') ?? serverFromPath.at(0)
+    if (!preferredServer) {
+      throw new Error('Invariant no server started this should be validated earlier')
+    }
+
+    await browser.createTab({
+      tabId: input.projectPath,
+      url: `http://localhost:${preferredServer.port}?wrapper=false`
+    })
+
+    // await browser.createTab({
+    //   tabId: input.projectPath,
+    //   url: `http://localhost:${started.sock}?wrapper=false`
+    // })
+    return {
+      runningProject: preferredServer,
+      project
+    }
+  }),
+  stopDevRelay: t.procedure.input<{ projectPath: string }>().action(async ({ input }) => {
+    return devRelayService.stop(input.projectPath)
+  }),
+  getDevServers: t.procedure.action(async () => {
+    const devServers = await detectDevServersForDir(homedir())
+    await logToFile(devServers)
+    const buffer = await bufferService.listBuffer()
+    console.log(' the current buffer', buffer)
+
+    return devServers.filter(
+      (server) =>
+        (server.command == 'node' || server.kind !== 'unknown') &&
+        !buffer.some((b) => b.dir === server.cwd)
+    ) // for now filter unknown but this needs to be much better
+  }),
+  getProjects: t.procedure.action(async () => {
+    const path = join(process.cwd(), 'projects.json')
+
+    const pollForFile = async (maxAttempts = 30, intervalMs = 1000): Promise<string> => {
+      for (let i = 0; i < maxAttempts; i++) {
+        try {
+          return await readFile(path, 'utf8')
+        } catch {
+          if (i === maxAttempts - 1) {
+            throw new Error(`projects.json not found after ${maxAttempts} attempts`)
+          }
+          await new Promise((resolve) => setTimeout(resolve, intervalMs))
+        }
+      }
+      throw new Error('Unreachable')
+    }
+
+    const projects = await pollForFile()
+    return JSON.parse(projects) as Array<Project>
+  }),
+  getProjectsMeta: t.procedure
+    .input<undefined | { paths: Array<string> }>()
+    .action(async ({ input }) => {
+      const paths = input?.paths ?? []
+
+      const getFileCount = async (dirPath: string) => {
+        try {
+          const entries = await readdir(dirPath)
+          return entries.length
+        } catch {
+          return 0
+        }
+      }
+
+      const estimateSize = async (projectRoot: string) => {
+        let size = 0
+        const sourceDirs = ['src', 'lib', 'app', 'pages', 'components', 'utils', 'hooks']
+        for (const dir of sourceDirs) {
+          const d = join(projectRoot, dir)
+          try {
+            await fsAccess(d, fsConstants.R_OK)
+            size += (await getFileCount(d)) * 5000
+          } catch {}
+        }
+        try {
+          const pkg = JSON.parse(await readFile(join(projectRoot, 'package.json'), 'utf-8'))
+          const depCount =
+            Object.keys(pkg.dependencies || {}).length +
+            Object.keys(pkg.devDependencies || {}).length
+          size += depCount * 50000
+        } catch {}
+        const buildDirs = ['dist', 'build', '.next', 'out']
+        for (const dir of buildDirs) {
+          const d = join(projectRoot, dir)
+          try {
+            await fsAccess(d, fsConstants.R_OK)
+            size += (await getFileCount(d)) * 10000
+          } catch {}
+        }
+        return size + 100000
+      }
+
+      const results = await Promise.all(
+        paths.map(async (p) => {
+          const root = resolve(p)
+          const [size, favicon] = await Promise.all([
+            estimateSize(root),
+            resolveProjectFavicon(root)
+          ])
+          return { path: p, sizeInBytes: size, hasFavicon: favicon.found }
+        })
+      )
+      return results
+    }),
+  getProjectFavicon: t.procedure
+    .input<{ projectPath: string }>()
+    .action(async ({ input }) => resolveProjectFavicon(input.projectPath)),
+  getProjectSize: t.procedure.input<{ projectPath: string }>().action(async ({ input }) => {
+    const projectRoot = resolve(input.projectPath)
+
+    const getFileCount = async (dirPath: string) => {
+      try {
+        const entries = await readdir(dirPath)
+        return entries.length
+      } catch {
+        return 0
+      }
+    }
+
+    try {
+      let estimatedSize = 0
+
+      const sourceDirs = ['src', 'lib', 'app', 'pages', 'components', 'utils', 'hooks']
+      for (const dir of sourceDirs) {
+        const dirPath = join(projectRoot, dir)
+        try {
+          await fsAccess(dirPath, fsConstants.R_OK)
+          const fileCount = await getFileCount(dirPath)
+          estimatedSize += fileCount * 5000
+        } catch {}
+      }
+
+      try {
+        const packageJsonPath = join(projectRoot, 'package.json')
+        const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf-8'))
+        const depCount =
+          Object.keys(packageJson.dependencies || {}).length +
+          Object.keys(packageJson.devDependencies || {}).length
+        estimatedSize += depCount * 50000
+      } catch {}
+
+      const buildDirs = ['dist', 'build', '.next', 'out']
+      for (const dir of buildDirs) {
+        const dirPath = join(projectRoot, dir)
+        try {
+          await fsAccess(dirPath, fsConstants.R_OK)
+          const fileCount = await getFileCount(dirPath)
+          estimatedSize += fileCount * 10000
+        } catch {}
+      }
+
+      estimatedSize += 100000
+
+      return { success: true as const, size: estimatedSize }
+    } catch (error) {
+      return { success: false as const, error: (error as Error).message }
+    }
+  }),
+  getPorts: t.procedure.action(async () => {
+    return portsManager.getAll()
+  }),
+  refreshPorts: t.procedure.action(async () => {
+    return portsManager.refresh()
+  }),
+
+  getBrowserState: t.procedure.action(async () => {
+    return browser.getCurrentState()
+  }),
+  createTab: t.procedure.input<{ tabId: string; url: string }>().action(async ({ input }) => {
+    return browser.createTab(input)
+  }),
+
+  switchTab: t.procedure.input<string>().action(async ({ input }) => {
+    return browser.switchTab(input)
+  }),
+  closeTab: t.procedure.input<string>().action(async ({ input }) => {
+    return browser.closeTab(input)
+  }),
+  loadUrl: t.procedure.input<{ tabId: string; url: string }>().action(async ({ input }) => {
+    let url = input.url
+    const urlObj = new URL(url)
+    if (!urlObj.searchParams.has('wrapper') || urlObj.searchParams.get('wrapper') !== 'false') {
+      urlObj.searchParams.set('wrapper', 'false')
+      url = urlObj.toString()
+    }
+
+    return browser.loadUrl({ ...input, url })
+  }),
+  reload: t.procedure.action(async () => {
+    return browser.reload()
+  }),
+  forceReload: t.procedure.action(async () => {
+    return browser.forceReload()
+  }),
+  toggleDevTools: t.procedure.action(async () => {
+    return browser.toggleDevTools()
+  }),
+  openDevToolsPanel: t.procedure.input<string>().action(async ({ input }) => {
+    return browser.openDevToolsPanel(input)
+  }),
+  navigate: t.procedure.input<string>().action(async ({ input }) => {
+    return browser.navigate(input)
+  }),
+  updatePanelSize: t.procedure.input<number>().action(async ({ input }) => {
+    return browser.updatePanelSize(input)
+  }),
+  updateWebContentViewBounds: t.procedure
+    .input<{ tabId: string; bounds: { x: number; y: number; width: number; height: number } }>()
+    .action(async ({ input }) => {
+      return browser.updateWebContentViewBounds(input.tabId, input.bounds)
+    }),
+  clearWebContentViewBounds: t.procedure.input<string>().action(async ({ input }) => {
+    return browser.clearWebContentViewBounds(input)
+  }),
+  hideAll: t.procedure.action(async () => {
+    return browser.hideAll()
+  }),
+  hideTab: t.procedure.input<string>().action(async ({ input }) => {
+    return browser.hideTab(input)
+  }),
+  showActive: t.procedure.action(async () => {
+    return browser.showActive()
+  }),
+  takeScreenshot: t.procedure.action(async () => {
+    return browser.takeScreenshot()
+  }),
+
+  terminalCreate: t.procedure
+    .input<undefined | { cwd?: string; shell?: string }>()
+    .action(async ({ input }) => {
+      return terminalManager.create(input)
+    }),
+  terminalWrite: t.procedure.input<{ id: string; data: string }>().action(async ({ input }) => {
+    console.log('terminal writing', input.data)
+
+    terminalManager.write(input.id, input.data)
+    return { ok: true }
+  }),
+  terminalResize: t.procedure
+    .input<{ id: string; cols: number; rows: number }>()
+    .action(async ({ input }) => {
+      terminalManager.resize(input.id, input.cols, input.rows)
+      return { ok: true }
+    }),
+  terminalDestroy: t.procedure.input<string>().action(async ({ input }) => {
+    return terminalManager.destroy(input)
+  }),
+  terminalList: t.procedure.action(async () => {
+    return terminalManager.list()
+  }),
+  terminalReconnect: t.procedure.input<string>().action(async ({ input }) => {
+    return terminalManager.reconnect(input)
+  }),
+  // terminalSetSnapshot: t.procedure
+  //   .input<{ id: string; snapshot: string }>()
+  //   .action(async ({ input }) => terminalManager.setSnapshot(input.id, input.snapshot)),
+  // terminalGetSessionMetadata: t.procedure.action(async () => {
+  //   return terminalManager.getSessionMetadata()
+  // }),
+  // terminalEnsureProjectTerminals: t.procedure.action(async () => {
+  //   const ports = portsManager.getAll()
+  //   return await terminalManager.ensureProjectTerminals(ports)
+  // }),
+
+  // V2 Headless terminal API
+  terminalV2Create: t.procedure
+    .input<undefined | { cwd?: string; shell?: string }>()
+    .action(async ({ input }) => {
+      const mgr = TerminalManagerV2.getInstance()
+      if (!mgr) throw new Error('TerminalManagerV2 not initialized')
+      return mgr.create(input)
+    }),
+  terminalV2Write: t.procedure.input<{ id: string; data: string }>().action(async ({ input }) => {
+    const mgr = TerminalManagerV2.getInstance()
+    if (!mgr) throw new Error('TerminalManagerV2 not initialized')
+    return mgr.write(input.id, input.data)
+  }),
+  terminalV2Resize: t.procedure
+    .input<{ id: string; cols: number; rows: number }>()
+    .action(async ({ input }) => {
+      const mgr = TerminalManagerV2.getInstance()
+      if (!mgr) throw new Error('TerminalManagerV2 not initialized')
+      return mgr.resize(input.id, input.cols, input.rows)
+    }),
+  terminalV2Destroy: t.procedure.input<string>().action(async ({ input }) => {
+    const mgr = TerminalManagerV2.getInstance()
+    if (!mgr) throw new Error('TerminalManagerV2 not initialized')
+    return mgr.destroy(input)
+  }),
+  terminalV2List: t.procedure.action(async () => {
+    const mgr = TerminalManagerV2.getInstance()
+    if (!mgr) throw new Error('TerminalManagerV2 not initialized')
+    return mgr.list()
+  }),
+  terminalV2Reconnect: t.procedure.input<string>().action(async ({ input }) => {
+    const mgr = TerminalManagerV2.getInstance()
+    if (!mgr) throw new Error('TerminalManagerV2 not initialized')
+    return mgr.reconnect(input)
+  }),
+  terminalV2GetSince: t.procedure
+    .input<{ id: string; since: number }>()
+    .action(async ({ input }) => {
+      const mgr = TerminalManagerV2.getInstance()
+      if (!mgr) throw new Error('TerminalManagerV2 not initialized')
+      return mgr.getSince(input.id, input.since)
+    }),
+  terminalV2GetSnapshot: t.procedure.input<string>().action(async ({ input }) => {
+    const mgr = TerminalManagerV2.getInstance()
+    if (!mgr) throw new Error('TerminalManagerV2 not initialized')
+    return mgr.getSnapshot(input)
+  }),
+
+  focusActiveWebContent: t.procedure.action(async () => {
+    return browser.focusActiveWebContent()
+  }),
+
+  focusPortalWindow: t.procedure.input<string>().action(async ({ input }) => {
+    if (!mainWindow) throw new Error('Invariant')
+    const portalView = portalViews.get(input)
+    if (!portalView) throw new Error(`Portal ${input} not found`)
+    try {
+      portalView.webContents.focus()
+      return { success: true, portalId: input }
+    } catch (error) {
+      return { success: false, error, portalId: input }
+    }
+  }),
+
+  reloadMainProcess: t.procedure.action(async () => {
+    const { app } = await import('electron')
+
+    if (process.env.NODE_ENV === 'development') {
+      setTimeout(() => {
+        app.relaunch()
+        app.exit(0)
+      }, 500)
+      return { success: true, message: 'Reloading main process...' }
+    } else {
+      return { success: false, message: 'Reload only available in development' }
+    }
+  })
+})
+
+export type Router = ReturnType<typeof createRouter>

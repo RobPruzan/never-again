@@ -1,0 +1,29 @@
+import { clsx, type ClassValue } from 'clsx'
+import { useEffect, useRef, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+export const iife = <T>(fn: () => T) => fn()
+
+// todo: make strict mode safe
+export function useUnmountSignal() {
+  const [abortController] = useState(() => new AbortController())
+
+  const abortTaskRef = useRef(() => {})
+
+  useEffect(() => {
+    const abortTask = () => abortController.abort()
+    abortTaskRef.current = abortTask
+    return () => {
+      queueMicrotask(() => {
+        if (abortTask === abortTaskRef.current) {
+          abortTask()
+        }
+      })
+    }
+  }, [abortController])
+
+  return abortController.signal
+}

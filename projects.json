@@ -1,0 +1,5299 @@
+[
+  {
+    "path": "/Users/robby/ahahhahahhah",
+    "name": "my-v0-project",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/anotha-one",
+    "name": "anotha-one",
+    "devScript": "next dev --turbo",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/anya",
+    "name": "root",
+    "devScript": "pnpm install && turbo run dev --concurrency=20",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/avl-tree-visual",
+    "name": "avl-tree-visual",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bar",
+    "name": "bar",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/brainstorm-planner--",
+    "name": "brainstorm-planner--",
+    "devScript": "vite",
+    "packageManager": "bun",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/brahhah",
+    "name": "brahhah",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/brufdas",
+    "name": "brufdas",
+    "devScript": "next dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bruh-mom",
+    "name": "bruh-mom",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bun-react-test",
+    "name": "bun-react-template",
+    "devScript": "bun --hot src/index.tsx",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bubs",
+    "name": "bubs",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/caching-test",
+    "name": "caching-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/cache-components",
+    "name": "cache-components",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/caching-test-2",
+    "name": "caching-test-2",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/catch-all-no-dynamic",
+    "name": "catch-all-dynamic",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/circular-server-actions",
+    "name": "circular-server-actions",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/chat",
+    "name": "monorepo-root",
+    "devScript": "bun ./scripts/run.ts one:dev watch",
+    "packageManager": "unknown",
+    "workspaces": true,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/cdp-ah",
+    "name": "cdp-ah",
+    "devScript": "electron-vite dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/codex-test",
+    "name": "codex-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/codex-test-2",
+    "name": "codex-test-2",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/compiler-perf-demo",
+    "name": "compiler-perf-demo",
+    "devScript": "vite",
+    "packageManager": "bun",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/compiler-hack",
+    "name": "compiler-hack",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/config-test-2",
+    "name": "config-test-2",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/config-test",
+    "name": "config-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/config-testinggg",
+    "name": "config-testinggg",
+    "devScript": "next dev --turbopack",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/config-testinggg-2",
+    "name": "config-testinggg-2",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/console-fuck",
+    "name": "console-fuck",
+    "devScript": "next dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/console",
+    "name": "frontend",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/crab-benchmark",
+    "name": "intsfdsaf",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/core-web-vitals-visual",
+    "name": "next-template",
+    "devScript": "next dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/demo-dashboard-again",
+    "name": "demo-dashboard-again",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/demo-yay",
+    "name": "studio",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable",
+    "name": "detachable",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable-panels-v2",
+    "name": "nextjs-project",
+    "devScript": "turbo run dev --parallel",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "next",
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/devtool-test",
+    "name": "devtool-test",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/devtools-stuff",
+    "name": "devtools-stuff",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/doop",
+    "name": "doop",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/e2e-finally",
+    "name": "e2e-finally",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/error-test-2",
+    "name": "error-test-2",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/empire",
+    "name": "studio",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/error-test",
+    "name": "error-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/far-field",
+    "name": "far-field",
+    "devScript": "astro dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "astro",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/fdsiajfjadslkfjdsaf",
+    "name": "fdsiajfjadslkfjdsaf",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/fjdosaklfjdsaj",
+    "name": "fjdosaklfjdsaj",
+    "devScript": "next dev --turbo",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/flkdasjfkl",
+    "name": "flkdasjfkl",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/for-zens",
+    "name": "for-zens",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/fresh-mcp",
+    "name": "fresh-mcp",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/framer-motion-workshop",
+    "name": "framer-motion-workshop",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/full-app",
+    "name": "full-app",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/game-test",
+    "name": "game-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/gaant-chart",
+    "name": "gaant-chart",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/globals-test",
+    "name": "globals-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/hit-area",
+    "name": "hit-area",
+    "devScript": "electron-vite dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/hook-problem",
+    "name": "hook-problem",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/hook-problem-v2",
+    "name": "hook-problem-v2",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/ide",
+    "name": "ide",
+    "devScript": "electron-vite dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/idk-test",
+    "name": "idk-test",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/ints-obs-test",
+    "name": "ints-obs-test",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/intsfdsaf",
+    "name": "intsfdsaf",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/llms-test",
+    "name": "llms-test",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "svelte",
+      "sveltekit",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/kyju",
+    "name": "kyju",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench",
+    "name": "local-bench",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/log-iter",
+    "name": "studio",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/log-tester",
+    "name": "log-tester",
+    "devScript": "next dev ",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/lul",
+    "name": "lul",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/magic-string-test",
+    "name": "magic-string-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-scaffold-test-2",
+    "name": "mcp-scaffold-test-2",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-scaffold-test-3",
+    "name": "mcp-scaffold-test-3",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-scaffold-tets",
+    "name": "mcp-scaffold-tets",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-use-cases",
+    "name": "mcp-use-cases",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/megumin",
+    "name": "megumin",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/memd",
+    "name": "power",
+    "devScript": "next dev",
+    "packageManager": "bun",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/mil",
+    "name": "mil",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/million-turbo-test",
+    "name": "million-turbo-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/minecraft-tools-react-19",
+    "name": "minecraft-tools",
+    "devScript": "next dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/mini-compiler-test",
+    "name": "mini-compiler-test",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/minimal-logs",
+    "name": "studio",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/monitor-uoi",
+    "name": "monitor-uoi",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/monitoring-bug-test",
+    "name": "monitoring-bug-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/monitor-test",
+    "name": "monitor-test",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/my-app-fdsjkfd",
+    "name": "my-app-fdsjkfd",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/my-react-router-app",
+    "name": "my-react-router-app",
+    "devScript": "react-router dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/my-react-router-app-bruh",
+    "name": "my-react-router-app-bruh",
+    "devScript": "react-router dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/my-remix-app",
+    "name": "my-remix-app",
+    "devScript": "remix vite:dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "remix",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/new-log-test",
+    "name": "log-tester",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/new-scan-test",
+    "name": "new-scan-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-devtools-browser-logs-repro",
+    "name": "next-devtools-browser-logs-repro",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-dir-test",
+    "name": "next-dir-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-exec",
+    "name": "next-exec",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-image-repro",
+    "name": "middleware-bug",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-mcp",
+    "name": "next-mcp",
+    "devScript": "tsc --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-mcp-cli",
+    "name": "js-package-template",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-open-code",
+    "name": "studio",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-rrw-consumer",
+    "name": "next-rrw-consumer",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-repl",
+    "name": "next-repl",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-testing-library",
+    "name": "xtra",
+    "devScript": "xtra dev --turbo",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/next.js",
+    "name": "nextjs-project",
+    "devScript": "turbo run dev --parallel",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "next",
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/no-way",
+    "name": "no-way",
+    "devScript": "next dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/open-code-plugin",
+    "name": "open-code-plugin",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/opus-test",
+    "name": "opus-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/panel-resize",
+    "name": "panel-resize",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/parallelize",
+    "name": "studio",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/piping-logs",
+    "name": "piping-logs",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/playin-around",
+    "name": "playin-around",
+    "devScript": "next dev --turbo",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/pls",
+    "name": "pls",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/plsfdklsaj",
+    "name": "plsfdklsaj",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/prefetch-test",
+    "name": "prefetch-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/plugin-test",
+    "name": "plugin-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/project-test",
+    "name": "project-test",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/project-test-2",
+    "name": "project-test-2",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/ppr-test",
+    "name": "ppr-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/project-test-3",
+    "name": "project-test-3",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/qubic-calculator-next",
+    "name": "qubic-calculator",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/react-example",
+    "name": "react-example",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/react-scan-test-a",
+    "name": "react-scan-test-a",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/react-scan-analytics",
+    "name": "@react-scan/dashboard",
+    "devScript": "next dev -p 42069 --turbo",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/recorder-test",
+    "name": "recorder-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/renderers-repro",
+    "name": "renderers-repro",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/repl-dequeue",
+    "name": "repl-dequeue",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/repl-test",
+    "name": "repl-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/repl-test-2",
+    "name": "repl-test-2",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/replay-website",
+    "name": "replay-website",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/robs-site",
+    "name": "robs-site",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/rrweb-stuff",
+    "name": "rrweb-stuff",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/rrahhhhhhhhhhh",
+    "name": "rrahhhhhhhhhhh",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/rrweb-test",
+    "name": "rrweb-test",
+    "devScript": "vite",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/sandbox",
+    "name": "nextjs-app-router",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/scan-prod",
+    "name": "scan-prod",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/scan-replay",
+    "name": "scan-replay",
+    "devScript": "next dev --turbo",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/scan-test",
+    "name": "scan-test",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/scanner",
+    "name": "scanner",
+    "devScript": "next dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/script-repro",
+    "name": "script-repro",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/sentry",
+    "name": "sentry",
+    "devScript": "(yarn check --verify-tree || yarn install --check-files) && sentry devserver",
+    "packageManager": "yarn",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/segment-explorer",
+    "name": "segment-explorer",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/secondary-next.js",
+    "name": "nextjs-project",
+    "devScript": "turbo run dev --parallel",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "next",
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/server-action-test",
+    "name": "server-action-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/server-reload-test",
+    "name": "server-reload-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/startup-test",
+    "name": "startup-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/str-patch",
+    "name": "str-patch",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/store-test",
+    "name": "store-test",
+    "devScript": "xtra dev --turbo",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/suspense-use-test",
+    "name": "suspense-use-test",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/strict-test",
+    "name": "strict-test",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-12",
+    "name": "test-12",
+    "devScript": "next dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-accessibility",
+    "name": "test-accessibility",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-devtools",
+    "name": "nuxt-app",
+    "devScript": "nuxt dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "vue",
+      "nuxt"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-install-hook-2",
+    "name": "test-install-hook-2",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-install-hook",
+    "name": "test-install-hook",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-lsp",
+    "name": "test-lsp",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-mcp",
+    "name": "test-mcp",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-mcp-e2e",
+    "name": "test-mcp-e2e",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-resources",
+    "name": "test-resources",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-speed",
+    "name": "test-speed",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-node",
+    "name": "test-node",
+    "devScript": "NODE_OPTIONS=--inspect next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-static",
+    "name": "test-static",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-testing-lib",
+    "name": "test-testing-lib",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-tests-lol",
+    "name": "test-tests-lol",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-ui",
+    "name": "test-ui",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work-10",
+    "name": "test-work-10",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work",
+    "name": "test-work",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work-11",
+    "name": "test-work-11",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work-12",
+    "name": "test-work-12",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work-13",
+    "name": "test-work-13",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work-14",
+    "name": "test-work-14",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work-3",
+    "name": "test-work-3",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work-4",
+    "name": "test-work-4",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work-7",
+    "name": "test-work-7",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work-5",
+    "name": "test-work-5",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work-6",
+    "name": "test-work-6",
+    "devScript": "next dev --turbopack",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work-8",
+    "name": "test-work-8",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-work-9",
+    "name": "test-work-9",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/too-many-hooks",
+    "name": "nextjs-app-router",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/testing",
+    "name": "testing",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/toolbar-test",
+    "name": "toolbar-test",
+    "devScript": "astro dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "astro",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/testsfdas",
+    "name": "testsfdas",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/trae-test",
+    "name": "trae-test",
+    "devScript": "next dev --turbo",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/transpile-test",
+    "name": "transpile-test",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/trace-test",
+    "name": "trace-test",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/trae-test-2",
+    "name": "trae-test-2",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/tri-next.js",
+    "name": "nextjs-project",
+    "devScript": "turbo run dev --parallel",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "next",
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/turbo-million",
+    "name": "turbo-million",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/unplg",
+    "name": "unplg",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/use-ses-test",
+    "name": "use-ses-test",
+    "devScript": "vite",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/view-transitions",
+    "name": "view-transitions",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/v-vibes",
+    "name": "v-vibes",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/vite-resources",
+    "name": "vite-resources",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/vercel-interview",
+    "name": "vercel-interview",
+    "devScript": "next dev --turbo",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/vite-speed",
+    "name": "vite-speed",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/wat",
+    "name": "wat",
+    "devScript": "react-router dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/window-int",
+    "name": "window-int",
+    "devScript": "electron-vite dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/with-playwright-app",
+    "name": "with-playwright-app",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/wooop",
+    "name": "wooop",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/wow",
+    "name": "wow",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/xtra-test",
+    "name": "xtra-test",
+    "devScript": "xtra dev --turbo",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/xtra-test-2",
+    "name": "xtra-test-2",
+    "devScript": "xtra dev --turbo",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/xtra-app",
+    "name": "xtra-app",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/your-app-name",
+    "name": "vite-react-flow-template",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/yep-anotha",
+    "name": "yep-anotha",
+    "devScript": "next dev --turbo",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/youtube-dashboard",
+    "name": "next-template",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/zenbu-stack",
+    "name": "zenbu-stack",
+    "devScript": "electron-vite dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/AlgoViz/Algoviz",
+    "name": "algo-viz",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/Downloads/faire-white-paper",
+    "name": "my-v0-project",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/Downloads/react-perf-monitor",
+    "name": "react-perf-monitor",
+    "devScript": "vite",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/Downloads/react-perf-monitor 2",
+    "name": "react-perf-monitor",
+    "devScript": "vite",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/Projects/allow-js-repro",
+    "name": "allow-js-repro",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/Projects/playwright-vite-example",
+    "name": "playwright-vite-example",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/anya-vscode-sync/anya",
+    "name": "root",
+    "devScript": "pnpm install && turbo run dev --concurrency=20",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/anya/website",
+    "name": "docs",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bfjdasjf/Algoviz",
+    "name": "algo-viz",
+    "devScript": "next dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bugs/next.js",
+    "name": "nextjs-project",
+    "devScript": "turbo run dev --parallel",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "next",
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/cleaned-native-scan/react-scan",
+    "name": "react-scan",
+    "devScript": "NODE_ENV=development tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/fkdsaljfdjkl/package",
+    "name": "react-scan",
+    "devScript": "pnpm copy-astro && npm-run-all --parallel dev:css dev:tsup",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "remix",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/context-test",
+    "name": "context-test",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/interaction-differ",
+    "name": "interaction-differ",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/good",
+    "name": "good",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/pages-broken",
+    "name": "pages-broken",
+    "devScript": "next dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/perf",
+    "name": "perf",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/react-scan-diff",
+    "name": "react-scan-diff",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/react-scan-demo",
+    "name": "react-scan-demo",
+    "devScript": "next dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/script-test",
+    "name": "script-test",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/vite-react",
+    "name": "vite-react",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/wahhhhhh",
+    "name": "wahhhhhh",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/joetest/my-react-app-name",
+    "name": "my-react-app-name",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/doops",
+    "name": "doops",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-libs/anotha-one",
+    "name": "anotha-one",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-libs/poop",
+    "name": "poop",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-libs/test-package",
+    "name": "test-package",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-libs/test-package-a",
+    "name": "@repl-utils/test",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-libs/anotha-one-2",
+    "name": "anotha-one-2",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-libs/test-package-c",
+    "name": "test-package-c",
+    "devScript": "tsup --watch",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-libs/test-package-d",
+    "name": "@repl-utils/test",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-libs/yay",
+    "name": "yay",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-libs/yayy",
+    "name": "yayy",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/mcp-libs/test-package-b",
+    "name": "@repl-utils/test",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/memd-demo-dir/memd",
+    "name": "power",
+    "devScript": "next dev",
+    "packageManager": "bun",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/million-testing/Algoviz",
+    "name": "algo-viz",
+    "devScript": "next dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/million-installer/million-test",
+    "name": "million-test",
+    "devScript": "next dev",
+    "packageManager": "bun",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/minimal-logs/use-use-effect-effect",
+    "name": "use-use-effect-effect",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/my-app/xtra-test-100",
+    "name": "xtra-test-100",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next-image-opt-middleware",
+    "name": "nextjs-project",
+    "devScript": "turbo run dev --parallel",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "next",
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js",
+    "name": "nextjs-project",
+    "devScript": "turbo run dev --parallel",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "next",
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-mcp-cli/template-files",
+    "name": "js-package-template",
+    "devScript": "tsup --watch",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-mcp-cli/visualization-app",
+    "name": "package-visualizer",
+    "devScript": "next dev -p 4000",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/real-time/client",
+    "name": "client",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/reasoning-test/ai-sdk-preview-steps-reasoning-example",
+    "name": "ai-sdk-preview-roundtrips",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/replay-demo/linear-dashboard",
+    "name": "linear-dashboard",
+    "devScript": "vite",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/scan-website-upgrade/react-scan-clone",
+    "name": "react-scan-clone",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-clean/next.js",
+    "name": "nextjs-project",
+    "devScript": "turbo run dev --parallel",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "next",
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-scan-rn/react-scan",
+    "name": "react-scan",
+    "devScript": "NODE_ENV=development tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/ugah-mcp/poopy",
+    "name": "poopy",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/webrtc-forwarding/client",
+    "name": "client",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/webpack-react-component-name/unplugin-starter",
+    "name": "unplugin-react-component-name",
+    "devScript": "tsup --watch src",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/yipee/console",
+    "name": "frontend",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/zip-tests-zenbu/next-zip",
+    "name": "next-zip",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/awesome-matrix-4n4q",
+    "name": "awesome-matrix-4n4q",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/awesome-odyssey-914k",
+    "name": "awesome-odyssey-914k",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/blazing-creator-93t4",
+    "name": "blazing-creator-93t4",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/awesome-platform-jgow",
+    "name": "awesome-platform-jgow",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/awesome-studio-eic2",
+    "name": "awesome-studio-eic2",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/blazing-builder-214x",
+    "name": "blazing-builder-214x",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/cosmic-creator-t43i",
+    "name": "cosmic-creator-t43i",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/cosmic-odyssey-wk4m",
+    "name": "cosmic-odyssey-wk4m",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/dazzling-journey-ofjr",
+    "name": "dazzling-journey-ofjr",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/dazzling-quest-sn5a",
+    "name": "dazzling-quest-sn5a",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/epic-forge-9vpj",
+    "name": "epic-forge-9vpj",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/epic-nexus-h9hl",
+    "name": "epic-nexus-h9hl",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/epic-interface-tyrn",
+    "name": "epic-interface-tyrn",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/dazzling-vault-o85e",
+    "name": "dazzling-vault-o85e",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/fantastic-odyssey-jqvm",
+    "name": "fantastic-odyssey-jqvm",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/galactic-hub-qoe7",
+    "name": "galactic-hub-qoe7",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/galactic-interface-wvq1",
+    "name": "galactic-interface-wvq1",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/galactic-journey-7kv5",
+    "name": "galactic-journey-7kv5",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/hypersonic-creator-l2u2",
+    "name": "hypersonic-creator-l2u2",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/galactic-matrix-e8wk",
+    "name": "galactic-matrix-e8wk",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/infinite-dashboard-er24",
+    "name": "infinite-dashboard-er24",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/hypersonic-dashboard-ast3",
+    "name": "hypersonic-dashboard-ast3",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/hypersonic-platform-kgq2",
+    "name": "hypersonic-platform-kgq2",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/infinite-journey-s3ad",
+    "name": "infinite-journey-s3ad",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/infinite-forge-pqgu",
+    "name": "infinite-forge-pqgu",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/infinite-matrix-mp1a",
+    "name": "infinite-matrix-mp1a",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/legendary-dashboard-zd6z",
+    "name": "legendary-dashboard-zd6z",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/legendary-forge-7lv1",
+    "name": "legendary-forge-7lv1",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/infinite-odyssey-598e",
+    "name": "infinite-odyssey-598e",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/legendary-nexus-9u07",
+    "name": "legendary-nexus-9u07",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/nebula-builder-i01t",
+    "name": "nebula-builder-i01t",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/nebula-builder-ub31",
+    "name": "nebula-builder-ub31",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/nebula-realm-wdna",
+    "name": "nebula-realm-wdna",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/nebula-interface-2hlx",
+    "name": "nebula-interface-2hlx",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/orbital-creator-5lyf",
+    "name": "orbital-creator-5lyf",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/orbital-matrix-2mvu",
+    "name": "orbital-matrix-2mvu",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/orbital-forge-u5mx",
+    "name": "orbital-forge-u5mx",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/nebula-studio-02j0",
+    "name": "nebula-studio-02j0",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/orbital-nexus-4ikv",
+    "name": "orbital-nexus-4ikv",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/orbital-nexus-pu2j",
+    "name": "orbital-nexus-pu2j",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/orbital-quest-re8x",
+    "name": "orbital-quest-re8x",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/orbital-realm-nta6",
+    "name": "orbital-realm-nta6",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/quantum-forge-d3ef",
+    "name": "quantum-forge-d3ef",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/phoenix-platform-thw2",
+    "name": "phoenix-platform-thw2",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/phoenix-engine-1rny",
+    "name": "phoenix-engine-1rny",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/phoenix-lab-jpjx",
+    "name": "phoenix-lab-jpjx",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": true,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/radiant-forge-w85l",
+    "name": "radiant-forge-w85l",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/quantum-hub-wzui",
+    "name": "quantum-hub-wzui",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/radiant-journey-ll0l",
+    "name": "radiant-journey-ll0l",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/radiant-matrix-q7ec",
+    "name": "radiant-matrix-q7ec",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/radiant-nexus-fdd2",
+    "name": "radiant-nexus-fdd2",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/stellar-forge-mt08",
+    "name": "stellar-forge-mt08",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/stellar-vault-lh2p",
+    "name": "stellar-vault-lh2p",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/stellar-realm-q872",
+    "name": "stellar-realm-q872",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/turbo-journey-04e2",
+    "name": "turbo-journey-04e2",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/ultra-hub-pdnf",
+    "name": "ultra-hub-pdnf",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/ultra-gateway-5lxm",
+    "name": "ultra-gateway-5lxm",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/velocity-dashboard-vrod",
+    "name": "velocity-dashboard-vrod",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/velocity-hub-w6m5",
+    "name": "velocity-hub-w6m5",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/.xtra/projects/velocity-odyssey-4jsa",
+    "name": "velocity-odyssey-4jsa",
+    "devScript": "xtra dev --turbopack",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/Projects/inventory-460/inventory",
+    "name": "inventory",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/anya-vscode-sync/anya/website",
+    "name": "docs",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/anya/packages/dashboard",
+    "name": "@million/dashboard",
+    "devScript": "next dev -p 42069",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/anya/packages/anya",
+    "name": "@million/lint",
+    "devScript": "tsup --watch",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/anya/packages/webview",
+    "name": "@million/webview",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/bench-runner/test-fix/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 7000",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bench-runner/test-fix2/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 9876",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bench-runner/test-output2/app",
+    "name": "app",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bench-runner/test-output/app",
+    "name": "app",
+    "devScript": "next dev --turbopack",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bench-runner/test-output3/app",
+    "name": "app",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bench-runner/test-output4/app",
+    "name": "app",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/cleaned-native-scan/react-scan/extension",
+    "name": "react-scanner-extension",
+    "devScript": "dotenv -- vite build --watch --mode development",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/cleaned-native-scan/react-scan/test",
+    "name": "test",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/cse312/whsiper-debugging/whisper-web",
+    "name": "whisper-web",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable-panels-v2/packages/next",
+    "name": "next",
+    "devScript": "cross-env NEXT_SERVER_NO_MANGLE=1 taskr",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable-panels-v2/packages/react-refresh-utils",
+    "name": "@next/react-refresh-utils",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable-panels-v2/packages/third-parties",
+    "name": "@next/third-parties",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/repros/preact-import",
+    "name": "preact-import",
+    "devScript": "next dev",
+    "packageManager": "npm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/tests/memd-demo",
+    "name": "power",
+    "devScript": "next dev",
+    "packageManager": "bun",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/joetest/my-react-app-name/my-react-app-name",
+    "name": "my-react-app-name",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/project-buffer/inst-1757523390675",
+    "name": "template-vite-react-tailwind",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/project-buffer/inst-1757524805617",
+    "name": "template-vite-react-tailwind",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/project-buffer/inst-1757524808132",
+    "name": "template-vite-react-tailwind",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/project-buffer/inst-1757528417619",
+    "name": "template-vite-react-tailwind",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/project-buffer/inst-1757528011118",
+    "name": "template-vite-react-tailwind",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/project-buffer/inst-1757528431524",
+    "name": "template-vite-react-tailwind",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/project-buffer/inst-1757528420173",
+    "name": "template-vite-react-tailwind",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/project-buffer/inst-1757528431546",
+    "name": "template-vite-react-tailwind",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/project-buffer/inst-1757528886394",
+    "name": "template-vite-react-tailwind",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/project-buffer/inst-1757528889792",
+    "name": "template-vite-react-tailwind",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/project-buffer/inst-1757528882129",
+    "name": "template-vite-react-tailwind",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/lsof-test/project-buffer/inst-1757528988674",
+    "name": "template-vite-react-tailwind",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/repros/image-optimization-middleware",
+    "name": "image-optimization-middleware",
+    "devScript": "next dev --turbo",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-mcp-cli/test-cli/my-awesome-lib",
+    "name": "my-awesome-lib",
+    "devScript": "tsup --watch",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-mcp-cli/test-publishing/test-pub-pkg",
+    "name": "@repl-utils/test-claude-cli-1753806565",
+    "devScript": "tsup --watch",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/next.js/packages/next",
+    "name": "next",
+    "devScript": "cross-env NEXT_SERVER_NO_MANGLE=1 taskr",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/next.js/packages/react-refresh-utils",
+    "name": "@next/react-refresh-utils",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/next.js/packages/third-parties",
+    "name": "@next/third-parties",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/random/JARVIS/web",
+    "name": "vue3-ts-vite-router-tailwindcss",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "vue",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/react/fixtures/attribute-behavior",
+    "name": "attribute-behavior",
+    "devScript": "react-scripts start",
+    "packageManager": "yarn",
+    "workspaces": false,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/react/fixtures/dom",
+    "name": "react-fixtures",
+    "devScript": "react-scripts start",
+    "packageManager": "yarn",
+    "workspaces": false,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/react/fixtures/expiration",
+    "name": "expiration-2",
+    "devScript": "react-scripts start",
+    "packageManager": "yarn",
+    "workspaces": false,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/react/fixtures/fizz",
+    "name": "react-ssr",
+    "devScript": "concurrently \"npm run dev:server\" \"npm run dev:bundler\"",
+    "packageManager": "yarn",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/react/fixtures/flight-esm",
+    "name": "flight-esm",
+    "devScript": "concurrently \"npm run dev:region\" \"npm run dev:global\"",
+    "packageManager": "yarn",
+    "workspaces": false,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/react/fixtures/flight",
+    "name": "flight",
+    "devScript": "concurrently \"npm run dev:region\" \"npm run dev:global\"",
+    "packageManager": "yarn",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/react/fixtures/ssr",
+    "name": "react-fixtures-ssr",
+    "devScript": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "packageManager": "yarn",
+    "workspaces": false,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/react/fixtures/ssr2",
+    "name": "react-ssr",
+    "devScript": "concurrently \"npm run dev:server\" \"npm run dev:bundler\"",
+    "packageManager": "yarn",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/secondary-next.js/packages/next",
+    "name": "next",
+    "devScript": "cross-env NEXT_SERVER_NO_MANGLE=1 taskr",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/secondary-next.js/packages/third-parties",
+    "name": "@next/third-parties",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-clean/next.js/image-mid",
+    "name": "image-mid",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-scan-rn/react-scan/extension",
+    "name": "react-scanner-extension",
+    "devScript": "dotenv -- vite build --watch --mode development",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-scan-rn/react-scan/test",
+    "name": "test",
+    "devScript": "vite",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/tri-next.js/packages/next",
+    "name": "next",
+    "devScript": "cross-env NEXT_SERVER_NO_MANGLE=1 taskr",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/tri-next.js/packages/react-refresh-utils",
+    "name": "@next/react-refresh-utils",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/tri-next.js/packages/third-parties",
+    "name": "@next/third-parties",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/zip-tests-zenbu/unzip-test/next-zip",
+    "name": "next-zip",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/Projects/fullstack-template/services/frontend",
+    "name": "@malevolent/frontend",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/anya-vscode-sync/anya/packages/anya",
+    "name": "@million/lint",
+    "devScript": "tsup --watch",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/anya-vscode-sync/anya/packages/dashboard",
+    "name": "@million/dashboard",
+    "devScript": "next dev -p 42069",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/anya-vscode-sync/anya/packages/vscode",
+    "name": "million-lint",
+    "devScript": "NODE_ENV=development tsup --watch",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/anya-vscode-sync/anya/packages/webview",
+    "name": "@million/webview",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/bugs/next.js/packages/next",
+    "name": "next",
+    "devScript": "cross-env NEXT_SERVER_EVAL_SOURCE_MAPS=1 taskr",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/bugs/next.js/packages/react-refresh-utils",
+    "name": "@next/react-refresh-utils",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/bugs/next.js/packages/third-parties",
+    "name": "@next/third-parties",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/cse-460/part-2/ts/space-debris",
+    "name": "space-debris",
+    "devScript": "next dev",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/cse312/fireside/packages/zenbu-app",
+    "name": "zenbu-app",
+    "devScript": "next dev --turbo",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/cse312/fireside/services/frontend",
+    "name": "@fireside/frontend",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/cse312/fireside_temp/services/frontend",
+    "name": "@fireside/frontend",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable-panels-v2/bench/vercel/benchmark-app",
+    "name": "stats-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/im-so-stupid/jbrowse-components/component_tests/lgv-vite",
+    "name": "lgv-vite",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/04c136ec/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3040",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/05255732/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3030",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/3157d75b/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3038",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/17a0bafe/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3030",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/31a599bb/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3030",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/48015df3/app",
+    "name": "app",
+    "devScript": "next dev --turbopack",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/33add0d5/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3030",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/58f145a0/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3032",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/6b8993f0/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3030",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/751c993b/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3036",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/67410bf5/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3030",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/6e761ddf/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3030",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/7b595334/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3030",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/7aede3bb/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3034",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/8509990e/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3030",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/90e64aa2/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3033",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/b38cbf41/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3032",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/b9bec5ce/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3031",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/bf2c28f0/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3034",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/da40aac0/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3035",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/c9b9207a/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3030",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/local-bench/bench-runs/ff1245dc/app",
+    "name": "app",
+    "devScript": "next dev --turbopack --port 3032",
+    "packageManager": "pnpm",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/native-dirs/tamgui-react-scan/apps/next",
+    "name": "next-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next-image-opt-middleware/packages/next",
+    "name": "next",
+    "devScript": "taskr",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next-image-opt-middleware/packages/react-refresh-utils",
+    "name": "@next/react-refresh-utils",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next-image-opt-middleware/packages/third-parties",
+    "name": "@next/third-parties",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js/packages/next",
+    "name": "next",
+    "devScript": "cross-env NEXT_SERVER_EVAL_SOURCE_MAPS=1 taskr",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js/packages/react-refresh-utils",
+    "name": "@next/react-refresh-utils",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js/packages/third-parties",
+    "name": "@next/third-parties",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js/tarballs/next",
+    "name": "next",
+    "devScript": "cross-env NEXT_SERVER_EVAL_SOURCE_MAPS=1 taskr",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/next.js/bench/vercel/benchmark-app",
+    "name": "stats-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/react/fixtures/concurrent/time-slicing",
+    "name": "cpu-demo",
+    "devScript": "react-scripts start",
+    "packageManager": "yarn",
+    "workspaces": false,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/secondary-next.js/bench/vercel/benchmark-app",
+    "name": "stats-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-clean/next.js/packages/next",
+    "name": "next",
+    "devScript": "taskr",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-clean/next.js/packages/third-parties",
+    "name": "@next/third-parties",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-clean/next.js/packages/react-refresh-utils",
+    "name": "@next/react-refresh-utils",
+    "devScript": "tsc -d -w -p tsconfig.json",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "webpack"
+    ]
+  },
+  {
+    "path": "/Users/robby/tri-next.js/bench/vercel/benchmark-app",
+    "name": "stats-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/Projects/test-template/fullstack-template/services/frontend",
+    "name": "@malevolent/frontend",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/bugs/next.js/bench/vercel/benchmark-app",
+    "name": "stats-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/cse312/ahhh/fireside/services/frontend",
+    "name": "@fireside/frontend",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/cse312/last-test/fireside/services/frontend",
+    "name": "@fireside/frontend",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/cse312/template/private-template/services/frontend",
+    "name": "@fireside/frontend",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/cse312/project-part-1-test/fireside/services/frontend",
+    "name": "@fireside/frontend",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/cse312/test-again/fireside/services/frontend",
+    "name": "@fireside/frontend",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/cse312/zaza/fireside/services/frontend",
+    "name": "@fireside/frontend",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/cse312/testing/fireside/services/frontend",
+    "name": "@fireside/frontend",
+    "devScript": "vite",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "react",
+      "vite"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable-panels-v2/test/e2e/app-dir/nx-handling",
+    "name": "@nx-next/source",
+    "devScript": "nx run next-nx-test:dev",
+    "packageManager": "unknown",
+    "workspaces": true,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable-panels-v2/test/e2e/app-dir/self-importing-package-monorepo",
+    "name": "next-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable-panels-v2/test/e2e/next-test/first-time-setup-js",
+    "name": "next-testmode-integration-test-first-time-setup-js",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable-panels-v2/test/e2e/next-test/first-time-setup-ts",
+    "name": "next-testmode-integration-test-first-time-setup-ts",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable-panels-v2/test/integration/react-current-version/app",
+    "name": "app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable-panels-v2/test/integration/styled-jsx-plugin/app",
+    "name": "basic-css",
+    "devScript": "next",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next-image-opt-middleware/bench/vercel/benchmark-app",
+    "name": "stats-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js/bench/vercel/benchmark-app",
+    "name": "stats-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/next.js/test/e2e/app-dir/nx-handling",
+    "name": "@nx-next/source",
+    "devScript": "nx run next-nx-test:dev",
+    "packageManager": "unknown",
+    "workspaces": true,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next.js/test/e2e/app-dir/self-importing-package-monorepo",
+    "name": "next-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/next.js/test/e2e/next-test/first-time-setup-js",
+    "name": "next-testmode-integration-test-first-time-setup-js",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next.js/test/e2e/next-test/first-time-setup-ts",
+    "name": "next-testmode-integration-test-first-time-setup-ts",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next.js/test/integration/react-current-version/app",
+    "name": "app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next.js/test/integration/styled-jsx-plugin/app",
+    "name": "basic-css",
+    "devScript": "next",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/secondary-next.js/test/e2e/app-dir/nx-handling",
+    "name": "@nx-next/source",
+    "devScript": "nx run next-nx-test:dev",
+    "packageManager": "unknown",
+    "workspaces": true,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/secondary-next.js/test/e2e/app-dir/self-importing-package-monorepo",
+    "name": "next-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/secondary-next.js/test/e2e/next-test/first-time-setup-js",
+    "name": "next-testmode-integration-test-first-time-setup-js",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/secondary-next.js/test/e2e/next-test/first-time-setup-ts",
+    "name": "next-testmode-integration-test-first-time-setup-ts",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/secondary-next.js/test/integration/react-current-version/app",
+    "name": "app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/secondary-next.js/test/integration/styled-jsx-plugin/app",
+    "name": "basic-css",
+    "devScript": "next",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-clean/next.js/bench/vercel/benchmark-app",
+    "name": "stats-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/tri-next.js/test/e2e/app-dir/nx-handling",
+    "name": "@nx-next/source",
+    "devScript": "nx run next-nx-test:dev",
+    "packageManager": "unknown",
+    "workspaces": true,
+    "tags": [
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/tri-next.js/test/e2e/app-dir/self-importing-package-monorepo",
+    "name": "next-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/tri-next.js/test/e2e/next-test/first-time-setup-js",
+    "name": "next-testmode-integration-test-first-time-setup-js",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/tri-next.js/test/e2e/next-test/first-time-setup-ts",
+    "name": "next-testmode-integration-test-first-time-setup-ts",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/tri-next.js/test/integration/react-current-version/app",
+    "name": "app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/tri-next.js/test/integration/styled-jsx-plugin/app",
+    "name": "basic-css",
+    "devScript": "next",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bugs/next.js/test/e2e/app-dir/self-importing-package-monorepo",
+    "name": "next-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/bugs/next.js/test/e2e/next-test/first-time-setup-js",
+    "name": "next-testmode-integration-test-first-time-setup-js",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bugs/next.js/test/e2e/next-test/first-time-setup-ts",
+    "name": "next-testmode-integration-test-first-time-setup-ts",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bugs/next.js/test/integration/react-current-version/app",
+    "name": "app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bugs/next.js/test/integration/react-streaming/unsupported-native-module",
+    "name": "unsupported-native-module",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/bugs/next.js/test/integration/styled-jsx-plugin/app",
+    "name": "basic-css",
+    "devScript": "next",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/detachable-panels-v2/turbopack/packages/turbo-tracing-next-plugin/test/with-mongodb-mongoose",
+    "name": "@vercel/turbo-tracing-test-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next-image-opt-middleware/test/e2e/multi-zone/app",
+    "name": "with-zones",
+    "devScript": "node server.js",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next-image-opt-middleware/test/integration/react-18/app",
+    "name": "app",
+    "devScript": "yarn next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next-image-opt-middleware/test/integration/react-streaming/unsupported-native-module",
+    "name": "unsupported-native-module",
+    "devScript": "yarn next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next-image-opt-middleware/test/integration/styled-jsx-plugin/app",
+    "name": "basic-css",
+    "devScript": "next",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js/test/e2e/app-dir/self-importing-package-monorepo",
+    "name": "next-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js/test/e2e/next-test/first-time-setup-ts",
+    "name": "next-testmode-integration-test-first-time-setup-ts",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js/test/e2e/next-test/first-time-setup-js",
+    "name": "next-testmode-integration-test-first-time-setup-js",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js/test/integration/react-current-version/app",
+    "name": "app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js/test/integration/react-streaming/unsupported-native-module",
+    "name": "unsupported-native-module",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js/test/integration/styled-jsx-plugin/app",
+    "name": "basic-css",
+    "devScript": "next",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next.js/turbopack/packages/turbo-tracing-next-plugin/test/with-mongodb-mongoose",
+    "name": "@vercel/turbo-tracing-test-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/secondary-next.js/turbopack/packages/turbo-tracing-next-plugin/test/with-mongodb-mongoose",
+    "name": "@vercel/turbo-tracing-test-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-clean/next.js/test/e2e/multi-zone/app",
+    "name": "with-zones",
+    "devScript": "node server.js",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-clean/next.js/test/integration/react-18/app",
+    "name": "app",
+    "devScript": "yarn next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-clean/next.js/test/integration/react-streaming/unsupported-native-module",
+    "name": "unsupported-native-module",
+    "devScript": "yarn next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next"
+    ]
+  },
+  {
+    "path": "/Users/robby/test-clean/next.js/test/integration/styled-jsx-plugin/app",
+    "name": "basic-css",
+    "devScript": "next",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/tri-next.js/turbopack/packages/turbo-tracing-next-plugin/test/with-mongodb-mongoose",
+    "name": "@vercel/turbo-tracing-test-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/bugs/next.js/turbopack/packages/turbo-tracing-next-plugin/test/with-mongodb-mongoose",
+    "name": "@vercel/turbo-tracing-test-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/next-forks/next.js/turbopack/packages/turbo-tracing-next-plugin/test/with-mongodb-mongoose",
+    "name": "@vercel/turbo-tracing-test-app",
+    "devScript": "next dev",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "next",
+      "react"
+    ]
+  },
+  {
+    "path": "/Users/robby/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/7.7.7_0",
+    "name": "@vue/devtools-chrome-extension",
+    "devScript": "cross-env NODE_ENV=development tsup --watch",
+    "packageManager": "unknown",
+    "workspaces": false,
+    "tags": [
+      "vue"
+    ]
+  },
+  {
+    "path": "/Users/robby/Library/Caches/dev.kiro.desktop.ShipIt/update.CwC0HJ7/Kiro.app/Contents/Resources/app",
+    "name": "Kiro",
+    "devScript": "npm run --workspace=@kiro/sign-in-page dev",
+    "packageManager": "unknown",
+    "workspaces": true,
+    "tags": [
+      "webpack"
+    ]
+  }
+]
