@@ -325,14 +325,26 @@ export const browserController = {
 
     // Workaround for Electron bug #44652: WebContentsView removeChildView doesn't work properly
     // in versions 31.7.4+. The fix involves setting bounds to 0 first, then removing.
+    // mainWindow.getChildWindows()
     browserViews.forEach((view) => {
       try {
         // Force hide by setting bounds to 0x0 first
-        try {
-          view.setVisible(false)
-        } catch {}
-        view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
-      } catch {}
+        console.log('im fucking trying', view)
+
+        view.setBounds({
+          height: 0,
+          width: 0,
+          x: -1,
+          y: -1
+        })
+      } catch (e) {
+        console.log('sheet', e)
+      }
+      //   try {
+      //     view.setVisible(false)
+      //   } catch {}
+      //   view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
+      // } catch {}
     })
 
     // Clear active view reference since we've hidden everything
@@ -345,29 +357,29 @@ export const browserController = {
       throw new Error('noo')
       return { ok: false }
     }
-    const view = browserViews.get(tabId)
-    // console.log('what browser views whats going on', browserViews)
+    // const view = browserViews.get(tabId)
+    // // console.log('what browser views whats going on', browserViews)
 
-    if (!view) {
-      throw new Error('something awful has happened')
-    }
-    // if (view) {
-    //   // Make the view 50% smaller before hiding
-    try {
-      view.setVisible(false)
-    } catch (e) {
-      console.log('sheet', e)
-    }
-    try {
-      view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
-    } catch (e) {
-      console.log('woop noop', e)
-    }
+    // if (!view) {
+    //   throw new Error('something awful has happened')
+    // }
+    // // if (view) {
+    // //   // Make the view 50% smaller before hiding
+    // try {
+    //   view.setVisible(false)
+    // } catch (e) {
+    //   console.log('sheet', e)
+    // }
+    // try {
+    //   view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
+    // } catch (e) {
+    //   console.log('woop noop', e)
+    // }
     // }
 
     console.log('hiding tab')
 
-    // await this.hideAll()
+    await this.hideAll()
 
     // also update bounsd to be super small
     // view.setBounds({ x: 0, y: 0, width: 0, height: 0 })

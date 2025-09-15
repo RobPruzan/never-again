@@ -46,6 +46,7 @@ export function TabBar() {
       //   // idc whatever right way later
       //   predicate: ({ queryKey }) => queryKey[0] === 'devServers' || queryKey[0] === 'projects'
       // })
+      setRoute('webview')
       queryClient.setQueryData(['projects'], (old: any[] = []) => [...(old || []), project])
       queryClient.setQueryData(['devServers'], (old: any[] = []) => [
         ...(old || []),

@@ -265,6 +265,7 @@ app.whenReady().then(async () => {
     portsManager.setMainWindow(mainWindow)
     setInterval(() => {
       console.log('children up', mainWindow?.contentView.children)
+      console.log('vs', mainWindow?.getChildWindows())
     }, 3000)
     registerIpcMain(
       createRouter({
