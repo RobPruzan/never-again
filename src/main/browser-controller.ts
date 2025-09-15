@@ -139,11 +139,10 @@ export const browserController = {
         const devToolsWebContents = view.webContents.devToolsWebContents
         console.log('devtools web contents', devToolsWebContents)
         if (!devToolsWebContents) return
-        devToolsWebContents.executeJavaScript(`
+        devToolsWebContents
+          .executeJavaScript(
+            `
           const div = document.createElement('div');
-          div.innerHTML = 'Hello World';
-          div.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 48px; color: red; font-weight: bold; z-index: 9999; pointer-events: none;';
-          document.body.appendChild(div);
           
           document.body.style.backgroundColor = '#0A0A0A';
           document.documentElement.style.backgroundColor = '#0A0A0A';
@@ -224,7 +223,9 @@ export const browserController = {
           setTimeout(changeBackgroundColors, 100);
           setTimeout(changeBackgroundColors, 500);
           setTimeout(changeBackgroundColors, 1000);
-        `).catch(() => {})
+        `
+          )
+          .catch(() => {})
 
         if (!devToolsWebContents) return
         devToolsWebContents.on('before-input-event', (_e, input) => {

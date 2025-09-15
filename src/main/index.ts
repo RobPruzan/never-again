@@ -256,6 +256,8 @@ app.whenReady().then(async () => {
   if (mainWindow) {
     const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
     terminalManagerV2 = new TerminalManagerV2(handlers)
+    // Ensure terminal events can be sent to the renderer
+    terminalManagerV2.setMainWindow(mainWindow)
     const devRelayService = new DevRelayService()
     bufferService = new ProjectBufferService()
     // terminalManager.setMainWindow(mainWindow)
