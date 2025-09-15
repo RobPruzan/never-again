@@ -1,6 +1,6 @@
 // import { BrowserTab } from './BrowserTab'
 import { HomeIcon, Loader2, Plus } from 'lucide-react'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 // import { useAppContext } from './app-context'
 import { client } from '@renderer/lib/tipc'
 import { Button } from './ui/button'
@@ -27,25 +27,16 @@ interface TabBarProps {
   isHomeActive?: boolean
 }
 
+
 export function TabBar() {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
   const { runningProjects, setCommandPaletteOpen, setRoute, setFocusedProject, route } =
     useAppContext()
-  // console.log('whats this running projects', runningProjects)
   const queryClient = useQueryClient()
 
   const createProjectMutation = useMutation({
     mutationFn: async () => client.createProject(),
     onSuccess: async ({ project, runningProject }) => {
-      // setRoute('webview')
-      // setFocusedProject({
-      //   projectId: runningProject.cwd,
-      //   focusedTerminalId: ''
-      // })
-      // await queryClient.invalidateQueries({
-      //   // idc whatever right way later
-      //   predicate: ({ queryKey }) => queryKey[0] === 'devServers' || queryKey[0] === 'projects'
-      // })
       setRoute('webview')
       queryClient.setQueryData(['projects'], (old: any[] = []) => [...(old || []), project])
       queryClient.setQueryData(['devServers'], (old: any[] = []) => [
@@ -56,6 +47,33 @@ export function TabBar() {
       setFocusedProject({ focusedTerminalId: null!, projectId: runningProject.cwd })
     }
   })
+
+  // Spinner delay logic
+  const [showSpinner, setShowSpinner] = useState(false)
+  const spinnerTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const prevPending = useRef(false)
+  // gpt slop to not show the spinner if it takes <50ms to create project
+  useEffect(() => {
+    if (createProjectMutation.isPending && !prevPending.current) {
+      spinnerTimeout.current = setTimeout(() => {
+        setShowSpinner(true)
+      }, 50)
+    }
+    if (!createProjectMutation.isPending && prevPending.current) {
+      setShowSpinner(false)
+      if (spinnerTimeout.current) {
+        clearTimeout(spinnerTimeout.current)
+        spinnerTimeout.current = null
+      }
+    }
+    prevPending.current = createProjectMutation.isPending
+    return () => {
+      if (spinnerTimeout.current) {
+        clearTimeout(spinnerTimeout.current)
+        spinnerTimeout.current = null
+      }
+    }
+  }, [createProjectMutation.isPending])
 
   return (
     <div
@@ -77,9 +95,6 @@ export function TabBar() {
             onClick={async () => {
               setRoute('home')
               setFocusedProject(null)
-              // no longer needed
-              // // Hide all web content views when clicking Home
-              // await client.hideAll()
             }}
             variant="ghost"
             size="icon"
@@ -105,14 +120,16 @@ export function TabBar() {
       </div>
       <button
         onClick={async () => {
-          createProjectMutation.mutate()
-          // setCommandPaletteOpen(true)
+          const start = performance.now()
+          await createProjectMutation.mutate()
+
+          console.log('end', performance.now() - start, 'ms')
         }}
         className="h-full px-4 hover:bg-[#0F0F0F] text-gray-500 hover:text-gray-300 border-l border-[#1A1A1A] "
         style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
         title="New Tab"
       >
-        {createProjectMutation.isPending ? (
+        {createProjectMutation.isPending && showSpinner ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
           <Plus className="w-4 h-4" />

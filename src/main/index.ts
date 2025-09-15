@@ -277,7 +277,7 @@ app.whenReady().then(async () => {
     if (bufferService.listBuffer().length === 0) {
       console.log('seeding')
 
-      bufferService.seed(1)
+      bufferService.seed(5)
     }
     await bufferService.ensureTemplate()
     await bufferService.ensureBufferStarted()
