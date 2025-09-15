@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { MousePointer2, Bug, Camera, Command, Code2 } from 'lucide-react'
 import { client } from '@renderer/lib/tipc'
-import { useAppContext } from '@renderer/app-context'
+import { useAppContext, useFocusedProject } from '@renderer/app-context'
 // import { useAppContext, useFocusedProject } from './app-context'
 
 interface Tool {

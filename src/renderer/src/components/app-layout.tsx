@@ -24,10 +24,10 @@ export function AppLayout() {
     queryKey: ['devServers'],
     queryFn: () => client.getDevServers()
   })
-  queryClient.prefetchQuery({
-    queryKey: ['projects'],
-    queryFn: () => client.getProjects()
-  })
+  // queryClient.prefetchQuery({
+  //   queryKey: ['projects'],
+  //   queryFn: () => client.getProjects()
+  // })
 
   return (
     <div className="h-screen w-screen bg-[#0A0A0A] overflow-hidden flex">

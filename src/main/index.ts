@@ -30,7 +30,7 @@ export let mainWindow: BrowserWindow | null = null
 export let browserViews: Map<string, WebContentsView> = new Map()
 export const portalViews = new Map<string, WebContentsView>()
 export const activeBrowserViewId: { current: string | null } = { current: null }
-export let terminalManager: TerminalManagerV2
+// export let terminalManager: TerminalManagerV2
 export let terminalManagerV2: TerminalManagerV2
 export let bufferService: ProjectBufferService
 export let portsManager: PortsManager
@@ -258,9 +258,18 @@ app.whenReady().then(async () => {
     terminalManagerV2 = new TerminalManagerV2(handlers)
     const devRelayService = new DevRelayService()
     bufferService = new ProjectBufferService()
-    terminalManager.setMainWindow(mainWindow)
-    terminalManagerV2.setMainWindow(mainWindow)
+    // terminalManager.setMainWindow(mainWindow)
+    // terminalManagerV2.setMainWindow(mainWindow)
     portsManager.setMainWindow(mainWindow)
+    registerIpcMain(
+      createRouter({
+        portsManager,
+        browser: browserController,
+        terminalManager: null!,
+        devRelayService,
+        bufferService
+      })
+    )
     if (bufferService.listBuffer().length === 0) {
       console.log('')
 
@@ -268,16 +277,6 @@ app.whenReady().then(async () => {
     }
     await bufferService.ensureTemplate()
     await bufferService.ensureBufferStarted()
-
-    registerIpcMain(
-      createRouter({
-        portsManager,
-        browser: browserController,
-        terminalManager,
-        devRelayService,
-        bufferService
-      })
-    )
 
     // Development reload server
     if (process.env.NODE_ENV === 'development' || is.dev) {
