@@ -109,7 +109,6 @@ export class ProjectBufferService {
           tabId,
           url
         })
-        await browserController.loadUrl({ tabId, url })
         console.log('loaded and created', browserViews)
 
         metas.push(meta)
@@ -133,7 +132,6 @@ export class ProjectBufferService {
         tabId: meta.dir,
         url: meta.url
       })
-      await browserController.loadUrl({ tabId: meta.dir, url: meta.url })
       this.seed(1)
       return meta
     }
@@ -376,8 +374,9 @@ export class ProjectBufferService {
     console.log('DONE!')
     // okay do we need to create/load tab here?
     // todo: do we need the double i don't think so this is probably not needed
-    browserController.createTab({ tabId: dir, url: `http://localhost:${port}` })
-    browserController.loadUrl({ tabId: dir, url: `http://localhost:${port}` })
+    console.log('THE PORT WE HAVE WHY IS THIS UNDEFINED', chosen)
+
+    browserController.createTab({ tabId: dir, url: `http://localhost:${chosen}` })
 
     return { pid: child.pid ?? null, port: chosen, ms: Date.now() - t0 }
   }
@@ -444,9 +443,10 @@ export class ProjectBufferService {
   }
 
   private async pickPortFromRange(start: number, end: number): Promise<number> {
-    const range = end - start + 1
-    if (range <= 0) return 0
-    const port = Math.floor(Math.random() * range) + start
-    return port
+    const used = await this.listListeningPorts()
+    for (let p = start; p <= end; p++) {
+      if (!used.has(p)) return p
+    }
+    throw new Error('invariant')
   }
 }

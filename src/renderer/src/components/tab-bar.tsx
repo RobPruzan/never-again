@@ -27,7 +27,6 @@ interface TabBarProps {
   isHomeActive?: boolean
 }
 
-
 export function TabBar() {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
   const { runningProjects, setCommandPaletteOpen, setRoute, setFocusedProject, route } =
