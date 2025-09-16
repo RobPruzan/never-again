@@ -37,13 +37,8 @@ const DisplayNoneActivity = ({
 }
 
 export const BrowserV2 = () => {
-  const {
-    commandPaletteOpen,
-    setCommandPaletteOpen,
-    route,
-    tabSwitcherOpen,
-    setTabSwitcherOpen
-  } = useAppContext()
+  const { commandPaletteOpen, setCommandPaletteOpen, route, tabSwitcherOpen, setTabSwitcherOpen } =
+    useAppContext()
   const projects = useProjects().data
   console.log('is tab switcher open', tabSwitcherOpen)
 
@@ -111,7 +106,7 @@ export const BrowserV2 = () => {
 }
 
 const WebContentViewArea = () => {
-  const {  focusedProject, route } = useAppContext()
+  const { focusedProject, route } = useAppContext()
   const runningProjects = useRunningProjects().data
 
   // Only render when there's a focused project - this prevents WebContentView components
@@ -178,11 +173,21 @@ const StartingProject = ({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.06),_transparent_60%)]" />
           </div>
 
+          {/* Layered subtle rotating rainbow glimmer behind the logo */}
+          <div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            aria-hidden
+          >
+            <div className="w-[720px] h-[720px] rounded-full blur-[60px] opacity-10 animate-[spin_120s_linear_infinite] bg-[conic-gradient(from_180deg_at_50%_50%,_#7928CA,_#0070F3,_#00DFD8,_#F5A623,_#FF0080,_#7928CA)]" />
+            <div className="w-[560px] h-[560px] rounded-full blur-3xl opacity-20 animate-[spin_48s_linear_infinite] bg-[conic-gradient(from_0deg_at_50%_50%,_#FF0080,_#7928CA,_#0070F3,_#00DFD8,_#F5A623,_#FF0080)]" />
+            <div className="w-[420px] h-[420px] rounded-full blur-2xl opacity-20 mix-blend-screen animate-[spin_70s_linear_infinite_reverse] bg-[conic-gradient(from_90deg_at_50%_50%,_#00DFD8,_#F5A623,_#FF0080,_#7928CA,_#0070F3,_#00DFD8)]" />
+          </div>
+
           <div className="relative flex flex-col items-center">
             <div className="p-6 rounded-full ring-1 ring-white/10">
               <svg
                 viewBox="0 0 100 87"
-                className="w-24 h-24 text-white/90 drop-shadow-[0_0_24px_rgba(255,255,255,0.08)] animate-pulse"
+                className="w-24 h-24 text-white/90 drop-shadow-[0_0_24px_rgba(255,255,255,0.08)]"
                 aria-label="Vercel"
                 role="img"
               >

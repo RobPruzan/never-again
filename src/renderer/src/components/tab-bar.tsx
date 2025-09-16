@@ -31,6 +31,8 @@ interface TabBarProps {
 export function TabBar() {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
   const runningProjects = useRunningProjects().data
+  console.log('TABS', runningProjects)
+
   const { setCommandPaletteOpen, setRoute, setFocusedProject, route } = useAppContext()
   const queryClient = useQueryClient()
 
@@ -48,7 +50,6 @@ export function TabBar() {
     }
   })
 
-  // Spinner delay logic
   const [showSpinner, setShowSpinner] = useState(false)
   const spinnerTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const prevPending = useRef(false)

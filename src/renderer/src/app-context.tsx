@@ -45,7 +45,7 @@ export const useFocusedProject = () => {
   if (!focusedProject) {
     return null
   }
-  console.log('running projecst query', runningProjectsQuery)
+  console.log('running projecst query', runningProjectsQuery.data)
   console.log('focused project', focusedProject)
 
   const project = runningProjectsQuery.data.find(

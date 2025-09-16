@@ -107,7 +107,7 @@ export class DevRelayService {
     >((res) => {
       const poll = async () => {
         const newPorts = await detectDevServersForDir(projectDir)
-        console.log('new ports found', newPorts)
+        // console.log('new ports found', newPorts)
         if (prev.length === 0 && newPorts.length > 0) {
           res(newPorts[0])
           return

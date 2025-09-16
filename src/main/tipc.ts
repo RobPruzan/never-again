@@ -251,6 +251,8 @@ export const createRouter = ({
     const startRes = await devRelayService.start(input.projectPath, (startingProject) => {
       startingProjects.add(startingProject)
       handlers.onProjectStart.send(startingProject)
+      console.log('setting', startingProject)
+
       startProjectResolve?.(startingProject)
     })
     // i could do a start update? and just do streaming that might be fine... i think
@@ -270,8 +272,31 @@ export const createRouter = ({
         res(project)
       }, input.projectPath)
     })
+    const startedProjectCwd = startRes.project.cwd
+    
 
+
+
+
+
+    // this ensures that the project is discoverable as a started project before we determine if its in listening state
+    // previously we relied on the startProjectIndexing race condition
+    await new Promise<Awaited<ReturnType<typeof detectDevServersForDir>>>((resolve) => {
+      const poll = async () => {
+        const servers = await detectDevServersForDir(homedir())
+        const matchingServer = servers.find(server => server.cwd === startedProjectCwd)
+        
+        if (matchingServer) {
+          resolve(servers)
+          return
+        }
+        
+        setTimeout(poll, 100)
+      }
+      poll()
+    })
     const startingProjectObj = await startingProjectPromise
+    console.log('deleting', startingProjectObj)
     startingProjects.delete(startingProjectObj)
 
     await browser.createTab({
@@ -306,8 +331,17 @@ export const createRouter = ({
       }))
 
     // typescript stinks here
-    const bruh: Array<RunningProject> = startingProjectsArr
-    const runningProjects = bruh.concat(listening)
+    // startingProjects should be a getter not property due to timing issues with stale state
+    const starting: Array<RunningProject> = startingProjectsArr
+    
+    // dedup: if there's a listening project, discard the starting one
+    const filteredStarting = starting.filter(startingProject => 
+      !listening.some(listeningProject => listeningProject.cwd === startingProject.cwd)
+    )
+    
+    const runningProjects = filteredStarting.concat(listening)
+    console.log('returned running projects what do we got', runningProjects)
+
     return runningProjects
     // for now filter unknown but this needs to be much better
   }),

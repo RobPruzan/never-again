@@ -4,9 +4,12 @@ import { client } from '../lib/tipc'
 import { useQuery } from '@tanstack/react-query'
 import { Search, Sparkles } from 'lucide-react'
 import { useAppContext } from '@renderer/app-context'
+import { useRunningProjects } from '@renderer/hooks/use-running-projects'
+import { useProjects } from '@renderer/hooks/use-projects'
 
 export const CommandPalette = () => {
-  const { setCommandPaletteOpen, runningProjects: projects, setFocusedProject } = useAppContext()
+  const { setCommandPaletteOpen, setFocusedProject } = useAppContext()
+  const projects = useRunningProjects().data
   const [input, setInput] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [activeCategory, setActiveCategory] = useState<'all' | 'projects' | 'tools'>('all')
@@ -51,7 +54,8 @@ export const CommandPalette = () => {
   const projectItems: CommandItem[] = useMemo(() => {
     return projects.map((project, index) => {
       const projectName = project.cwd.split('/').pop() || project.cwd
-      const portInfo = project.port ? `localhost:${project.port}` : 'Not running'
+      const portInfo =
+        project.runningKind === 'listening' ? `localhost:${project.port}` : 'Not running'
       const faviconData = faviconQueries[index]?.query.data
       const favicon = faviconData?.found ? faviconData.dataUrl : null
 

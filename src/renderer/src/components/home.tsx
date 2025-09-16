@@ -65,6 +65,8 @@ export const Home = () => {
         tags: [],
         workspaces: false
       }
+      console.log('we got a new project!', project)
+
       // pls clean this up man wtf
       queryClient.setQueryData(
         ['projects'],
