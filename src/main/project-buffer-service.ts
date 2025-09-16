@@ -178,21 +178,48 @@ export class ProjectBufferService {
   }
 
 
-  
 
-  async assign(targetDir?: string, _port?: number): Promise<string | null> {
-    const dest = targetDir ? resolve(targetDir) : join(this.projectsRoot, `proj-${Date.now()}`)
-    const meta = this.shiftIndex()
-    if (meta) {
-      const moved = await this.moveDir(meta.dir, dest)
-      if (moved) return `http://localhost:${meta.port}`
-    }
-    const fallback = await this.createBufferedProject()
-    if (!fallback) return null
-    const moved = await this.moveDir(fallback.dir, dest)
-    if (!moved) return null
-    return `http://localhost:${fallback.port}`
-  }
+
+  /**
+   * 
+   * yeah actually you don't want to move and block on that because you pay the copy cost
+   * 
+   * you could move ahead of time, then you're doing that for every seeded item. It may be fine to make that 
+   * hetergenous
+   * 
+   * the known downside here is that the project is in this weird directory and around a bunch 
+   * of other projects that aren't claimed and the user shouldn't know about
+   * 
+   * i don't think copying async works, that would absolutely break some things
+   * 
+   * so maybe just the option to copy over somewhere? Ehhhhhhhhhhhhhhh
+   * 
+   * maybe a specified dir, plus renaming on the fly? i think renaming is totally fine, hm
+   * 
+   * 
+   * and this isn't even a problem mv is just updating metadata
+   * 
+   * right but you have the issue of moving the project while its up, which is a genuine problem
+   * 
+   * okay maybe heterogenous is fine? like maybe you have realisticly a few items in the buffer, and you have dozens of projects and you don't really care
+   * okay yeah we stick with this unless its a really a problem which i don't suspect it will be
+   * 
+   * 
+   * 
+   */
+  // async assign(targetDir?: string, _port?: number): Promise<string | null> {
+  //   const dest = targetDir ? resolve(targetDir) : join(this.projectsRoot, `proj-${Date.now()}`)
+  //   const meta = this.shiftIndex()
+  //   if (meta) {
+  //     const moved = await this.moveDir(meta.dir, dest)
+  //     if (moved) return `http://localhost:${meta.port}`
+  //   }
+  //   const fallback = await this.createBufferedProject()
+  //   if (!fallback) return null
+  //   const moved = await this.moveDir(fallback.dir, dest)
+  //   if (!moved) return null
+  //   return `http://localhost:${fallback.port}`
+  // }
 
   listBuffer(): BufferedMeta[] {
     return this.readIndex()
