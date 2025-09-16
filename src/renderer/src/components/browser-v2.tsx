@@ -6,7 +6,6 @@ import { WindowPortal } from '@renderer/window-portal'
 // import { useAppContext, useFocusedProject } from './app-context'
 import { CommandPalette } from './command-pallete'
 import { UpdateURLPalette } from './update-url'
-import { ProjectContext } from './project-context'
 // import { TabBar } from './TabBar'
 // import { Home } from '@renderer/home'
 // import { iife } from '@renderer/lib/utils'
@@ -119,46 +118,42 @@ const WebContentViewArea = () => {
   }
 
   return runningProjects.map((runningProject) => (
-    <StartingProject project={runningProject}>
-      {(listenignProject) => (
-        <ProjectContext
-          key={listenignProject.cwd}
-          value={{
-            projectId: listenignProject.cwd,
-            url: `http://localhost:${listenignProject.port}`
-          }}
-        >
-          <div
-            style={{
-              display:
-                listenignProject.cwd !== focusedProject.projectId || route !== 'webview'
-                  ? 'none'
-                  : 'flex'
-            }}
-            className="flex flex-1 overflow-hidden"
-          >
-            <ResizablePanelGroup
-              autoSaveId={`${listenignProject.cwd}-${route}`}
-              storage={localStorage}
-              direction="horizontal"
-            >
-              <ResizablePanel defaultSize={80}>
-                {listenignProject.cwd === focusedProject.projectId && route === 'webview' && (
-                  <WebContentView
-                    url={`http://localhost:${listenignProject.port}`}
-                    id={listenignProject.cwd}
-                  />
-                )}
-              </ResizablePanel>
-              <ResizableHandle className="bg-[#1A1A1A]" withHandle={false} />
-              <ResizablePanel defaultSize={20}>
-                <TerminalSidebar />
-              </ResizablePanel>
-            </ResizablePanelGroup>
-          </div>
-        </ProjectContext>
-      )}
-    </StartingProject>
+    // <StartingProject project={runningProject}>
+    //   {(listenignProject) => (
+    <div
+      style={{
+        display:
+          runningProject.cwd !== focusedProject.projectId || route !== 'webview' ? 'none' : 'flex'
+      }}
+      className="flex flex-1 h-full overflow-hidden"
+    >
+      <ResizablePanelGroup
+        autoSaveId={`${runningProject.cwd}-${route}`}
+        storage={localStorage}
+        direction="horizontal"
+      >
+        <ResizablePanel defaultSize={80}>
+          <StartingProject project={runningProject}>
+            {(listeningProject) =>
+              listeningProject.cwd === focusedProject.projectId &&
+              route === 'webview' && (
+                <WebContentView
+                  url={`http://localhost:${listeningProject.port}`}
+                  id={listeningProject.cwd}
+                />
+              )
+            }
+          </StartingProject>
+        </ResizablePanel>
+
+        <ResizableHandle className="bg-[#1A1A1A]" withHandle={false} />
+        <ResizablePanel defaultSize={20}>
+          <TerminalSidebar />
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
+    // )}
+    // </StartingProject>
   ))
 }
 
@@ -175,15 +170,21 @@ const StartingProject = ({
     }
     case 'starting': {
       return (
-        <div className="flex-1 flex items-center justify-center bg-[#0A0A0A] text-white">
-          <div className="text-center space-y-4">
-            <div className="relative">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-600 border-t-blue-500 mx-auto"></div>
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-xl font-semibold">Starting Project</h3>
-              <p className="text-gray-400">Initializing {project.kind} dev server...</p>
-              <p className="text-sm text-gray-500">{project.cwd}</p>
+        <div className="relative flex-1 h-full w-full flex items-center justify-center bg-[#0A0A0A] text-white overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none" aria-hidden>
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.06),_transparent_60%)]" />
+          </div>
+
+          <div className="relative flex flex-col items-center">
+            <div className="p-6 rounded-full ring-1 ring-white/10">
+              <svg
+                viewBox="0 0 100 87"
+                className="w-24 h-24 text-white/90 drop-shadow-[0_0_24px_rgba(255,255,255,0.08)] animate-pulse"
+                aria-label="Vercel"
+                role="img"
+              >
+                <polygon points="50,0 100,86.6 0,86.6" fill="currentColor" />
+              </svg>
             </div>
           </div>
         </div>

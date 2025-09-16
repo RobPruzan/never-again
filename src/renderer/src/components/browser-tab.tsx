@@ -56,7 +56,7 @@ export function BrowserTab({ projectId }: { projectId: string }) {
     >
       <div className="flex-1 truncate text-sm font-normal">{project.cwd.split('/').pop()}</div>
 
-{/* {project.} */}
+      {/* {project.} */}
       <button
         onClick={async (e) => {
           e.stopPropagation()

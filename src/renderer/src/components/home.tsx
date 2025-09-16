@@ -21,7 +21,7 @@ type Workspace = {
 }
 
 export const Home = () => {
-  const { setRoute, projects, runningProjects, setFocusedProject } = useAppContext()
+  const { setRoute, projects, runningProjects, setFocusedProject, setProjects } = useAppContext()
   console.log('running projects', runningProjects)
 
   const queryClient = useQueryClient()
@@ -54,7 +54,25 @@ export const Home = () => {
 
   useEffect(() => {
     const unsub = handlers.onProjectStart.listen((project) => {
+      const thisIsAwfulFixMe: Project = {
+        devScript: 'idc',
+        name: project.cwd,
+        packageManager: 'pnpm',
+        path: project.cwd,
+        tags: [],
+        workspaces: false
+      }
+      // pls clean this up man wtf
+      queryClient.setQueryData(
+        ['projects'],
+        (prev: Project[]) => [...prev, thisIsAwfulFixMe] satisfies Array<Project>
+      )
+      setProjects((prev) => [...prev, thisIsAwfulFixMe])
       queryClient.setQueryData(['devServers'], (data: Array<RunningProject> | undefined) => {
+        // todo: i don't think i know how handlers works, there are multiple subscribers and this plagued terminal too
+        if (data?.some((p) => p.cwd === project.cwd)) {
+          return data
+        }
         if (!data) {
           return [project]
         }
