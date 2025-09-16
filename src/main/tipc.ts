@@ -194,6 +194,18 @@ export const createRouter = ({
         !buffer.some((b) => b.dir === server.cwd)
     ) // for now filter unknown but this needs to be much better
   }),
+  reIndexProjects: t.procedure.action(async () => {
+    console.log('reindexing...')
+
+    const projects = await new Promise<Array<Project>>((res) => {
+      startProjectIndexing((projects) => {
+        res(projects)
+      })
+    })
+    console.log('found ', projects.length, 'projects')
+
+    return projects
+  }),
   getProjects: t.procedure.action(async () => {
     const path = join(process.cwd(), 'projects.json')
 

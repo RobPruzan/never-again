@@ -154,7 +154,14 @@ export class ProjectBufferService {
   async createMiss(
     targetDir?: string,
     port?: number
-  ): Promise<{ url: string; copyMs: number; startMs: number; dir: string; port: number } | null> {
+  ): Promise<{
+    url: string
+    copyMs: number
+    startMs: number
+    dir: string
+    port: number
+    pid: number
+  } | null> {
     const dest = targetDir ? resolve(targetDir) : join(this.projectsRoot, `proj-${Date.now()}`) // thats concerning
     const copy = await this.cpCOW(this.templateRoot, dest)
     if (!copy.ok) return null
@@ -165,9 +172,13 @@ export class ProjectBufferService {
       copyMs: copy.ms,
       startMs: started.ms,
       dir: dest,
-      port: started.port
+      port: started.port,
+      pid: started.pid! // whatever fix later izza fine
     }
   }
+
+
+  
 
   async assign(targetDir?: string, _port?: number): Promise<string | null> {
     const dest = targetDir ? resolve(targetDir) : join(this.projectsRoot, `proj-${Date.now()}`)

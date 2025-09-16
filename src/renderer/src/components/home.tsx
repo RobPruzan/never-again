@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from 'react'
 // import { useAppContext } from './components/app-context'
 // import { ProjectItem } from './project-item'
 // import { client } from './lib/tipc'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Project, RunningProject } from '@shared/types'
 import { useAppContext } from '@renderer/app-context'
 import { ProjectItem } from '@renderer/project-item'
 import { client } from '@renderer/lib/tipc'
+import { Loader2 } from 'lucide-react'
 
 type ProjectWithSize = Project & {
   sizeInBytes: number
@@ -22,6 +23,16 @@ type Workspace = {
 export const Home = () => {
   const { projects, runningProjects } = useAppContext()
   console.log('running projects', runningProjects)
+
+  const queryClient = useQueryClient()
+  const reindexProjectsMutation = useMutation({
+    mutationFn: () => client.reIndexProjects(),
+    onSuccess: (projects) => {
+      queryClient.setQueryData(['projects'], () => {
+        return projects
+      })
+    }
+  })
 
   const [searchQuery, setSearchQuery] = useState('')
   const [currentWorkspace, setCurrentWorkspace] = useState('all')
@@ -137,6 +148,41 @@ export const Home = () => {
             )
           })}
         </div>
+        <button
+          className={`flex items-center gap-1 px-2 py-1 rounded text-xs cursor-pointer whitespace-nowrap transition-all h-6 border border-[#222] ${
+            reindexProjectsMutation.isPending
+              ? 'bg-[#181818] text-[#888] cursor-wait'
+              : 'bg-transparent text-[#666] hover:bg-[#0f0f0f] hover:text-[#888]'
+          }`}
+          onClick={() => {
+            if (reindexProjectsMutation.isPending) return
+            reindexProjectsMutation.mutate()
+          }}
+          disabled={reindexProjectsMutation.isPending}
+          title="Reindex Projects"
+          style={{ minWidth: 32 }}
+        >
+          {reindexProjectsMutation.isPending ? (
+            <Loader2 className="animate-spin" size={16} strokeWidth={2} />
+          ) : (
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 12a9 9 0 1 1 9 9" />
+              <polyline points="3 16 3 12 7 12" />
+            </svg>
+          )}
+          <span className="hidden sm:inline">
+            {reindexProjectsMutation.isPending ? 'Reindexing...' : 'Reindex'}
+          </span>
+        </button>
       </div>
 
       {/* Main content */}
