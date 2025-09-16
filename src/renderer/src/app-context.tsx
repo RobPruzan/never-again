@@ -1,6 +1,9 @@
 import { Project, RunningProject } from '@shared/types'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { Terminal } from '@xterm/xterm'
 import { createContext, Dispatch, SetStateAction, useContext } from 'react'
+import { client } from './lib/tipc'
+import { useRunningProjects } from './hooks/use-running-projects'
 
 type ProjectID = string
 // export type RunningProject = {
@@ -22,9 +25,6 @@ export const AppContext = createContext<{
   route: 'home' | 'webview'
   setRoute: Dispatch<SetStateAction<'home' | 'webview'>>
   // todo: remove project state derive directly from react query
-  runningProjects: Array<RunningProject>
-  projects: Array<Project>
-  setProjects: Dispatch<SetStateAction<Project[]>>
   focusedProject: FocusedProject | null
   setFocusedProject: Dispatch<SetStateAction<FocusedProject | null>>
   terminals: Array<TerminalInstance>
@@ -40,13 +40,19 @@ export const AppContext = createContext<{
 export const useAppContext = () => useContext(AppContext)
 
 export const useFocusedProject = () => {
-  const { focusedProject, runningProjects } = useAppContext()
+  const { focusedProject } = useAppContext()
+  const runningProjectsQuery = useRunningProjects()
   if (!focusedProject) {
     return null
   }
-  const project = runningProjects.find((project) => project.cwd === focusedProject?.projectId)
+  console.log('running projecst query', runningProjectsQuery)
+  console.log('focused project', focusedProject)
+
+  const project = runningProjectsQuery.data.find(
+    (project) => project.cwd === focusedProject?.projectId
+  )
   if (!project) {
-    throw new Error("invariant tried to focus a non existent project")
+    throw new Error('invariant tried to focus a non existent project')
   }
 
   return { ...project, focusedTerminalId: focusedProject?.focusedTerminalId }

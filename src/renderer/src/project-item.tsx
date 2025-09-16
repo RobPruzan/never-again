@@ -14,7 +14,6 @@ export const ProjectItem = ({ project }: { project: Project }) => {
     staleTime: 60_000,
     gcTime: 5 * 60_000
   })
-  const { setFocusedProject, setProjects } = useAppContext()
   const queryClient = useQueryClient()
   const favicon = faviconResult && faviconResult.found ? faviconResult.dataUrl : null
   const { data: workspacesData } = useQuery({
@@ -83,7 +82,6 @@ export const ProjectItem = ({ project }: { project: Project }) => {
       //   projectId: project.path,
       //   focusedTerminalId: runningProject.port.toString()
       // })
-
       // queryClient.setQueryData(['projects'], (prev: Project[]) => [...prev, project])
       // queryClient.setQueryData(['devServers'], (prev: RunningProject[]) => [
       //   ...prev,
@@ -92,6 +90,7 @@ export const ProjectItem = ({ project }: { project: Project }) => {
     }
   })
 
+  const { setFocusedProject, setRoute } = useAppContext()
   return (
     <div
       key={project.path}
@@ -102,6 +101,15 @@ export const ProjectItem = ({ project }: { project: Project }) => {
       <div className="w-full h-[200px] relative bg-[#0B0B0B] overflow-hidden block group/content">
         <button
           onClick={() => {
+            if (
+              (queryClient.getQueryData(['devServers']) as Array<RunningProject> | undefined)?.some(
+                (p) => p.cwd === project.path
+              )
+            ) {
+              setRoute('webview')
+              setFocusedProject({ focusedTerminalId: null!, projectId: project.path })
+              return
+            }
             startDevServerMutation.mutate({ projectPath: project.path })
           }}
           className="absolute top-3 right-3 z-20 opacity-0 group-hover/content:opacity-100 transition-all duration-200 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg transform scale-90 group-hover/content:scale-100 hover:bg-white hover:scale-105 active:scale-95"

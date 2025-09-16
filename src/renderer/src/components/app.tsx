@@ -10,6 +10,8 @@ import { Project, RunningProject } from '@shared/types'
 import { client, handlers, v2Client } from '@renderer/lib/tipc'
 import { TerminalInstance, FocusedProject, AppContext } from '@renderer/app-context'
 import { AppLayout } from './app-layout'
+import { useRunningProjects } from '@renderer/hooks/use-running-projects'
+import { useProjects } from '@renderer/hooks/use-projects'
 
 export default function App() {
   const client = new QueryClient()
@@ -36,15 +38,8 @@ const AppLoader = () => {
   //   queryFn: () => client.getPorts()
   // })
 
-  const projectsQuery = useSuspenseQuery({
-    queryKey: ['projects'],
-    queryFn: () => client.getProjects()
-  })
-
-  const devServersQuery = useSuspenseQuery({
-    queryKey: ['devServers'],
-    queryFn: () => client.getDevServers()
-  })
+  const projectsQuery = useProjects()
+  const devServersQuery = useRunningProjects()
 
   // Query existing v2 terminal sessions
   const terminalsQuery = useSuspenseQuery({
@@ -106,10 +101,7 @@ const AppLoader = () => {
         value={{
           route,
           setRoute,
-          projects,
-          setProjects,
           setFocusedProject,
-          runningProjects: [],
           terminals,
           focusedProject,
           setTerminals,
@@ -216,10 +208,7 @@ const AppLoader = () => {
       value={{
         route,
         setRoute,
-        projects,
-        setProjects,
         setFocusedProject,
-        runningProjects: devServersQuery.data,
         terminals, // should sync terminal state from server to restore
         focusedProject,
         setTerminals,
@@ -235,5 +224,3 @@ const AppLoader = () => {
     </AppContext.Provider>
   )
 }
-
-const NoProjectsScreen = () => {}

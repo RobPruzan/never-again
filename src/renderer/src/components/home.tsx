@@ -8,6 +8,8 @@ import { useAppContext } from '@renderer/app-context'
 import { ProjectItem } from '@renderer/project-item'
 import { client, handlers } from '@renderer/lib/tipc'
 import { Loader2, Plus } from 'lucide-react'
+import { useProjects } from '@renderer/hooks/use-projects'
+import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 
 type ProjectWithSize = Project & {
   sizeInBytes: number
@@ -21,8 +23,9 @@ type Workspace = {
 }
 
 export const Home = () => {
-  const { setRoute, projects, runningProjects, setFocusedProject, setProjects } = useAppContext()
-  console.log('running projects', runningProjects)
+  const projects = useProjects().data
+  const runningProjects = useRunningProjects().data
+  const { setRoute, setFocusedProject } = useAppContext()
 
   const queryClient = useQueryClient()
   const reindexProjectsMutation = useMutation({
@@ -67,7 +70,6 @@ export const Home = () => {
         ['projects'],
         (prev: Project[]) => [...prev, thisIsAwfulFixMe] satisfies Array<Project>
       )
-      setProjects((prev) => [...prev, thisIsAwfulFixMe])
       queryClient.setQueryData(['devServers'], (data: Array<RunningProject> | undefined) => {
         // todo: i don't think i know how handlers works, there are multiple subscribers and this plagued terminal too
         if (data?.some((p) => p.cwd === project.cwd)) {

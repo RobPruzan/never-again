@@ -17,6 +17,8 @@ import { Home } from './home'
 import { TabSwitcher } from './tab-switcher'
 import { iife } from '@renderer/lib/utils'
 import { ListneingProject, RunningProject } from '@shared/types'
+import { useProjects } from '@renderer/hooks/use-projects'
+import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 
 const DisplayNoneActivity = ({
   children,
@@ -38,11 +40,11 @@ export const BrowserV2 = () => {
   const {
     commandPaletteOpen,
     setCommandPaletteOpen,
-    runningProjects: projects,
     route,
     tabSwitcherOpen,
     setTabSwitcherOpen
   } = useAppContext()
+  const projects = useProjects().data
   console.log('is tab switcher open', tabSwitcherOpen)
 
   const focusedProject = useFocusedProject()
@@ -109,7 +111,8 @@ export const BrowserV2 = () => {
 }
 
 const WebContentViewArea = () => {
-  const { runningProjects, focusedProject, route } = useAppContext()
+  const {  focusedProject, route } = useAppContext()
+  const runningProjects = useRunningProjects().data
 
   // Only render when there's a focused project - this prevents WebContentView components
   // from mounting when focusedProject is null (which happens when Home is clicked)
@@ -128,8 +131,8 @@ const WebContentViewArea = () => {
       className="flex flex-1 h-full overflow-hidden"
     >
       <ResizablePanelGroup
-        autoSaveId={`${runningProject.cwd}-${route}`}
-        storage={localStorage}
+        // autoSaveId={`${runningProject.cwd}-${route}`}
+        // storage={localStorage}
         direction="horizontal"
       >
         <ResizablePanel defaultSize={80}>

@@ -17,9 +17,11 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { Terminalv2 } from './terminal-v2'
 import { TerminalInstance, useAppContext, useFocusedProject } from '@renderer/app-context'
 import { useBrowserState } from './use-browser-state'
+import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 
 export function TerminalSidebar() {
-  const { runningProjects, terminals, setTerminals, setFocusedProject } = useAppContext()
+  const runningProjects = useRunningProjects().data
+  const { terminals, setTerminals, setFocusedProject } = useAppContext()
   const focusedProject = useFocusedProject()
 
   // there's some desync here possible, the actual fix is in the actual browser tba logic

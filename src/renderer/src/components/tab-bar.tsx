@@ -8,6 +8,7 @@ import { cn } from '@renderer/lib/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAppContext } from '@renderer/app-context'
 import { BrowserTab } from './browser-tab'
+import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 
 interface Tab {
   id: string
@@ -29,8 +30,8 @@ interface TabBarProps {
 
 export function TabBar() {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
-  const { runningProjects, setCommandPaletteOpen, setRoute, setFocusedProject, route } =
-    useAppContext()
+  const runningProjects = useRunningProjects().data
+  const { setCommandPaletteOpen, setRoute, setFocusedProject, route } = useAppContext()
   const queryClient = useQueryClient()
 
   const createProjectMutation = useMutation({

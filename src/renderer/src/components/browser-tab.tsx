@@ -3,6 +3,7 @@ import { startTransition } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { client } from '@renderer/lib/tipc'
 import { useAppContext, useFocusedProject } from '@renderer/app-context'
+import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 
 interface BrowserTabProps {
   id: string
@@ -14,7 +15,8 @@ interface BrowserTabProps {
 }
 
 export function BrowserTab({ projectId }: { projectId: string }) {
-  const { runningProjects, setFocusedProject, setRoute, route } = useAppContext()
+  const { setFocusedProject, setRoute, route } = useAppContext()
+  const runningProjects = useRunningProjects().data
   const focusedProject = useFocusedProject()
   const isActive = projectId === focusedProject?.cwd && route === 'webview'
 
