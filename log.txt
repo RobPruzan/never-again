@@ -81684,3 +81684,1009 @@
     "kind": "unknown"
   }
 ]
+[
+  {
+    "port": 3000,
+    "pid": 82663,
+    "cwd": "/Users/robby/vercel-interview",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3001,
+    "pid": 83345,
+    "cwd": "/Users/robby/im-so-stupid/react-scan-demo",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3002,
+    "pid": 84103,
+    "cwd": "/Users/robby/panel-resize",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 5173,
+    "pid": 81963,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 82094,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 82148,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 82099,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 82155,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 82162,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 9999,
+    "pid": 81970,
+    "cwd": "/Users/robby/ide",
+    "command": "Electron",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]
+[
+  {
+    "port": 3000,
+    "pid": 82663,
+    "cwd": "/Users/robby/vercel-interview",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3001,
+    "pid": 83345,
+    "cwd": "/Users/robby/im-so-stupid/react-scan-demo",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3002,
+    "pid": 84103,
+    "cwd": "/Users/robby/panel-resize",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 5173,
+    "pid": 81963,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 82094,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 82148,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 82099,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 82155,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 82162,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 9999,
+    "pid": 81970,
+    "cwd": "/Users/robby/ide",
+    "command": "Electron",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]
+[
+  {
+    "port": 3000,
+    "pid": 82663,
+    "cwd": "/Users/robby/vercel-interview",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3001,
+    "pid": 83345,
+    "cwd": "/Users/robby/im-so-stupid/react-scan-demo",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3002,
+    "pid": 84103,
+    "cwd": "/Users/robby/panel-resize",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 5173,
+    "pid": 81963,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 82094,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 82148,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 82099,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 82155,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 82162,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 9999,
+    "pid": 81970,
+    "cwd": "/Users/robby/ide",
+    "command": "Electron",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]
+[
+  {
+    "port": 3000,
+    "pid": 82663,
+    "cwd": "/Users/robby/vercel-interview",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3001,
+    "pid": 83345,
+    "cwd": "/Users/robby/im-so-stupid/react-scan-demo",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3002,
+    "pid": 84103,
+    "cwd": "/Users/robby/panel-resize",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 5173,
+    "pid": 81963,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 82094,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 82148,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 82099,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 82155,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 82162,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 9999,
+    "pid": 81970,
+    "cwd": "/Users/robby/ide",
+    "command": "Electron",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]
+[
+  {
+    "port": 3000,
+    "pid": 82663,
+    "cwd": "/Users/robby/vercel-interview",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3001,
+    "pid": 83345,
+    "cwd": "/Users/robby/im-so-stupid/react-scan-demo",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3002,
+    "pid": 84103,
+    "cwd": "/Users/robby/panel-resize",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 5173,
+    "pid": 81963,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 82094,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 82148,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 82099,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 82155,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 82162,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 9999,
+    "pid": 81970,
+    "cwd": "/Users/robby/ide",
+    "command": "Electron",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]
+[
+  {
+    "port": 3000,
+    "pid": 82663,
+    "cwd": "/Users/robby/vercel-interview",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3001,
+    "pid": 83345,
+    "cwd": "/Users/robby/im-so-stupid/react-scan-demo",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3002,
+    "pid": 84103,
+    "cwd": "/Users/robby/panel-resize",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 5173,
+    "pid": 81963,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 82094,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 82148,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 82099,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 82155,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 82162,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 9999,
+    "pid": 81970,
+    "cwd": "/Users/robby/ide",
+    "command": "Electron",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]
+[
+  {
+    "port": 3000,
+    "pid": 82663,
+    "cwd": "/Users/robby/vercel-interview",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3001,
+    "pid": 83345,
+    "cwd": "/Users/robby/im-so-stupid/react-scan-demo",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 3002,
+    "pid": 84103,
+    "cwd": "/Users/robby/panel-resize",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 5173,
+    "pid": 81963,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 82094,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 82148,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 82099,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 82155,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 82162,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 9999,
+    "pid": 81970,
+    "cwd": "/Users/robby/ide",
+    "command": "Electron",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]
+[
+  {
+    "port": 5173,
+    "pid": 92493,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 92632,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 92693,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 92651,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 92678,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 92635,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]
+[
+  {
+    "port": 5173,
+    "pid": 92493,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 92632,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 92693,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 92651,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 92678,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 92635,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 9999,
+    "pid": 92500,
+    "cwd": "/Users/robby/ide",
+    "command": "Electron",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]
+[
+  {
+    "port": 5173,
+    "pid": 92493,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 92632,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 92693,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 92651,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 92678,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 92635,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 9999,
+    "pid": 92500,
+    "cwd": "/Users/robby/ide",
+    "command": "Electron",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]
+[
+  {
+    "port": 3000,
+    "pid": 93427,
+    "cwd": "/Users/robby/vercel-interview",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 5173,
+    "pid": 92493,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 92632,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 92693,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 92651,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 92678,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 92635,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 9999,
+    "pid": 92500,
+    "cwd": "/Users/robby/ide",
+    "command": "Electron",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]
+[
+  {
+    "port": 3000,
+    "pid": 93427,
+    "cwd": "/Users/robby/vercel-interview",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 5173,
+    "pid": 92493,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 92632,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 92693,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 92651,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 92678,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 92635,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 9999,
+    "pid": 92500,
+    "cwd": "/Users/robby/ide",
+    "command": "Electron",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]
+[
+  {
+    "port": 3000,
+    "pid": 93427,
+    "cwd": "/Users/robby/vercel-interview",
+    "command": "node",
+    "kind": "next"
+  },
+  {
+    "port": 5173,
+    "pid": 92493,
+    "cwd": "/Users/robby/ide",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5175,
+    "pid": 92632,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/witty-duck-920",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5176,
+    "pid": 92693,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-frog-160",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5177,
+    "pid": 92651,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/jolly-duck-661",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5178,
+    "pid": 92678,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/gentle-duck-973",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 5179,
+    "pid": 92635,
+    "cwd": "/Users/robby/.zenbu-buffer/project-buffer/zesty-kitten-774",
+    "command": "node",
+    "kind": "unknown"
+  },
+  {
+    "port": 9999,
+    "pid": 92500,
+    "cwd": "/Users/robby/ide",
+    "command": "Electron",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 772,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "com.docker.backend",
+    "kind": "unknown"
+  },
+  {
+    "port": 49153,
+    "pid": 852,
+    "cwd": "/Users/robby/Library/Containers/com.docker.docker/Data",
+    "command": "vpnkit-bridge",
+    "kind": "unknown"
+  }
+]

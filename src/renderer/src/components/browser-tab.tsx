@@ -20,7 +20,7 @@ export function BrowserTab({ projectId }: { projectId: string }) {
 
   const project = runningProjects.find((p) => p.cwd === projectId)
   const killProjectMutation = useMutation({
-    mutationFn: async (opts: { port: number }) => {
+    mutationFn: async (opts: { pid: number }) => {
       await client.killProject(opts)
     },
     // onSuccess: async () => {
@@ -56,6 +56,7 @@ export function BrowserTab({ projectId }: { projectId: string }) {
     >
       <div className="flex-1 truncate text-sm font-normal">{project.cwd.split('/').pop()}</div>
 
+{/* {project.} */}
       <button
         onClick={async (e) => {
           e.stopPropagation()
@@ -64,8 +65,9 @@ export function BrowserTab({ projectId }: { projectId: string }) {
           //   return old.filter((p: any) => p.cwd !== project.cwd)
           // })
 
+          // really we just need the pid, what am i doing
           killProjectMutation.mutate({
-            port: project.port
+            pid: project.pid
           })
         }}
         className={`hover:bg-[#2A2A2A] p-1 text-gray-500 hover:text-gray-300 transition-all rounded ${

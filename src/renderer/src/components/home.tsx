@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Project, RunningProject } from '@shared/types'
 import { useAppContext } from '@renderer/app-context'
 import { ProjectItem } from '@renderer/project-item'
-import { client } from '@renderer/lib/tipc'
+import { client, handlers } from '@renderer/lib/tipc'
 import { Loader2, Plus } from 'lucide-react'
 
 type ProjectWithSize = Project & {
@@ -21,7 +21,7 @@ type Workspace = {
 }
 
 export const Home = () => {
-  const { projects, runningProjects } = useAppContext()
+  const { setRoute, projects, runningProjects, setFocusedProject } = useAppContext()
   console.log('running projects', runningProjects)
 
   const queryClient = useQueryClient()
@@ -51,6 +51,26 @@ export const Home = () => {
     queryFn: () => client.getWorkspaces(),
     staleTime: 0
   })
+
+  useEffect(() => {
+    const unsub = handlers.onProjectStart.listen((project) => {
+      queryClient.setQueryData(['devServers'], (data: Array<RunningProject> | undefined) => {
+        if (!data) {
+          return [project]
+        }
+        return [...data, project]
+      })
+
+      setRoute('webview')
+      setFocusedProject({
+        focusedTerminalId: null!,
+        projectId: project.cwd
+      })
+    })
+    return () => {
+      unsub()
+    }
+  }, [])
 
   const assignments = workspacesData?.assignments ?? {}
   const customWorkspaces = workspacesData?.workspaces ?? []

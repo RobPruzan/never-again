@@ -20,7 +20,7 @@ import { createRouter } from './tipc'
 import { browserController, layoutAllBrowserViews } from './browser-controller'
 import { RendererHandlers } from './renderer-handlers'
 import * as net from 'net'
-import { Project } from '../shared/types'
+import { Project, StartingProject } from '../shared/types'
 // import { detectDevServersForDir } from './dev-server-detector'
 import { homedir } from 'os'
 import { DevRelayService } from './dev-relay-service'
@@ -33,6 +33,7 @@ export const activeBrowserViewId: { current: string | null } = { current: null }
 // export let terminalManager: TerminalManagerV2
 export let terminalManagerV2: TerminalManagerV2
 export let bufferService: ProjectBufferService
+export const startingProjects = new Set<StartingProject>()
 // export let portsManager: PortsManager
 
 export const startProjectIndexing = (
@@ -269,6 +270,7 @@ app.whenReady().then(async () => {
         browser: browserController,
         terminalManager: null!,
         devRelayService,
+        handlers,
         bufferService
       })
     )

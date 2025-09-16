@@ -1,4 +1,4 @@
-import { Project } from '../shared/types'
+import { Project, StartingProject } from '../shared/types'
 
 export type RendererHandlers = {
   terminalData: (payload: { id: string; data: string }) => void
@@ -16,4 +16,5 @@ export type RendererHandlers = {
   changeURL: () => void
   projectsFound: (payload: { projects: Project[] }) => void
   tabSwitcher: () => void
+  onProjectStart: (project: StartingProject) => void
 }

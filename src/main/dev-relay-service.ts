@@ -4,6 +4,7 @@ import { createServer, Socket, connect } from 'node:net'
 import { unlinkSync, existsSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { detectDevServersForDir } from './dev-server-detector'
+import { StartingProject } from '../shared/types'
 
 /**
  * thsi is also an awful name!
@@ -14,7 +15,7 @@ export class DevRelayService {
     { server: ReturnType<typeof createServer>; proc: ChildProcess; sock }
   >()
 
-  async start(projectDir: string) {
+  async start(projectDir: string, onProjectStart?: (project: StartingProject) => void) {
     const cwd = resolve(projectDir)
     const sock = join(cwd, '.devrelay.sock')
     try {
@@ -83,6 +84,12 @@ export class DevRelayService {
     proc.on('exit', () => cleanup())
 
     server.listen(sock)
+    onProjectStart?.({
+      kind: 'unknown',
+      cwd,
+      pid: typeof proc.pid === 'number' ? proc.pid : 0,
+      runningKind: 'starting'
+    })
     this.servers.set(cwd, { server, proc, sock })
     try {
       writeFileSync(

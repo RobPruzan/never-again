@@ -1,4 +1,4 @@
-import { useState, unstable_Activity as Activity, Suspense, Children, cloneElement } from 'react'
+import { useState, Suspense, Children, cloneElement } from 'react'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './ui/resizable'
 import { WebContentView } from './web-content-view'
 // import { TerminalSidebar } from './TerminalSidebar'
@@ -17,6 +17,7 @@ import { TabBar } from './tab-bar'
 import { Home } from './home'
 import { TabSwitcher } from './tab-switcher'
 import { iife } from '@renderer/lib/utils'
+import { ListneingProject, RunningProject } from '@shared/types'
 
 const DisplayNoneActivity = ({
   children,
@@ -117,36 +118,80 @@ const WebContentViewArea = () => {
     return null
   }
 
-  return runningProjects.map((project) => (
-    <ProjectContext
-      key={project.cwd}
-      value={{
-        projectId: project.cwd,
-        url: `http://localhost:${project.port}`
-      }}
-    >
-      <div
-        style={{
-          display: project.cwd !== focusedProject.projectId || route !== 'webview' ? 'none' : 'flex'
-        }}
-        className="flex flex-1 overflow-hidden"
-      >
-        <ResizablePanelGroup
-          autoSaveId={`${project.cwd}-${route}`}
-          storage={localStorage}
-          direction="horizontal"
+  return runningProjects.map((runningProject) => (
+    <StartingProject project={runningProject}>
+      {(listenignProject) => (
+        <ProjectContext
+          key={listenignProject.cwd}
+          value={{
+            projectId: listenignProject.cwd,
+            url: `http://localhost:${listenignProject.port}`
+          }}
         >
-          <ResizablePanel defaultSize={80}>
-            {project.cwd === focusedProject.projectId && route === 'webview' && (
-              <WebContentView url={`http://localhost:${project.port}`} id={project.cwd} />
-            )}
-          </ResizablePanel>
-          <ResizableHandle className="bg-[#1A1A1A]" withHandle={false} />
-          <ResizablePanel defaultSize={20}>
-            <TerminalSidebar />
-          </ResizablePanel>
-        </ResizablePanelGroup>
-      </div>
-    </ProjectContext>
+          <div
+            style={{
+              display:
+                listenignProject.cwd !== focusedProject.projectId || route !== 'webview'
+                  ? 'none'
+                  : 'flex'
+            }}
+            className="flex flex-1 overflow-hidden"
+          >
+            <ResizablePanelGroup
+              autoSaveId={`${listenignProject.cwd}-${route}`}
+              storage={localStorage}
+              direction="horizontal"
+            >
+              <ResizablePanel defaultSize={80}>
+                {listenignProject.cwd === focusedProject.projectId && route === 'webview' && (
+                  <WebContentView
+                    url={`http://localhost:${listenignProject.port}`}
+                    id={listenignProject.cwd}
+                  />
+                )}
+              </ResizablePanel>
+              <ResizableHandle className="bg-[#1A1A1A]" withHandle={false} />
+              <ResizablePanel defaultSize={20}>
+                <TerminalSidebar />
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </div>
+        </ProjectContext>
+      )}
+    </StartingProject>
   ))
+}
+
+const StartingProject = ({
+  project,
+  children
+}: {
+  project: RunningProject
+  children: (listeningProject: ListneingProject) => React.ReactNode
+}) => {
+  switch (project.runningKind) {
+    case 'listening': {
+      return children(project)
+    }
+    case 'starting': {
+      return (
+        <div className="flex-1 flex items-center justify-center bg-[#0A0A0A] text-white">
+          <div className="text-center space-y-4">
+            <div className="relative">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-600 border-t-blue-500 mx-auto"></div>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-semibold">Starting Project</h3>
+              <p className="text-gray-400">Initializing {project.kind} dev server...</p>
+              <p className="text-sm text-gray-500">{project.cwd}</p>
+            </div>
+          </div>
+        </div>
+      )
+    }
+  }
+
+  // return (
+
+  // )
 }

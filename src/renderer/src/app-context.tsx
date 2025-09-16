@@ -45,6 +45,9 @@ export const useFocusedProject = () => {
     return null
   }
   const project = runningProjects.find((project) => project.cwd === focusedProject?.projectId)
+  if (!project) {
+    throw new Error("invariant tried to focus a non existent project")
+  }
 
   return { ...project, focusedTerminalId: focusedProject?.focusedTerminalId }
 }

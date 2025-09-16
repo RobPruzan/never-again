@@ -1,14 +1,14 @@
-import { tipc } from '@egoist/tipc/main'
+import { getRendererHandlers, RendererHandlersCaller, tipc } from '@egoist/tipc/main'
 import type { PortsManager } from './ports-manager'
 // import type { TerminalManager } from './terminal-manager-v2'
 import { TerminalManagerV2 } from './terminal-manager-v2'
 import { BrowserController } from './browser-controller'
-import { mainWindow, portalViews, startProjectIndexing } from './index'
+import { mainWindow, portalViews, startingProjects, startProjectIndexing } from './index'
 import path, { join, resolve } from 'path'
 import { homedir } from 'os'
 import { access as fsAccess, readFile, readdir, appendFile, writeFile } from 'fs/promises'
 import { constants as fsConstants } from 'fs'
-import { Project, RunningProject } from '../shared/types'
+import { ListneingProject, Project, RunningProject, StartingProject } from '../shared/types'
 // import { resolveProjectFavicon } from './utils/favicon'
 import { DevRelayService } from './dev-relay-service'
 import { detectDevServersForDir } from './dev-server-detector'
@@ -18,6 +18,7 @@ import { exec } from 'child_process'
 import { promisify } from 'util'
 import { findProjectsBFS } from '../utility/index-projects'
 import { resolveProjectFavicon } from './utilts/favicon'
+import { RendererHandlers } from './renderer-handlers'
 
 const logToFile = async (message: any) => {
   const logFile = join(process.cwd(), 'log.txt')
@@ -83,13 +84,13 @@ function createWorkspaceId(label: string): string {
   return `${slug || 'workspace'}-${suffix}`
 }
 
-const killProcessOnPort = async (port: number) => {
+const killProcess = async (pid: number) => {
   try {
-    console.log('killing port', port)
-    await execAsync(`npx kill-port ${port}`)
-    console.log(`Successfully killed process on port ${port}`)
+    console.log('killing pid', pid)
+    await execAsync(`kill -9 ${pid}`)
+    console.log(`Successfully killed process: ${pid}`)
   } catch (error: any) {
-    console.error(`Error killing process on port ${port}:`, error.message)
+    console.error(`Error killing process: ${pid}:`, error.message)
     throw error
   }
 }
@@ -103,12 +104,14 @@ export const createRouter = ({
   browser,
   terminalManager,
   devRelayService,
-  bufferService
+  bufferService,
+  handlers
 }: {
   // portsManager: PortsManager
   browser: BrowserController
   terminalManager: TerminalManagerV2
   bufferService: ProjectBufferService
+  handlers: RendererHandlersCaller<RendererHandlers>
 
   devRelayService: DevRelayService
 }) => ({
@@ -163,8 +166,8 @@ export const createRouter = ({
       }
       return { ok: true as const }
     }),
-  killProject: t.procedure.input<{ port: number }>().action(async ({ input }) => {
-    await killProcessOnPort(input.port)
+  killProject: t.procedure.input<{ pid: number }>().action(async ({ input }) => {
+    await killProcess(input.pid)
   }),
   createProject: t.procedure.action(async () => {
     // well really we want a similar process to below, i wish we didn't have so many servers started it makes
@@ -215,6 +218,7 @@ export const createRouter = ({
 
     // this is there shouldn't be this transform, should be one data type moving throughout the pipeline
     const runningProject: RunningProject = {
+      runningKind: 'listening',
       cwd: meta.dir,
       kind: 'vite',
       pid: meta.pid,
@@ -240,7 +244,21 @@ export const createRouter = ({
   }),
 
   startDevRelay: t.procedure.input<{ projectPath: string }>().action(async ({ input }) => {
-    const { project: runningProject } = await devRelayService.start(input.projectPath)
+    let startProjectResolve: null | ((p: StartingProject) => void) = null
+    const startingProjectPromise = new Promise<StartingProject>(
+      (res) => (startProjectResolve = res)
+    )
+    const startRes = await devRelayService.start(input.projectPath, (startingProject) => {
+      startingProjects.add(startingProject)
+      handlers.onProjectStart.send(startingProject)
+      startProjectResolve?.(startingProject)
+    })
+    // i could do a start update? and just do streaming that might be fine... i think
+    const runningProject: ListneingProject = {
+      ...startRes.project,
+      runningKind: 'listening'
+    }
+
     // await delay(1000) // hacky for now
     // const serverFromPath = await detectDevServersForDir(input.projectPath)
 
@@ -253,7 +271,8 @@ export const createRouter = ({
       }, input.projectPath)
     })
 
-
+    const startingProjectObj = await startingProjectPromise
+    startingProjects.delete(startingProjectObj)
 
     await browser.createTab({
       tabId: input.projectPath,
@@ -274,12 +293,23 @@ export const createRouter = ({
     await logToFile(devServers)
     const buffer = await bufferService.listBuffer()
     // console.log(' the current buffer', buffer)
+    const startingProjectsArr = [...startingProjects.values()]
+    const listening: Array<RunningProject> = devServers
+      .filter(
+        (server) =>
+          (server.command == 'node' || server.kind !== 'unknown') &&
+          !buffer.some((b) => b.dir === server.cwd)
+      )
+      .map((project) => ({
+        ...project,
+        runningKind: 'listening'
+      }))
 
-    return devServers.filter(
-      (server) =>
-        (server.command == 'node' || server.kind !== 'unknown') &&
-        !buffer.some((b) => b.dir === server.cwd)
-    ) // for now filter unknown but this needs to be much better
+    // typescript stinks here
+    const bruh: Array<RunningProject> = startingProjectsArr
+    const runningProjects = bruh.concat(listening)
+    return runningProjects
+    // for now filter unknown but this needs to be much better
   }),
   reIndexProjects: t.procedure.action(async () => {
     console.log('reindexing...')
