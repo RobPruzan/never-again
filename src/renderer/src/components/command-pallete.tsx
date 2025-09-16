@@ -147,10 +147,10 @@ export const CommandPalette = () => {
     }
   }, [activeCategory])
 
-  // Reset selection when items change - select first item by default
+  // Reset selection when search input or category changes
   useEffect(() => {
     setSelectedIndex(items.length > 0 ? 0 : -1)
-  }, [items])
+  }, [input, activeCategory])
 
   // Auto-scroll to selected item
   useEffect(() => {

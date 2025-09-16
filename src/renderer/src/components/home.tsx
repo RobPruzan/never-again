@@ -7,7 +7,7 @@ import { Project, RunningProject } from '@shared/types'
 import { useAppContext } from '@renderer/app-context'
 import { ProjectItem } from '@renderer/project-item'
 import { client } from '@renderer/lib/tipc'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Plus } from 'lucide-react'
 
 type ProjectWithSize = Project & {
   sizeInBytes: number
@@ -34,26 +34,55 @@ export const Home = () => {
     }
   })
 
+  const createWorkspaceMutation = useMutation({
+    mutationFn: ({ label }: { label: string }) => client.createWorkspace({ label }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+    }
+  })
+
   const [searchQuery, setSearchQuery] = useState('')
   const [currentWorkspace, setCurrentWorkspace] = useState('all')
   const [createPrompt, setCreatePrompt] = useState('')
   const createInputRef = useRef<HTMLTextAreaElement>(null)
 
-  const workspaces: Array<Workspace> = [
-    {
-      id: 'all',
-      label: 'All Projects',
-      filter: (projects) => projects
-    },
-    {
-      id: 'running',
-      label: 'Running',
-      filter: (projects, runningProjects) => {
-        const runningPaths = new Set(runningProjects.map((p) => p.cwd))
-        return projects.filter((p) => runningPaths.has(p.path))
+  const { data: workspacesData } = useQuery({
+    queryKey: ['workspaces'],
+    queryFn: () => client.getWorkspaces(),
+    staleTime: 0
+  })
+
+  const assignments = workspacesData?.assignments ?? {}
+  const customWorkspaces = workspacesData?.workspaces ?? []
+
+  const workspaces: Array<Workspace> = React.useMemo(() => {
+    const base: Array<Workspace> = [
+      {
+        id: 'all',
+        label: 'All Projects',
+        filter: (projects) => projects
+      },
+      {
+        id: 'running',
+        label: 'Running',
+        filter: (projects, runningProjects) => {
+          const runningPaths = new Set(runningProjects.map((p) => p.cwd))
+          return projects.filter((p) => runningPaths.has(p.path))
+        }
       }
-    }
-  ]
+    ]
+
+    const customs: Array<Workspace> = customWorkspaces.map((ws) => ({
+      id: ws.id,
+      label: ws.label,
+      filter: (projects) => {
+        const paths = new Set(assignments[ws.id] ?? [])
+        return projects.filter((p) => paths.has(p.path))
+      }
+    }))
+
+    return [...base, ...customs]
+  }, [customWorkspaces, assignments, runningProjects])
   const { data: projectsWithSizes = [], isLoading: isLoadingSizes } = useQuery({
     queryKey: ['projects-meta', projects.map((p) => p.path)],
     queryFn: async () => {
@@ -147,6 +176,17 @@ export const Home = () => {
               </button>
             )
           })}
+          <button
+            className="ml-1 px-2 py-1 rounded text-xs cursor-pointer whitespace-nowrap transition-all h-6 bg-transparent text-[#666] hover:bg-[#0f0f0f] hover:text-[#888] border border-transparent hover:border-[#1f1f1f] flex items-center gap-1 flex-shrink-0"
+            onClick={() => {
+              const label = window.prompt('New workspace name')?.trim()
+              if (label) createWorkspaceMutation.mutate({ label })
+            }}
+            title="Create workspace"
+          >
+            <Plus size={12} />
+            New
+          </button>
         </div>
         <button
           className={`flex items-center gap-1 px-2 py-1 rounded text-xs cursor-pointer whitespace-nowrap transition-all h-6 border border-[#222] ${

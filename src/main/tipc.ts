@@ -6,7 +6,7 @@ import { BrowserController } from './browser-controller'
 import { mainWindow, portalViews, startProjectIndexing } from './index'
 import { join, resolve } from 'path'
 import { homedir } from 'os'
-import { access as fsAccess, readFile, readdir, appendFile } from 'fs/promises'
+import { access as fsAccess, readFile, readdir, appendFile, writeFile } from 'fs/promises'
 import { constants as fsConstants } from 'fs'
 import { Project, RunningProject } from '../shared/types'
 // import { resolveProjectFavicon } from './utils/favicon'
@@ -40,6 +40,49 @@ const logToFile = async (message: any) => {
   await appendFile(logFile, safeStringify(message) + '\n')
 }
 
+// Workspace storage helpers
+type WorkspaceRecord = {
+  id: string
+  label: string
+}
+type WorkspacesFile = {
+  workspaces: WorkspaceRecord[]
+  assignments: Record<string, string[]> // workspaceId -> projectPath[]
+}
+
+const workspacesFilePath = join(process.cwd(), 'workspaces.json')
+
+async function loadWorkspaces(): Promise<WorkspacesFile> {
+  try {
+    const content = await readFile(workspacesFilePath, 'utf8')
+    const parsed = JSON.parse(content)
+    if (!parsed || typeof parsed !== 'object') throw new Error('invalid')
+    return {
+      workspaces: Array.isArray(parsed.workspaces) ? parsed.workspaces : [],
+      assignments:
+        parsed.assignments && typeof parsed.assignments === 'object' ? parsed.assignments : {}
+    }
+  } catch {
+    return { workspaces: [], assignments: {} }
+  }
+}
+
+async function saveWorkspaces(data: WorkspacesFile): Promise<void> {
+  const serialized = JSON.stringify(data, null, 2)
+  await writeFile(workspacesFilePath, serialized, 'utf8')
+}
+
+function createWorkspaceId(label: string): string {
+  const slug = label
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\-\s_]+/g, '')
+    .replace(/[\s_]+/g, '-')
+    .slice(0, 40)
+  const suffix = Math.random().toString(36).slice(2, 8)
+  return `${slug || 'workspace'}-${suffix}`
+}
+
 const killProcessOnPort = async (port: number) => {
   try {
     console.log('killing port', port)
@@ -69,6 +112,57 @@ export const createRouter = ({
 
   devRelayService: DevRelayService
 }) => ({
+  // Workspace APIs
+  getWorkspaces: t.procedure.action(async () => {
+    return loadWorkspaces()
+  }),
+  createWorkspace: t.procedure.input<{ label: string }>().action(async ({ input }) => {
+    const data = await loadWorkspaces()
+    const id = createWorkspaceId(input.label)
+    const ws: WorkspaceRecord = { id, label: input.label }
+    data.workspaces.push(ws)
+    if (!data.assignments[id]) data.assignments[id] = []
+    await saveWorkspaces(data)
+    return { workspace: ws }
+  }),
+  renameWorkspace: t.procedure.input<{ id: string; label: string }>().action(async ({ input }) => {
+    const data = await loadWorkspaces()
+    const ws = data.workspaces.find((w) => w.id === input.id)
+    if (!ws) throw new Error('Workspace not found')
+    ws.label = input.label
+    await saveWorkspaces(data)
+    return { workspace: ws }
+  }),
+  deleteWorkspace: t.procedure.input<{ id: string }>().action(async ({ input }) => {
+    const data = await loadWorkspaces()
+    data.workspaces = data.workspaces.filter((w) => w.id !== input.id)
+    delete data.assignments[input.id]
+    await saveWorkspaces(data)
+    return { ok: true as const }
+  }),
+  assignProjectToWorkspace: t.procedure
+    .input<{ workspaceId: string; projectPath: string }>()
+    .action(async ({ input }) => {
+      const data = await loadWorkspaces()
+      if (!data.workspaces.some((w) => w.id === input.workspaceId)) {
+        throw new Error('Workspace not found')
+      }
+      const list = (data.assignments[input.workspaceId] ||= [])
+      if (!list.includes(input.projectPath)) list.push(input.projectPath)
+      await saveWorkspaces(data)
+      return { ok: true as const }
+    }),
+  unassignProjectFromWorkspace: t.procedure
+    .input<{ workspaceId: string; projectPath: string }>()
+    .action(async ({ input }) => {
+      const data = await loadWorkspaces()
+      const list = data.assignments[input.workspaceId]
+      if (Array.isArray(list)) {
+        data.assignments[input.workspaceId] = list.filter((p) => p !== input.projectPath)
+        await saveWorkspaces(data)
+      }
+      return { ok: true as const }
+    }),
   killProject: t.procedure.input<{ port: number }>().action(async ({ input }) => {
     await killProcessOnPort(input.port)
   }),
@@ -112,6 +206,7 @@ export const createRouter = ({
 
     const project = (await findProjectsBFS(meta.dir)).at(0) // this is too slow
     t4 = Date.now()
+    // what the fuck why
     if (!project) {
       throw new Error(
         'Invariant, if you just created a project at a dir, there of course should be a found project at that dir'

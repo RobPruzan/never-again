@@ -1,3 +1,5 @@
+import React from 'react'
+import { createPortal } from 'react-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Project, RunningProject } from '@shared/types'
 import { client } from './lib/tipc'
@@ -15,6 +17,64 @@ export const ProjectItem = ({ project }: { project: Project }) => {
   const { setFocusedProject, setProjects } = useAppContext()
   const queryClient = useQueryClient()
   const favicon = faviconResult && faviconResult.found ? faviconResult.dataUrl : null
+  const { data: workspacesData } = useQuery({
+    queryKey: ['workspaces'],
+    queryFn: () => client.getWorkspaces()
+  })
+
+  const customWorkspaces = workspacesData?.workspaces ?? []
+  const assignments: Record<string, string[]> = workspacesData?.assignments ?? {}
+  const assignedWorkspaceIds = new Set(
+    Object.entries(assignments)
+      .filter(([_id, paths]) => Array.isArray(paths) && paths.includes(project.path))
+      .map(([id]) => id)
+  )
+
+  const [menuOpen, setMenuOpen] = React.useState(false)
+  const [menuPos, setMenuPos] = React.useState<{ x: number; y: number }>({ x: 0, y: 0 })
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  const menuRef = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (!menuOpen) return
+      if (!menuRef.current) return
+      if (!menuRef.current.contains(e.target as Node)) setMenuOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [menuOpen])
+
+  const openContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const x = e.clientX
+    const y = e.clientY
+    setMenuPos({ x, y })
+    setMenuOpen(true)
+  }
+
+  const assignMutation = useMutation({
+    mutationFn: ({ workspaceId }: { workspaceId: string }) =>
+      client.assignProjectToWorkspace({ workspaceId, projectPath: project.path }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+    }
+  })
+
+  const unassignMutation = useMutation({
+    mutationFn: ({ workspaceId }: { workspaceId: string }) =>
+      client.unassignProjectFromWorkspace({ workspaceId, projectPath: project.path }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+    }
+  })
+
+  const createWorkspaceMutation = useMutation({
+    mutationFn: ({ label }: { label: string }) => client.createWorkspace({ label }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+    }
+  })
   const startDevServerMutation = useMutation({
     mutationFn: ({ projectPath }: { projectPath: string }) => client.startDevRelay({ projectPath }),
     onSuccess: ({ project, runningProject }) => {
@@ -35,6 +95,8 @@ export const ProjectItem = ({ project }: { project: Project }) => {
   return (
     <div
       key={project.path}
+      ref={containerRef}
+      onContextMenu={openContextMenu}
       className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 cursor-pointer relative min-h-[252px] hover:border-[#2a2a2a] hover:shadow-[0_12px_24px_rgba(0,0,0,0.4)] group"
     >
       <div className="w-full h-[200px] relative bg-[#0B0B0B] overflow-hidden block group/content">
@@ -128,6 +190,68 @@ export const ProjectItem = ({ project }: { project: Project }) => {
           </div>
         </div>
       </div>
+
+      {menuOpen &&
+        createPortal(
+          <div
+            ref={menuRef}
+            className="fixed z-50 bg-[#101010] border border-[#2a2a2a] rounded-md min-w-[200px] shadow-xl"
+            style={{ left: Math.max(8, menuPos.x), top: Math.max(8, menuPos.y) }}
+          >
+            <div className="px-3 py-2 text-[10px] uppercase tracking-wide text-[#666] border-b border-[#1a1a1a]">
+              Workspaces
+            </div>
+            <div className="py-1 max-h-[260px] overflow-auto">
+              {customWorkspaces.length === 0 ? (
+                <div className="px-3 py-2 text-xs text-[#808080]">No custom workspaces</div>
+              ) : (
+                customWorkspaces.map((ws) => {
+                  const assigned = assignedWorkspaceIds.has(ws.id)
+                  const pending = assignMutation.isPending || unassignMutation.isPending
+                  return (
+                    <button
+                      key={ws.id}
+                      className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 ${
+                        assigned ? 'text-[#d0d0d0]' : 'text-[#b0b0b0]'
+                      } hover:bg-[#151515]`}
+                      disabled={pending}
+                      onClick={() => {
+                        if (assigned) {
+                          unassignMutation.mutate({ workspaceId: ws.id })
+                        } else {
+                          assignMutation.mutate({ workspaceId: ws.id })
+                        }
+                        setMenuOpen(false)
+                      }}
+                    >
+                      <span
+                        className={`inline-block w-3 h-3 rounded-sm border ${
+                          assigned ? 'bg-white/80 border-white/80' : 'border-[#333]'
+                        }`}
+                      />
+                      <span className="truncate">{ws.label}</span>
+                    </button>
+                  )
+                })
+              )}
+            </div>
+            <div className="border-t border-[#1a1a1a]">
+              <button
+                className="w-full text-left px-3 py-2 text-sm text-[#a0a0a0] hover:bg-[#151515]"
+                onClick={() => {
+                  const label = window.prompt('New workspace name')?.trim()
+                  if (label) {
+                    createWorkspaceMutation.mutate({ label })
+                  }
+                  setMenuOpen(false)
+                }}
+              >
+                Create workspace…
+              </button>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   )
 }
