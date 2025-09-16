@@ -67,11 +67,14 @@ export class ProjectBufferService {
     const buffer = this.listBuffer()
     const promises = buffer.map(async (b) => {
       // this may not be sound, almost certainly isn't with the project buffer, maybe we just kill the zenbu buffer entirely and we start fresh?
-      await exec(`kill -9 ${b.pid}`)
+
+      await exec(`kill -9 ${b.pid}`).catch(() => {})
       // await exec(`rm -rf ${b.dir}`)
     })
-    await exec(`rm -rf ${this.dotDirRoot}`) // be very careful u don't accidentally rm rf someones home dir
     await Promise.all(promises)
+    await exec(`rm -rf ${this.dotDirRoot}`).catch((e) => {
+      console.log('failed to rm rf', e)
+    }) // be very careful u don't accidentally rm rf someones home dir
   }
 
   async ensureTemplate(): Promise<boolean> {
