@@ -107,7 +107,7 @@ export const ProjectItem = ({ project }: { project: Project }) => {
           className="absolute top-3 right-3 z-20 opacity-0 group-hover/content:opacity-100 transition-all duration-200 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg transform scale-90 group-hover/content:scale-100 hover:bg-white hover:scale-105 active:scale-95"
         >
           {startDevServerMutation.isPending ? (
-            <Loader2 className="w-5 h-5 text-black ml-0.5" />
+            <Loader2 className="w-5 h-5 text-black ml-0.5 animate-spin" />
           ) : (
             <svg className="w-5 h-5 text-black ml-0.5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />

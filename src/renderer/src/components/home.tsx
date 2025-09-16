@@ -87,6 +87,11 @@ export const Home = () => {
     queryKey: ['projects-meta', projects.map((p) => p.path)],
     queryFn: async () => {
       if (projects.length === 0) return []
+      console.log(
+        'projects with undefined paths',
+        projects.filter((p) => p.path === undefined)
+      )
+
       const meta = await client.getProjectsMeta({ paths: projects.map((p) => p.path) })
       const map = new Map(meta.map((m) => [m.path, m]))
       return projects.map((p) => {

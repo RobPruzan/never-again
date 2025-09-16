@@ -7,6 +7,8 @@ export const useListenForProjects = () => {
   const { setProjects } = useAppContext()
   useEffect(() => {
     const unlisten = handlers.projectsFound.listen(({ projects }) => {
+      // console.log('');
+      
       setProjects(projects)
     })
     return unlisten

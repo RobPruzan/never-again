@@ -4,7 +4,7 @@ import type { PortsManager } from './ports-manager'
 import { TerminalManagerV2 } from './terminal-manager-v2'
 import { BrowserController } from './browser-controller'
 import { mainWindow, portalViews, startProjectIndexing } from './index'
-import { join, resolve } from 'path'
+import path, { join, resolve } from 'path'
 import { homedir } from 'os'
 import { access as fsAccess, readFile, readdir, appendFile, writeFile } from 'fs/promises'
 import { constants as fsConstants } from 'fs'
@@ -240,9 +240,9 @@ export const createRouter = ({
   }),
 
   startDevRelay: t.procedure.input<{ projectPath: string }>().action(async ({ input }) => {
-    await devRelayService.start(input.projectPath)
-    await delay(1000) // hacky for now
-    const serverFromPath = await detectDevServersForDir(input.projectPath)
+    const { project: runningProject } = await devRelayService.start(input.projectPath)
+    // await delay(1000) // hacky for now
+    // const serverFromPath = await detectDevServersForDir(input.projectPath)
 
     // should promisify this or something
     const project = await new Promise<Project>((res) => {
@@ -253,26 +253,18 @@ export const createRouter = ({
       }, input.projectPath)
     })
 
-    console.log('the server from path', serverFromPath)
 
-    const preferredServer = serverFromPath.find((s) => s.kind !== 'unknown') ?? serverFromPath.at(0)
-    if (!preferredServer) {
-      throw new Error('Invariant no server started this should be validated earlier')
-    }
 
     await browser.createTab({
       tabId: input.projectPath,
-      url: `http://localhost:${preferredServer.port}?wrapper=false`
+      url: `http://localhost:${runningProject.port}?wrapper=false`
     })
 
     // await browser.createTab({
     //   tabId: input.projectPath,
     //   url: `http://localhost:${started.sock}?wrapper=false`
     // })
-    return {
-      runningProject: preferredServer,
-      project
-    }
+    return { project, runningProject }
   }),
   stopDevRelay: t.procedure.input<{ projectPath: string }>().action(async ({ input }) => {
     return devRelayService.stop(input.projectPath)
@@ -319,6 +311,11 @@ export const createRouter = ({
     }
 
     const projects = await pollForFile()
+    console.log(
+      'projects with undefined paths',
+      JSON.parse(projects).filter((p: Project) => p.path === undefined)
+    )
+
     return JSON.parse(projects) as Array<Project>
   }),
   getProjectsMeta: t.procedure
@@ -363,9 +360,16 @@ export const createRouter = ({
         return size + 100000
       }
 
+      // console.log('all da paths', paths);
+
       const results = await Promise.all(
         paths.map(async (p) => {
-          const root = resolve(p)
+          if (typeof p !== 'string') {
+            console.log('wats going on', p)
+
+            return null!
+          }
+          const root = resolve(p) // this is whats breaking
           const [size, favicon] = await Promise.all([
             estimateSize(root),
             resolveProjectFavicon(root)

@@ -1,15 +1,20 @@
 import { spawn, ChildProcess } from 'node:child_process'
+import { homedir } from 'node:os'
 import { createServer, Socket, connect } from 'node:net'
 import { unlinkSync, existsSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
+import { detectDevServersForDir } from './dev-server-detector'
 
+/**
+ * thsi is also an awful name!
+ */
 export class DevRelayService {
   private servers = new Map<
     string,
-    { server: ReturnType<typeof createServer>; proc: ChildProcess; sock: string }
+    { server: ReturnType<typeof createServer>; proc: ChildProcess; sock }
   >()
 
-  async start(projectDir: string): Promise<{ sock: string; pid: number | null }> {
+  async start(projectDir: string) {
     const cwd = resolve(projectDir)
     const sock = join(cwd, '.devrelay.sock')
     try {
@@ -22,7 +27,7 @@ export class DevRelayService {
     const proc = spawn('pnpm', ['run', 'dev'], {
       cwd,
       stdio: ['ignore', 'pipe', 'pipe'],
-      env: { ...process.env, FORCE_COLOR: '1', npm_config_color: 'true' }
+      env: { ...process.env, FORCE_COLOR: '1', npm_config_color: 'true' } // why both, are both needed?
     })
 
     const forward = (buf: Buffer | string, isErr = false) => {
@@ -82,7 +87,34 @@ export class DevRelayService {
         'utf8'
       )
     } catch {}
-    return { sock, pid: proc.pid ?? null }
+
+    const prev = await detectDevServersForDir(projectDir)
+    console.log('prev ports found', prev)
+
+    const project = await new Promise<
+      Awaited<NonNullable<ReturnType<typeof detectDevServersForDir>>>[number]
+    >((res) => {
+      const poll = async () => {
+        const newPorts = await detectDevServersForDir(projectDir)
+        console.log('new ports found', newPorts)
+        if (prev.length === 0 && newPorts.length > 0) {
+          res(newPorts[0])
+          return
+        }
+
+        const newProject = prev.find((prevProject) =>
+          newPorts.find((newProject) => newProject.port !== prevProject.port)
+        )
+
+        if (!newProject) {
+          setTimeout(poll, 100)
+          return
+        }
+        res(newProject)
+      }
+      poll()
+    })
+    return { sock, pid: proc.pid ?? null, project }
   }
 
   async stop(projectDir: string): Promise<boolean> {
