@@ -40,8 +40,12 @@ export class DevRelayService {
         } catch {}
       }
     }
-    proc.stdout?.on('data', (d) => forward(d, false))
-    proc.stderr?.on('data', (d) => forward(d, true))
+    proc.stdout?.on('data', (d) => {
+      // forward(d, false)
+    })
+    proc.stderr?.on('data', (d) => {
+      // forward(d, true)
+    })
 
     server.on('connection', (sockConn) => {
       sockConn.setEncoding('utf8')
