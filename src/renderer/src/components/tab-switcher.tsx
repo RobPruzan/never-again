@@ -78,7 +78,7 @@ export const TabSwitcher = () => {
           setFocusedProject((prev) => ({
             projectId: projectId,
             projectCwd: selectedProject.cwd,
-            focusedTerminalId: prev?.focusedTerminalId || ''
+            focusedTerminalId: null!
           }))
           closeSwitcher()
         }
@@ -91,6 +91,7 @@ export const TabSwitcher = () => {
         winRef.current?.removeEventListener('keydown', handleKeyDown)
       }
     }
+    return
   }, [])
   console.log('im definitely rendered, window focused:', document.hasFocus())
 

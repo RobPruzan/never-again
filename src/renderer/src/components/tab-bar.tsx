@@ -21,15 +21,6 @@ interface Tab {
   cwd?: string
 }
 
-interface TabBarProps {
-  tabs: Tab[]
-  activeTabId: string | null
-  onSelectTab: (id: string) => void
-  onCloseTab: (id: string) => void
-  onNewTab: () => void
-  onHomeClick?: () => void
-  isHomeActive?: boolean
-}
 
 export function TabBar() {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0

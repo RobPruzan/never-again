@@ -64,10 +64,10 @@ export class DevRelayService {
       }
     }
     proc.stdout?.on('data', (d) => {
-      // forward(d, false)
+      forward(d, false)
     })
     proc.stderr?.on('data', (d) => {
-      // forward(d, true)
+      forward(d, true)
     })
 
     server.on('connection', (sockConn) => {

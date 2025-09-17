@@ -1,17 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 // import { Terminalv2 } from './Terminalv2'
 import { client, v2Client } from '../lib/tipc'
-import {
-  Plus,
-  X,
-  RefreshCw,
-  ChevronLeft,
-  ChevronRight,
-  RotateCw,
-  Link,
-  MoreHorizontal
-} from 'lucide-react'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { Plus, X, ChevronLeft, ChevronRight, RotateCw, Link, HomeIcon } from 'lucide-react'
 // import { useAppContext, useFocusedProject, type TerminalInstance } from './app-context'
 // import { useBrowserState } from './use-browser-state'
 import { Terminalv2 } from './terminal-v2'
@@ -36,7 +26,7 @@ export function MainSidebar() {
 
     const newTerminal: TerminalInstance = {
       terminalId: session.id,
-      projectId: deriveRunningProjectId(focusedProject) 
+      projectId: deriveRunningProjectId(focusedProject)
     }
 
     setTerminals((prev) => [...prev, newTerminal])
@@ -50,99 +40,77 @@ export function MainSidebar() {
     })
   }
 
-  const handleSelectTab = (terminalId: string) => {
-    console.log('handleSelectTab called with:', terminalId)
-    console.log('current focusedProject:', focusedProject)
-    if (!focusedProject) return
-    setFocusedProject((prev) => {
-      if (!prev) return null
-      const newState = {
-        ...prev,
-        focusedTerminalId: terminalId
-      }
-      console.log('setting new focusedProject state:', newState)
-      return newState
-    })
-  }
-
-  const closeTerminal = async (terminalId: string) => {
-    await v2Client.terminalV2Destroy(terminalId)
-    setTerminals((prev) => {
-      if (!prev) return []
-      const newTerminals = prev.filter((t) => t.terminalId !== terminalId)
-      if (!focusedProject?.cwd) return []
-      if (focusedProject.focusedTerminalId === terminalId && newTerminals.length > 0) {
-        const projectTerminals = newTerminals.filter((t) => t.projectId === deriveRunningProjectId(focusedProject))
-        if (projectTerminals.length > 0) {
-          if (!focusedProject?.cwd) return []
-          setFocusedProject((prev) => {
-            if (!prev) return null
-            return {
-              ...prev,
-              focusedTerminalId: projectTerminals[projectTerminals.length - 1].terminalId
-            }
-          })
-        }
-      }
-      return newTerminals
-    })
-  }
-
   // fine, idk
   const handleRefresh = () => {
     client.reload().catch(() => {})
   }
 
-  // console.log('how many tabs?', allTabs)
-
   const browserStateQuery = useBrowserState()
   const activeTabId = browserStateQuery.data?.activeTabId
   const activeTabUrl = browserStateQuery.data?.tabs.find((t) => t.tabId === activeTabId)?.url
-  // if (!activeTabUrl) {
-  //   throw new Error('invariant something went horribly wrong')
-  // }
 
-  const [urlInput, setUrlInput] = useState(activeTabUrl)
-  // what?
-  const handleUrlNavigation = () => {
-    if (!urlInput?.trim()) return
-    let url = urlInput.trim()
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url =
-        url.startsWith('localhost') || url.includes('127.0.0.1')
-          ? `http://${url}`
-          : `https://${url}`
+  const [urlInput, setUrlInput] = useState(activeTabUrl || '')
+  const [isEditing, setIsEditing] = useState(false)
+  const [isCommitting, setIsCommitting] = useState(false)
+
+  useEffect(() => {
+    if (!isEditing) {
+      setUrlInput(activeTabUrl || '')
     }
-    // okay
-    client.navigate(url).catch(() => {})
+  }, [activeTabUrl, isEditing])
+
+  const normalizeUrl = (value?: string) => {
+    const trimmed = (value || '').trim()
+    if (!trimmed) return ''
+    if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+      return trimmed.startsWith('localhost') || trimmed.includes('127.0.0.1')
+        ? `http://${trimmed}`
+        : `https://${trimmed}`
+    }
+    return trimmed
   }
 
-  // const handleUrlKeyDown = (e: React.KeyboardEvent) => {
-  //   if (e.key === 'Enter') {
-  //     handleUrlNavigation()
-  //   }
-  // }
+  const handleUrlNavigation = async () => {
+    if (isCommitting) return
+    setIsCommitting(true)
+    const normalized = normalizeUrl(urlInput)
+    if (!normalized || normalized === (activeTabUrl || '')) {
+      setIsEditing(false)
+      setUrlInput(activeTabUrl || '')
+      setIsCommitting(false)
+      return
+    }
+    await client.navigate(normalized).catch(() => {})
+    setIsEditing(false)
+    await browserStateQuery.refetch().catch(() => {})
+    setIsCommitting(false)
+  }
 
   return (
     <div className="flex flex-col h-full bg-[#0A0A0A]">
-      {/* Arc-style URL Bar */}
       <div
         className="flex items-center bg-[#0A0A0A] border-b border-[#1A1A1A]"
         style={{ height: '36px' }}
       >
-        {/* Navigation buttons */}
         <div className="flex items-center px-1">
           <button
             className="p-1 hover:bg-[#1A1A1A] text-gray-500 hover:text-gray-300 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             title="Back"
-            disabled={true}
+            onClick={() => {
+              console.log('back nav')
+              client.backNav()
+            }}
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             className="p-1 hover:bg-[#1A1A1A] text-gray-500 hover:text-gray-300 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             title="Forward"
-            disabled={true}
+            onClick={() => {
+              console.log('forward nav')
+
+              client.forwardNav()
+            }}
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -155,7 +123,6 @@ export function MainSidebar() {
           </button>
         </div>
 
-        {/* URL Input */}
         <div className="flex-1 mx-2">
           <div className="flex items-center bg-[#141414] rounded-md px-2 py-1 border border-[#1A1A1A] focus-within:border-[#333] transition-colors">
             <input
@@ -164,11 +131,18 @@ export function MainSidebar() {
               onClick={(e) => {
                 ;(e.target as HTMLInputElement).select()
               }}
-              onChange={(e) => setUrlInput(e.target.value)}
-              onKeyDown={(e) => {
-                // guard instead
+              onFocus={() => setIsEditing(true)}
+              onChange={(e) => {
+                setIsEditing(true)
+                setUrlInput(e.target.value)
+              }}
+              onKeyDown={async (e) => {
                 if (e.key !== 'Enter') return
-                handleUrlNavigation()
+                await handleUrlNavigation()
+                ;(e.target as HTMLInputElement).blur()
+              }}
+              onBlur={async () => {
+                await handleUrlNavigation()
               }}
               className="flex-1 bg-transparent text-gray-300 text-xs focus:outline-none placeholder-gray-600"
               placeholder="Enter URL or search..."
@@ -182,8 +156,18 @@ export function MainSidebar() {
             <button
               className="ml-1 p-0.5 hover:bg-[#2A2A2A] text-gray-500 hover:text-gray-300 rounded transition-colors"
               title="More Options"
+              onClick={() => {
+                switch (focusedProject?.runningKind) {
+                  case 'starting': {
+                    return // todo prevalidation
+                  }
+                  case 'listening': {
+                    client.navigate(`http://localhost:${focusedProject.port}`)
+                  }
+                }
+              }}
             >
-              <MoreHorizontal className="w-3 h-3" />
+              <HomeIcon className="w-3 h-3" />
             </button>
           </div>
         </div>
@@ -197,11 +181,13 @@ export function MainSidebar() {
           <ResizableHandle />
           <ResizablePanel defaultSize={70}>
             <div className="flex flex-col h-full min-h-0">
-              {/* Arc-style Terminal Grid */}
               <div className="bg-[#0A0A0A] p-2">
                 <div className="flex gap-1.5">
                   {terminals
-                    .filter((t) =>focusedProject &&  t.projectId === deriveRunningProjectId(focusedProject))
+                    .filter(
+                      (t) =>
+                        focusedProject && t.projectId === deriveRunningProjectId(focusedProject)
+                    )
                     .map((tab, index) => (
                       <div
                         key={tab.terminalId}
@@ -209,7 +195,22 @@ export function MainSidebar() {
                 flex-1 relative group cursor-pointer overflow-hidden
                 transition-all duration-200 hover:bg-[#1A1A1A]
               `}
-                        onClick={() => handleSelectTab(tab.terminalId)}
+                        onClick={() => {
+                          const terminalId = tab.terminalId
+                          console.log('handleSelectTab called with:', terminalId)
+                          console.log('current focusedProject:', focusedProject)
+                          if (!focusedProject) return
+                          setFocusedProject((prev) => {
+                            if (!prev) return null
+                            const newState = {
+                              ...prev,
+                              focusedTerminalId: terminalId
+                            }
+                            console.log('setting new focusedProject state:', newState)
+                            return newState
+                          })
+                          const handleSelectTab = (terminalId: string) => {}
+                        }}
                         style={{ height: '42px', borderRadius: '2px' }}
                       >
                         {/* Placeholder Terminal Preview */}
@@ -239,9 +240,37 @@ export function MainSidebar() {
 
                             {/* Close button */}
                             <button
-                              onClick={(e) => {
+                              onClick={async (e) => {
                                 e.stopPropagation()
-                                closeTerminal(tab.terminalId)
+                                const terminalId = tab.terminalId
+                                await v2Client.terminalV2Destroy(terminalId)
+                                setTerminals((prev) => {
+                                  if (!prev) return []
+                                  const newTerminals = prev.filter(
+                                    (t) => t.terminalId !== terminalId
+                                  )
+                                  if (!focusedProject?.cwd) return []
+                                  if (
+                                    focusedProject.focusedTerminalId === terminalId &&
+                                    newTerminals.length > 0
+                                  ) {
+                                    const projectTerminals = newTerminals.filter(
+                                      (t) => t.projectId === deriveRunningProjectId(focusedProject)
+                                    )
+                                    if (projectTerminals.length > 0) {
+                                      if (!focusedProject?.cwd) return []
+                                      setFocusedProject((prev) => {
+                                        if (!prev) return null
+                                        return {
+                                          ...prev,
+                                          focusedTerminalId:
+                                            projectTerminals[projectTerminals.length - 1].terminalId
+                                        }
+                                      })
+                                    }
+                                  }
+                                  return newTerminals
+                                })
                               }}
                               className="ml-1 p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-[#1A1A1A] transition-opacity"
                             >
@@ -274,7 +303,9 @@ export function MainSidebar() {
                 {/* Render ALL terminals but only show ones for active project and active tab */}
                 {terminals.map((tab) => {
                   // Find the CWD for this terminal's project
-                  const project = runningProjects.find((p) => deriveRunningProjectId(p) === tab.projectId)
+                  const project = runningProjects.find(
+                    (p) => deriveRunningProjectId(p) === tab.projectId
+                  )
                   const terminalCwd =
                     project?.cwd ||
                     (tab.terminalId === focusedProject?.focusedTerminalId
@@ -282,7 +313,8 @@ export function MainSidebar() {
                       : undefined)
 
                   const isVisible =
-                    tab.projectId === (focusedProject ? deriveRunningProjectId(focusedProject) : null) &&
+                    tab.projectId ===
+                      (focusedProject ? deriveRunningProjectId(focusedProject) : null) &&
                     tab.terminalId === focusedProject?.focusedTerminalId
 
                   return (

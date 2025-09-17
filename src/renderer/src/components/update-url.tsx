@@ -2,26 +2,29 @@ import { useEffect, useRef, useState } from 'react'
 import { WindowPortal } from '@renderer/window-portal'
 import { client, handlers } from '@renderer/lib/tipc'
 import { Search } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
 
 export function UpdateURLPalette() {
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const queryClient = useQueryClient()
 
-  // Listen for menu event to open the palette
   useEffect(() => {
     const unlisten = handlers.changeURL.listen(async () => {
       try {
-        const state = await client.getBrowserState()
-        const activeTab = state.tabs.find((t: any) => t.isActive)
-        setInput(activeTab?.url && activeTab.url !== 'about:blank' ? activeTab.url : '')
+        const browserState = (await queryClient.fetchQuery({
+          queryKey: ['browserState']
+        })) as Awaited<ReturnType<typeof client.getBrowserState>>
+        // const state = await client.getBrowserState()
+        const activeTab = browserState.tabs.find((t: any) => t.isActive)
+        setInput(activeTab?.url || '')
       } catch {}
       setOpen(true)
     })
     return unlisten
   }, [])
 
-  // Focus and select input when opened
   useEffect(() => {
     if (!open) return
     if (inputRef.current) {

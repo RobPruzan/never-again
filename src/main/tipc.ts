@@ -243,7 +243,18 @@ export const createRouter = ({
     }
   }),
 
+  backNav: t.procedure.action(async () => {
+    return browser.backNav()
+  }),
+  forwardNav: t.procedure.action(async () => {
+    console.log('forwardNav');
+    
+    return browser.forwardNav()
+  }),
+
   startDevRelay: t.procedure.input<{ projectPath: string }>().action(async ({ input }) => {
+    console.log('attempting relay on ', input.projectPath)
+
     let startProjectResolve: null | ((p: StartingProject) => void) = null
     const startingProjectPromise = new Promise<StartingProject>(
       (res) => (startProjectResolve = res)
@@ -257,6 +268,8 @@ export const createRouter = ({
         startProjectResolve?.(startingProject)
       }
     })
+    console.log('started!', startRes);
+    
     // i could do a start update? and just do streaming that might be fine... i think
     const runningProject: ListneingProject = {
       ...startRes.project,
