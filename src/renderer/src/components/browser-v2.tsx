@@ -15,12 +15,14 @@ import { useAppContext, useFocusedProject } from '@renderer/app-context'
 import { TabBar } from './tab-bar'
 import { Home } from './home'
 import { TabSwitcher } from './tab-switcher'
-import { iife } from '@renderer/lib/utils'
+import { deriveRunningProjectId, iife } from '@renderer/lib/utils'
 import { ListneingProject, RunningProject } from '@shared/types'
 import { useProjects } from '@renderer/hooks/use-projects'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { useQuery } from '@tanstack/react-query'
 import { client } from '@renderer/lib/tipc'
+import { useGroupedProjects } from '@renderer/hooks/use-grouped-projects'
+import { CookingPot } from 'lucide-react'
 
 const DisplayNoneActivity = ({
   children,
@@ -117,8 +119,7 @@ const WebContentViewArea = () => {
     return null
   }
 
-
-  const groupedProjects = null
+  // const groupedProjects = useGroupedProjects()
 
   // issue of course there could be one project with multiple ports
   // it would also be nice to give it a little http client at that port, that should be quite trivial to do
@@ -129,7 +130,9 @@ const WebContentViewArea = () => {
     <div
       style={{
         display:
-          runningProject.cwd !== focusedProject.projectId || route !== 'webview' ? 'none' : 'flex'
+          deriveRunningProjectId(runningProject) !== focusedProject.projectId || route !== 'webview'
+            ? 'none'
+            : 'flex'
       }}
       className="flex flex-1 h-full overflow-hidden"
     >
@@ -141,12 +144,24 @@ const WebContentViewArea = () => {
         <ResizablePanel defaultSize={80}>
           <StartingProject project={runningProject}>
             {(listeningProject) =>
-              listeningProject.cwd === focusedProject.projectId &&
+              deriveRunningProjectId(listeningProject) === focusedProject.projectId &&
               route === 'webview' && (
-                <WebContentView
-                  url={`http://localhost:${listeningProject.port}`}
-                  id={listeningProject.cwd}
-                />
+                <>
+                  {
+                    (console.log(
+                      'focused project vs id we epxect',
+                      deriveRunningProjectId(listeningProject),
+                      listeningProject,
+                      focusedProject
+                    ),
+                    null)
+                  }
+
+                  <WebContentView
+                    url={`http://localhost:${listeningProject.port}`}
+                    id={deriveRunningProjectId(listeningProject)}
+                  />
+                </>
               )
             }
           </StartingProject>

@@ -5,6 +5,7 @@ import { Project, RunningProject } from '@shared/types'
 import { client } from './lib/tipc'
 import { Loader2 } from 'lucide-react'
 import { useAppContext } from './app-context'
+import { deriveRunningProjectId } from './lib/utils'
 // import { useAppContext } from './components/app-context'
 
 export const ProjectItem = ({ project }: { project: Project }) => {
@@ -101,13 +102,28 @@ export const ProjectItem = ({ project }: { project: Project }) => {
       <div className="w-full h-[200px] relative bg-[#0B0B0B] overflow-hidden block group/content">
         <button
           onClick={() => {
-            if (
-              (queryClient.getQueryData(['devServers']) as Array<RunningProject> | undefined)?.some(
-                (p) => p.cwd === project.path
-              )
-            ) {
+            const existing = (
+              queryClient.getQueryData(['devServers']) as Array<RunningProject> | undefined
+            )?.find((p) => p.cwd === project.path)
+            console.log('exsting bruh', existing)
+
+            if (existing) {
               setRoute('webview')
-              setFocusedProject({ focusedTerminalId: null!, projectId: project.path })
+              const focusedProejct = {
+                focusedTerminalId: null!,
+                projectCwd: project.path,
+                projectId: deriveRunningProjectId(existing)
+
+                // projectId: deriveRunningProjectId({
+                //   runningKind: 'starting',
+                //   cwd: project.path,
+                //   kind: 'unknown', // whatever fix later :p
+                //   pid: -1 // oops idk heh
+                // })
+              }
+              console.log('SETTING FOCSUED PROJECT', focusedProejct)
+
+              setFocusedProject(focusedProejct)
               return
             }
             startDevServerMutation.mutate({ projectPath: project.path })

@@ -1,6 +1,18 @@
+import { RunningProject } from '@shared/types'
 import { clsx, type ClassValue } from 'clsx'
 import { useEffect, useRef, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
+
+export const deriveRunningProjectId = (project: RunningProject) => {
+  switch (project.runningKind) {
+    case 'listening': {
+      return `${project.cwd}-${project.port}`
+    }
+    case 'starting': {
+      return `starting-${project.cwd}`
+    }
+  }
+}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

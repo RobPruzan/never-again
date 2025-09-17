@@ -10,6 +10,7 @@ import { client, handlers } from '@renderer/lib/tipc'
 import { Loader2, Plus } from 'lucide-react'
 import { useProjects } from '@renderer/hooks/use-projects'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
+import { deriveRunningProjectId } from '@renderer/lib/utils'
 
 type ProjectWithSize = Project & {
   sizeInBytes: number
@@ -86,7 +87,8 @@ export const Home = () => {
       setRoute('webview')
       setFocusedProject({
         focusedTerminalId: null!,
-        projectId: project.cwd
+        projectCwd: project.cwd,
+        projectId: deriveRunningProjectId(project)
       })
     })
     return () => {

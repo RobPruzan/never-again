@@ -10,6 +10,8 @@ import { useAppContext } from '@renderer/app-context'
 import { BrowserTab } from './browser-tab'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { useCreateProjectMutation } from '@renderer/hooks/use-create-project-mutation'
+import { useGroupedProjects } from '@renderer/hooks/use-grouped-projects'
+import { GroupedTab } from './grouped-tab'
 
 interface Tab {
   id: string
@@ -34,7 +36,7 @@ export function TabBar() {
   // same issue, this should be grouped projects we map over the wrong item and are really creating the wrong item all together
   const runningProjects = useRunningProjects().data
 
-  const groupedProjects = null
+  const groupedProjects = useGroupedProjects()
   const { setRoute, setFocusedProject, route } = useAppContext()
 
   const createProjectMutation = useCreateProjectMutation()
@@ -77,10 +79,8 @@ export function TabBar() {
             <HomeIcon className="w-4 h-4" />
           </Button>
         </React.Fragment>
-        {runningProjects.map((project) => (
-          <React.Fragment key={project.cwd}>
-            <BrowserTab projectId={project.cwd} />
-          </React.Fragment>
+        {groupedProjects.map((groupedProject) => (
+          <GroupedTab groupedProject={groupedProject} />
         ))}
       </div>
       <button

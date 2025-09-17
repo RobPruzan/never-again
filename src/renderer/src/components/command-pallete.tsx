@@ -6,6 +6,7 @@ import { Search, Sparkles } from 'lucide-react'
 import { useAppContext } from '@renderer/app-context'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { useProjects } from '@renderer/hooks/use-projects'
+import { deriveRunningProjectId } from '@renderer/lib/utils'
 
 export const CommandPalette = () => {
   const { setCommandPaletteOpen, setFocusedProject } = useAppContext()
@@ -67,8 +68,9 @@ export const CommandPalette = () => {
         favicon,
         onSelect: async () => {
           setFocusedProject((prev) => ({
-            projectId: project.cwd,
-            focusedTerminalId: prev?.focusedTerminalId || ''
+            projectCwd: project.cwd,
+            focusedTerminalId: prev?.focusedTerminalId || '',
+            projectId: deriveRunningProjectId(project)
           }))
           await closePalette()
         }

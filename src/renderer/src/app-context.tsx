@@ -4,23 +4,24 @@ import { Terminal } from '@xterm/xterm'
 import { createContext, Dispatch, SetStateAction, useContext } from 'react'
 import { client } from './lib/tipc'
 import { useRunningProjects } from './hooks/use-running-projects'
+import { deriveRunningProjectId } from './lib/utils'
 
 type ProjectID = string
-// export type RunningProject = {
-//   projectId: ProjectID
-//   cwd: string
-//   port: number
-//   name: string
-// }
 export type FocusedProject = {
   projectId: ProjectID
   focusedTerminalId: string
+  projectCwd: string // denormalized ref to the parent
 }
 
 export type TerminalInstance = {
   terminalId: string
   projectId: string
 }
+
+/**
+ *
+ * we will need to store some state for port, i think, gonna do that later because its influential and also may be wrong
+ */
 export const AppContext = createContext<{
   route: 'home' | 'webview'
   setRoute: Dispatch<SetStateAction<'home' | 'webview'>>
@@ -41,6 +42,7 @@ export const useAppContext = () => useContext(AppContext)
 
 export const useFocusedProject = () => {
   const { focusedProject } = useAppContext()
+  
   const runningProjectsQuery = useRunningProjects()
   if (!focusedProject) {
     return null
@@ -49,7 +51,7 @@ export const useFocusedProject = () => {
   console.log('focused project', focusedProject)
 
   const project = runningProjectsQuery.data.find(
-    (project) => project.cwd === focusedProject?.projectId
+    (project) => deriveRunningProjectId(project) === focusedProject?.projectId
   )
   if (!project) {
     throw new Error('invariant tried to focus a non existent project')

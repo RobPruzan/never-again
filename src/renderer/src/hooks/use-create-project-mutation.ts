@@ -1,12 +1,12 @@
-import { useAppContext } from "@renderer/app-context"
-import { client } from "@renderer/lib/tipc"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useAppContext } from '@renderer/app-context'
+import { client } from '@renderer/lib/tipc'
+import { deriveRunningProjectId } from '@renderer/lib/utils'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export const useCreateProjectMutation = () => {
-    
-  const {setRoute, setFocusedProject} = useAppContext()
+  const { setRoute, setFocusedProject } = useAppContext()
   const queryClient = useQueryClient()
-return useMutation({
+  return useMutation({
     mutationFn: async () => client.createProject(),
     onSuccess: async ({ project, runningProject }) => {
       setRoute('webview')
@@ -16,7 +16,12 @@ return useMutation({
         runningProject
       ])
 
-      setFocusedProject({ focusedTerminalId: null!, projectId: runningProject.cwd })
+      setFocusedProject({
+        focusedTerminalId: null!,
+        projectCwd: runningProject.cwd,
+
+        projectId: deriveRunningProjectId(runningProject)
+      })
     }
   })
-  }
+}

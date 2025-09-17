@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { client } from '@renderer/lib/tipc'
 import { useAppContext, useFocusedProject } from '@renderer/app-context'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
+import { deriveRunningProjectId } from '@renderer/lib/utils'
 
 interface BrowserTabProps {
   id: string
@@ -14,13 +15,19 @@ interface BrowserTabProps {
   onClose: (id: string) => void
 }
 
-export function BrowserTab({ projectId }: { projectId: string }) {
+export function BrowserTab({
+  projectId,
+  children
+}: {
+  projectId: string
+  children?: React.ReactNode
+}) {
   const { setFocusedProject, setRoute, route } = useAppContext()
   const runningProjects = useRunningProjects().data
   const focusedProject = useFocusedProject()
   const isActive = projectId === focusedProject?.cwd && route === 'webview'
 
-  const project = runningProjects.find((p) => p.cwd === projectId)
+  const project = runningProjects.find((p) => deriveRunningProjectId(p) === projectId)
   const killProjectMutation = useMutation({
     mutationFn: async (opts: { pid: number }) => {
       await client.killProject(opts)
@@ -50,13 +57,15 @@ export function BrowserTab({ projectId }: { projectId: string }) {
         startTransition(() => {
           setRoute('webview')
           setFocusedProject({
-            projectId: project.cwd,
-            focusedTerminalId: null! // uh
+            projectId: deriveRunningProjectId(project),
+            focusedTerminalId: null!, // uh
+            projectCwd: project.cwd
           })
         })
       }}
     >
       <div className="flex-1 truncate text-sm font-normal">{project.cwd.split('/').pop()}</div>
+      {children}
 
       {/* {project.} */}
       <button

@@ -3,21 +3,44 @@ import { RunningProject, ListneingProject } from '@shared/types'
 import { useRunningProjects } from './use-running-projects'
 import { iife } from '@renderer/lib/utils'
 
-export type GroupedProject = {}
+export type GroupedProject = {
+  cwdGroup: string
+  projects: Array<RunningProject>
+}
 
 export function useGroupedProjects() {
   const runningProjects = useRunningProjects()
   const groupedProjects = iife(() => {
-    if (!runningProjects.data) return []
     const groups = new Map<string, GroupedProject>()
 
-    for (const project of runningProjects.data) {
-    }
-    return null!
+    runningProjects.data.forEach((project) => {
+      /**
+       * what is the starting project case?
+       *
+       * when we're starting we should be able to open the tab (wait, that's handled), right so grouped project
+       * is just a pure wrapper over runningproject and then we use the same handler to handle the starting project case
+       *
+       *
+       * okay that's fine
+       */
+
+      const existing = groups.get(project.cwd)
+
+      if (!existing) {
+        const newItem: GroupedProject = {
+          cwdGroup: project.cwd,
+          projects: [project]
+        }
+
+        groups.set(project.cwd, newItem)
+        return
+      }
+
+      existing.projects.push(project)
+    })
+    return [ ...groups.values() ]
+
   })
 
-  return {
-    ...runningProjects,
-    data: groupedProjects
-  }
+  return groupedProjects
 }

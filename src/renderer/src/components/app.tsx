@@ -12,6 +12,7 @@ import { TerminalInstance, FocusedProject, AppContext } from '@renderer/app-cont
 import { AppLayout } from './app-layout'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { useProjects } from '@renderer/hooks/use-projects'
+import { deriveRunningProjectId } from '@renderer/lib/utils'
 
 export default function App() {
   const client = new QueryClient()
@@ -128,7 +129,8 @@ const AppLoader = () => {
       setFocusedProject({
         focusedTerminalId:
           firstProjectTerminals.length > 0 ? firstProjectTerminals[0].terminalId : '',
-        projectId: firstProject.cwd
+        projectId: deriveRunningProjectId(firstProject),
+        projectCwd: firstProject.cwd
       })
     }
   }, [firstProject, firstProjectTerminals])
@@ -143,28 +145,37 @@ const AppLoader = () => {
         const byProject: Record<string, number> = {}
         for (const t of terminals) byProject[t.projectId] = (byProject[t.projectId] || 0) + 1
 
-        const missing = running
-          .map((p) => p.cwd)
-          .filter((cwd) => !byProject[cwd] && !creatingTerminalsRef.current.has(cwd))
+        const missing = running.filter((project) => {
+          const projectId = deriveRunningProjectId(project)
+          return !byProject[projectId] && !creatingTerminalsRef.current.has(projectId)
+        })
 
         if (missing.length === 0) return
 
-        missing.forEach((cwd) => creatingTerminalsRef.current.add(cwd))
+        missing.forEach((project) => {
+          const projectId = deriveRunningProjectId(project)
+          creatingTerminalsRef.current.add(projectId)
+        })
 
         await Promise.all(
-          missing.map(async (cwd) => {
+          missing.map(async (project) => {
+            const projectId = deriveRunningProjectId(project)
             try {
-              const created = await v2Client.terminalV2Create({ cwd })
-              setTerminals((prev) => [...prev, { terminalId: created.id, projectId: cwd }])
+              const created = await v2Client.terminalV2Create({ cwd: project.cwd })
+              setTerminals((prev) => [...prev, { terminalId: created.id, projectId: projectId }])
               setFocusedProject((prev) => {
-                if (!prev || prev.projectId === cwd) {
-                  return { projectId: cwd, focusedTerminalId: created.id }
+                if (!prev || prev.projectId === deriveRunningProjectId(project)) {
+                  return {
+                    projectId: projectId,
+                    focusedTerminalId: created.id,
+                    projectCwd: project.cwd
+                  }
                 }
                 return prev
               })
             } catch {
             } finally {
-              creatingTerminalsRef.current.delete(cwd)
+              creatingTerminalsRef.current.delete(projectId)
             }
           })
         )
