@@ -5,6 +5,7 @@ import * as os from 'os'
 import { Terminal as HeadlessTerminal } from '@xterm/headless'
 import { SerializeAddon } from '@xterm/addon-serialize'
 import type { RendererHandlers } from './renderer-handlers'
+import { title } from 'process'
 
 type DataChunk = { seq: number; data: string }
 
@@ -86,16 +87,16 @@ export class TerminalManagerV2 {
     let startSent = false
 
     // Fallback: if PTY is silent, still attempt to send start after a short delay
-    if (startCmd) {
-      setTimeout(() => {
-        if (!startSent) {
-          try {
-            p.write(startCmd + '\r')
-            startSent = true
-          } catch {}
-        }
-      }, 200)
-    }
+    // if (startCmd) {
+    //   setTimeout(() => {
+    //     if (!startSent) {
+    //       try {
+    //         p.write(startCmd + '\r')
+    //         startSent = true
+    //       } catch {}
+    //     }
+    //   }, 200)
+    // }
 
     const onData = (data: string) => {
       term.write(data)
@@ -204,6 +205,7 @@ export class TerminalManagerV2 {
   }
 
   reconnect(id: string) {
+    // > It's recommended that you write the serialized data into a terminal of the same size in which it originated from and then resize it after if needed.
     const session = this.sessions.get(id)
     if (!session) return { success: false as const }
     const snapshot = session.serializer.serialize()
