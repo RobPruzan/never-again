@@ -59,6 +59,13 @@ export const useFocusedProject = () => {
     // valid invariant case: what if there is already one up and you are picking between 2
     // no, u will never try to create a project when there is one up for now in this flow
     // in the future you might which will be icky, can rethink it then don't need to prefire rn
+
+
+    // the preference to this would be to indicate you want the starting project
+    // and then you programatically listen for an event from the server when the
+    // exact moment the server starts, but we can't time that we just poll so its fundamentally a race
+    // so this is really the only good non effect solution i can think of which i think is fine
+    // the worst part is matching the id with a string which can change and will likely cause a bug
     const isStartingProject = focusedProject.projectId.startsWith('starting')
     const listeningProjects = runningProjectsQuery.data.filter(
       (project) => project.runningKind === 'listening' && project.cwd === focusedProject.projectCwd

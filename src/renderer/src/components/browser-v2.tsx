@@ -222,30 +222,28 @@ const StartingProject = ({
           )}
 
           <div className="relative flex flex-col items-center">
-            <div className="p-6 rounded-full ring-1 ring-white/10 bg-black">
-              {favicon ? (
-                <img
-                  src={favicon}
-                  alt="project favicon"
-                  className="w-24 h-24 rounded-md drop-shadow-[0_0_24px_rgba(255,255,255,0.08)]"
-                  draggable={false}
+            {favicon ? (
+              <img
+                src={favicon}
+                alt="project favicon"
+                className="w-24 h-24 rounded-md drop-shadow-[0_0_24px_rgba(255,255,255,0.08)]"
+                draggable={false}
+              />
+            ) : (
+              <svg
+                viewBox="0 0 24 24"
+                className="w-24 h-24 text-white/70 drop-shadow-[0_0_24px_rgba(255,255,255,0.08)]"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
                 />
-              ) : (
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-24 h-24 text-white/70 drop-shadow-[0_0_24px_rgba(255,255,255,0.08)]"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
-              )}
-            </div>
+              </svg>
+            )}
           </div>
         </div>
       )
