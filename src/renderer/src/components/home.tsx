@@ -144,9 +144,9 @@ export const Home = () => {
           hasFavicon: m?.hasFavicon ?? false
         }
       })
-    },
-    staleTime: 60_000,
-    gcTime: 5 * 60_000
+    }
+    // staleTime: 60_000,
+    // gcTime: 5 * 60_000
   })
 
   const filteredProjects = React.useMemo(() => {

@@ -173,18 +173,60 @@ const StartingProject = ({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.06),_transparent_60%)]" />
           </div>
 
-          {/* Layered subtle rotating rainbow glimmer behind the logo */}
+          {/* Cloudy mysterious glow */}
           <div
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
             aria-hidden
           >
-            <div className="w-[720px] h-[720px] rounded-full blur-[60px] opacity-10 animate-[spin_120s_linear_infinite] bg-[conic-gradient(from_180deg_at_50%_50%,_#7928CA,_#0070F3,_#00DFD8,_#F5A623,_#FF0080,_#7928CA)]" />
-            <div className="w-[560px] h-[560px] rounded-full blur-3xl opacity-20 animate-[spin_48s_linear_infinite] bg-[conic-gradient(from_0deg_at_50%_50%,_#FF0080,_#7928CA,_#0070F3,_#00DFD8,_#F5A623,_#FF0080)]" />
-            <div className="w-[420px] h-[420px] rounded-full blur-2xl opacity-20 mix-blend-screen animate-[spin_70s_linear_infinite_reverse] bg-[conic-gradient(from_90deg_at_50%_50%,_#00DFD8,_#F5A623,_#FF0080,_#7928CA,_#0070F3,_#00DFD8)]" />
+            <div
+              className="w-96 h-48 opacity-30 blur-3xl bg-gradient-to-r from-red-500/50 via-yellow-500/50 via-green-500/50 via-blue-500/50 to-purple-500/50"
+              style={{
+                animation: 'float1 8s ease-in-out infinite',
+                borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%'
+              }}
+            />
+            <div
+              className="w-80 h-40 opacity-35 blur-2xl bg-gradient-to-l from-pink-500/60 via-purple-500/60 via-blue-500/60 via-cyan-500/60 to-green-500/60 absolute"
+              style={{
+                animation: 'float2 6s ease-in-out infinite',
+                borderRadius: '40% 60% 70% 30% / 40% 70% 30% 60%',
+                animationDelay: '-1s'
+              }}
+            />
+            <div
+              className="w-72 h-36 opacity-25 blur-xl bg-gradient-to-br from-orange-400/40 via-red-400/40 via-pink-400/40 via-purple-400/40 to-indigo-400/40 absolute"
+              style={{
+                animation: 'float3 7s ease-in-out infinite',
+                borderRadius: '70% 30% 40% 60% / 30% 60% 40% 70%',
+                animationDelay: '-3s'
+              }}
+            />
           </div>
 
+          <style jsx>{`
+            @keyframes float1 {
+              0% { transform: translateY(0px) translateX(0px) rotate(-15deg) scale(1); }
+              25% { transform: translateY(-30px) translateX(15px) rotate(-5deg) scale(1.1); }
+              50% { transform: translateY(-10px) translateX(-20px) rotate(5deg) scale(0.9); }
+              75% { transform: translateY(20px) translateX(10px) rotate(-10deg) scale(1.05); }
+              100% { transform: translateY(0px) translateX(0px) rotate(-15deg) scale(1); }
+            }
+            @keyframes float2 {
+              0% { transform: translateY(0px) translateX(0px) rotate(25deg) scale(1); }
+              30% { transform: translateY(25px) translateX(-15px) rotate(35deg) scale(0.95); }
+              60% { transform: translateY(-15px) translateX(20px) rotate(15deg) scale(1.08); }
+              100% { transform: translateY(0px) translateX(0px) rotate(25deg) scale(1); }
+            }
+            @keyframes float3 {
+              0% { transform: translateY(0px) translateX(0px) rotate(45deg) scale(1); }
+              40% { transform: translateY(-20px) translateX(-10px) rotate(55deg) scale(1.12); }
+              80% { transform: translateY(15px) translateX(25px) rotate(35deg) scale(0.88); }
+              100% { transform: translateY(0px) translateX(0px) rotate(45deg) scale(1); }
+            }
+          `}</style>
+
           <div className="relative flex flex-col items-center">
-            <div className="p-6 rounded-full ring-1 ring-white/10">
+            <div className="p-6 rounded-full ring-1 ring-white/10 bg-black">
               <svg
                 viewBox="0 0 100 87"
                 className="w-24 h-24 text-white/90 drop-shadow-[0_0_24px_rgba(255,255,255,0.08)]"

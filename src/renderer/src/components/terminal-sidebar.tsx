@@ -295,7 +295,7 @@ export function MainSidebar() {
                       }}
                     >
                       <Terminalv2
-                        startCommand={'opencode'}
+                        startCommand={'claude ---dangerously-skip-permissions'}
                         terminalId={tab.terminalId}
                         cwd={terminalCwd}
                         // onReady={(sessionId) => handleTerminalReady(tab.terminalId, sessionId)}

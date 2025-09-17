@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Terminal as XTerm } from '@xterm/xterm'
 import { FitAddon } from '@xterm/addon-fit'
-import { SerializeAddon as SerializeAddonRender } from '@xterm/addon-serialize'
+import { SerializeAddon } from '@xterm/addon-serialize'
 import '@xterm/xterm/css/xterm.css'
 import {
   v2Client,
@@ -16,46 +16,9 @@ type TerminalV2Props = {
   startCommand?: string | string[]
 }
 
-function useTerminalResize(terminal: XTerm | null, fitAddon: FitAddon | null) {
-  const handleResize = useCallback(() => {
-    if (terminal && fitAddon) {
-      try {
-        fitAddon.fit()
-      } catch (error) {
-        console.warn('Terminal resize failed:', error)
-      }
-    }
-  }, [terminal, fitAddon])
-
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver(handleResize)
-
-    if (terminal) {
-      const element = terminal.element
-      if (element?.parentElement) {
-        resizeObserver.observe(element.parentElement)
-      }
-    }
-
-    window.addEventListener('resize', handleResize)
-
-    return () => {
-      resizeObserver.disconnect()
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [handleResize, terminal])
-
-  return handleResize
-}
-
-export function Terminalv2({ terminalId, cwd, startCommand }: TerminalV2Props) {
-  const containerRef = useRef<HTMLDivElement>(null)
+function useTerminalSetup(containerRef: React.RefObject<HTMLDivElement | null>) {
   const [terminal, setTerminal] = useState<XTerm | null>(null)
   const [fitAddon, setFitAddon] = useState<FitAddon | null>(null)
-  const [sessionId, setSessionId] = useState<string | null>(null)
-  const [isReconnecting, setIsReconnecting] = useState(false)
-
-  const handleResize = useTerminalResize(terminal, fitAddon)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -93,123 +56,111 @@ export function Terminalv2({ terminalId, cwd, startCommand }: TerminalV2Props) {
     })
 
     const fit = new FitAddon()
-    const serializer = new SerializeAddonRender()
-
     term.loadAddon(fit)
-    term.loadAddon(serializer)
-
+    term.loadAddon(new SerializeAddon())
     term.open(containerRef.current)
+    fit.fit()
 
     setTerminal(term)
     setFitAddon(fit)
-
-    setTimeout(() => fit.fit(), 0)
 
     return () => {
       term.dispose()
       setTerminal(null)
       setFitAddon(null)
     }
-  }, [])
+  }, [containerRef])
+
+  return { terminal, fitAddon }
+}
+
+function useTerminalSession(terminal: XTerm | null, terminalId?: string, cwd?: string | null, startCommand?: string | string[]) {
+  const [sessionId, setSessionId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!terminal || !fitAddon) return
+    if (!terminal) return
 
-    const initializeTerminal = async () => {
-      try {
-        let activeSessionId = terminalId
-
-        if (activeSessionId) {
-          setIsReconnecting(true)
-          const reconnectResult = await v2Client.terminalV2Reconnect(activeSessionId)
-
-          if (reconnectResult.success) {
-            terminal.resize(reconnectResult.cols, reconnectResult.rows)
-            terminal.write(reconnectResult.snapshot)
-            setTimeout(() => {
-              fitAddon.fit()
-              if (terminal && fitAddon) {
-                const { cols, rows } = terminal
-                v2Client.terminalV2Resize({ id: activeSessionId!, cols, rows })
-              }
-            }, 10)
-          } else {
-            const createResult = await v2Client.terminalV2Create({
-              cwd: cwd || undefined,
-              startCommand
-            })
-            activeSessionId = createResult.id
-          }
-          setIsReconnecting(false)
-        } else {
-          const createResult = await v2Client.terminalV2Create({
-            cwd: cwd || undefined,
-            startCommand
-          })
-          activeSessionId = createResult.id
+    const initSession = async () => {
+      if (terminalId) {
+        const reconnect = await v2Client.terminalV2Reconnect(terminalId)
+        if (reconnect.success) {
+          terminal.resize(reconnect.cols, reconnect.rows)
+          terminal.write(reconnect.snapshot)
+          setSessionId(terminalId)
+          return
         }
-
-        setSessionId(activeSessionId)
-
-        terminal.onData((data) => {
-          if (activeSessionId) {
-            v2Client.terminalV2Write({ id: activeSessionId, data })
-          }
-        })
-
-        terminal.onResize(({ cols, rows }) => {
-          if (activeSessionId) {
-            v2Client.terminalV2Resize({ id: activeSessionId, cols, rows })
-          }
-        })
-
-      } catch (error) {
-        console.error('Failed to initialize terminal:', error)
-        setIsReconnecting(false)
       }
+
+      const session = await v2Client.terminalV2Create({
+        cwd: cwd || undefined,
+        startCommand
+      })
+      setSessionId(session.id)
     }
 
-    initializeTerminal()
-  }, [terminal, fitAddon, terminalId, cwd, startCommand])
+    initSession()
+  }, [terminal, terminalId, cwd, startCommand])
+
+  return sessionId
+}
+
+function useTerminalEvents(terminal: XTerm | null, sessionId: string | null) {
+  useEffect(() => {
+    if (!terminal || !sessionId) return
+
+    terminal.onData((data) => {
+      v2Client.terminalV2Write({ id: sessionId, data })
+    })
+
+    terminal.onResize(({ cols, rows }) => {
+      v2Client.terminalV2Resize({ id: sessionId, cols, rows })
+    })
+  }, [terminal, sessionId])
 
   useEffect(() => {
     if (!sessionId) return
 
-    const unsubscribeData = subscribeTerminalV2Data(sessionId, ({ data }) => {
-      if (terminal) {
-        terminal.write(data)
-      }
-    })
+    const unsubs = [
+      subscribeTerminalV2Data(sessionId, ({ data }) => terminal?.write(data)),
+      subscribeTerminalV2Exit(sessionId, () => {}),
+      subscribeTerminalV2Title(sessionId, () => {})
+    ]
 
-    const unsubscribeExit = subscribeTerminalV2Exit(sessionId, ({ exitCode }) => {
-      console.log(`Terminal ${sessionId} exited with code ${exitCode}`)
-    })
+    return () => unsubs.forEach(unsub => unsub())
+  }, [sessionId, terminal])
+}
 
-    const unsubscribeTitle = subscribeTerminalV2Title(sessionId, ({ title }) => {
-      console.log(`Terminal ${sessionId} title changed to: ${title}`)
-    })
+function useTerminalResize(terminal: XTerm | null, fitAddon: FitAddon | null) {
+  useEffect(() => {
+    if (!terminal || !fitAddon) return
+
+    const handleResize = () => fitAddon.fit()
+    const resizeObserver = new ResizeObserver(handleResize)
+
+    if (terminal.element?.parentElement) {
+      resizeObserver.observe(terminal.element.parentElement)
+    }
+
+    window.addEventListener('resize', handleResize)
 
     return () => {
-      unsubscribeData()
-      unsubscribeExit()
-      unsubscribeTitle()
+      resizeObserver.disconnect()
+      window.removeEventListener('resize', handleResize)
     }
-  }, [sessionId, terminal])
+  }, [terminal, fitAddon])
+}
 
-  useEffect(() => {
-    if (terminal && fitAddon && !isReconnecting) {
-      setTimeout(handleResize, 100)
-    }
-  }, [terminal, fitAddon, handleResize, isReconnecting])
+export function Terminalv2({ terminalId, cwd, startCommand }: TerminalV2Props) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { terminal, fitAddon } = useTerminalSetup(containerRef)
+  const sessionId = useTerminalSession(terminal, terminalId, cwd, startCommand)
+
+  useTerminalEvents(terminal, sessionId)
+  useTerminalResize(terminal, fitAddon)
 
   return (
     <div className="h-full w-full bg-[#0A0A0A] px-2 pt-2 flex relative">
       <div ref={containerRef} className="flex-1 min-h-0" />
-      {isReconnecting && (
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="text-white">Reconnecting...</div>
-        </div>
-      )}
     </div>
   )
 }

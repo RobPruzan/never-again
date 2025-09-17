@@ -68,6 +68,7 @@ export function BrowserTab({ projectId }: { projectId: string }) {
           // })
 
           // really we just need the pid, what am i doing
+          setRoute('home')
           killProjectMutation.mutate({
             pid: project.pid
           })
