@@ -10,7 +10,7 @@ import { UpdateURLPalette } from './update-url'
 // import { Home } from '@renderer/home'
 // import { iife } from '@renderer/lib/utils'
 // import { TabSwitcher } from './TabSwitcher'
-import { TerminalSidebar } from './terminal-sidebar'
+import { MainSidebar } from './terminal-sidebar'
 import { useAppContext, useFocusedProject } from '@renderer/app-context'
 import { TabBar } from './tab-bar'
 import { Home } from './home'
@@ -146,7 +146,7 @@ const WebContentViewArea = () => {
 
         <ResizableHandle className="bg-[#1A1A1A]" withHandle={false} />
         <ResizablePanel defaultSize={20}>
-          <TerminalSidebar />
+          <MainSidebar />
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

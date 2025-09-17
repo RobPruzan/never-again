@@ -273,24 +273,19 @@ export const createRouter = ({
       }, input.projectPath)
     })
     const startedProjectCwd = startRes.project.cwd
-    
-
-
-
-
 
     // this ensures that the project is discoverable as a started project before we determine if its in listening state
     // previously we relied on the startProjectIndexing race condition
     await new Promise<Awaited<ReturnType<typeof detectDevServersForDir>>>((resolve) => {
       const poll = async () => {
         const servers = await detectDevServersForDir(homedir())
-        const matchingServer = servers.find(server => server.cwd === startedProjectCwd)
-        
+        const matchingServer = servers.find((server) => server.cwd === startedProjectCwd)
+
         if (matchingServer) {
           resolve(servers)
           return
         }
-        
+
         setTimeout(poll, 100)
       }
       poll()
@@ -333,12 +328,13 @@ export const createRouter = ({
     // typescript stinks here
     // startingProjects should be a getter not property due to timing issues with stale state
     const starting: Array<RunningProject> = startingProjectsArr
-    
+
     // dedup: if there's a listening project, discard the starting one
-    const filteredStarting = starting.filter(startingProject => 
-      !listening.some(listeningProject => listeningProject.cwd === startingProject.cwd)
+    const filteredStarting = starting.filter(
+      (startingProject) =>
+        !listening.some((listeningProject) => listeningProject.cwd === startingProject.cwd)
     )
-    
+
     const runningProjects = filteredStarting.concat(listening)
     console.log('returned running projects what do we got', runningProjects)
 
@@ -537,6 +533,7 @@ export const createRouter = ({
   toggleDevTools: t.procedure.action(async () => {
     return browser.toggleDevTools()
   }),
+
   openDevToolsPanel: t.procedure.input<string>().action(async ({ input }) => {
     return browser.openDevToolsPanel(input)
   }),
@@ -606,7 +603,7 @@ export const createRouter = ({
 
   // V2 Headless terminal API
   terminalV2Create: t.procedure
-    .input<undefined | { cwd?: string; shell?: string }>()
+    .input<undefined | { cwd?: string; shell?: string; startCommand?: string | string[] }>()
     .action(async ({ input }) => {
       const mgr = TerminalManagerV2.getInstance()
       if (!mgr) throw new Error('TerminalManagerV2 not initialized')

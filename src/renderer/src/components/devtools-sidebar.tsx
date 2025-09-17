@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MousePointer2, Bug, Camera, Command, Code2 } from 'lucide-react'
+import { MousePointer2, Bug, Camera, Command, Code2, PanelBottom } from 'lucide-react'
 import { client } from '@renderer/lib/tipc'
 import { useAppContext, useFocusedProject } from '@renderer/app-context'
 // import { useAppContext, useFocusedProject } from './app-context'
@@ -35,12 +35,17 @@ export function DevToolsSidebar() {
       icon: <Code2 className="w-4 h-4" />,
       title: 'Open in editor',
       id: 'open-in-editor' as const
+    },
+    {
+      icon: <PanelBottom className="w-4 h-4" />,
+      title: 'Bottom Panel',
+      id: 'bottom-panel' as const
     }
   ]
   const focusedProject = useFocusedProject()
 
   const handleToolClick = async (
-    toolId: 'screenshot' | 'devtools' | 'command-palette' | 'open-in-editor'
+    toolId: 'screenshot' | 'devtools' | 'command-palette' | 'open-in-editor' | 'bottom-panel'
   ) => {
     setActiveTool(toolId)
 
@@ -54,11 +59,10 @@ export function DevToolsSidebar() {
       }
       case 'command-palette': {
         setCommandPaletteOpen(true)
-        setActiveTool(null)
         break
       }
       case 'devtools': {
-        await client.toggleDevTools()
+        await client.toggleDevTools() // todo toggle state correctly
         setActiveTool(null)
         break
       }
@@ -69,6 +73,11 @@ export function DevToolsSidebar() {
         window.open(uri, '_blank')
         setActiveTool(null)
         break
+      }
+      case 'bottom-panel': {
+        setActiveTool(null)
+
+        // setActiveTool(null)
       }
       // case 'inspector': {
       //   // todo might delete

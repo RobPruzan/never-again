@@ -140,7 +140,134 @@ export const browserController = {
         menu.popup()
       })
       view.webContents.on('devtools-opened', () => {
-        //   const devToolsWebContents = view.webContents.devToolsWebContents
+          const devToolsWebContents = view.webContents.devToolsWebContents
+        if (devToolsWebContents) {
+          // devToolsWebContents.executeJavaScript(`
+          //   const style = document.createElement('style');
+          //   style.textContent = \`
+          //     body, html, .tabbed-pane, .widget, .panel, .toolbar, 
+          //     .console-view, .sources, .network, .elements, .inspector-view,
+          //     .vbox, .hbox, .flex-auto, .flex-none, .panel-sidebar,
+          //     .sidebar-pane, .tabbed-pane-content, .tabbed-pane-header,
+          //     .tabbed-pane-header-tab, .console-group-messages,
+          //     .console-message, .console-object, .source-frame,
+          //     .text-editor, .CodeMirror, .tree-outline, .data-grid,
+          //     .split-widget, .split-widget-sidebar, .split-widget-main,
+          //     .chrome-select, input, select, textarea, .toolbar-item,
+          //     .toolbar-button, .inspector-main-toolbar, .inspector-footer,
+          //     .inspector-view-tabbed-pane .tabbed-pane-header,
+          //     .drawer, .drawer-contents, .console-toolbar,
+          //     .toolbar-container, .toolbar-shadow, .drawer-header,
+          //     .main-tabbed-pane .tabbed-pane-header,
+          //     .inspector-view-tabbed-pane > .tabbed-pane-header,
+          //     div[class*="tabbed-pane-header"], div[class*="inspector-view"],
+          //     .tabbed-pane-header-tabs, .tabbed-pane-header-tabs-drop-down-container,
+          //     .inspector-view-tabbed-pane, .main-tabbed-pane {
+          //       background-color: #0A0A0A !important;
+          //       background: #0A0A0A !important;
+          //     }
+              
+          //     .tabbed-pane-header {
+          //       border-bottom: 1px solid #1A1A1A !important;
+          //     }
+              
+          //     .tabbed-pane-header-tab {
+          //       border-right: 1px solid #1A1A1A !important;
+          //     }
+              
+          //     .toolbar {
+          //       border-bottom: 1px solid #1A1A1A !important;
+          //     }
+              
+          //     /* Target the specific top tab bar area */
+          //     .main .tabbed-pane-header,
+          //     .inspector-view > .tabbed-pane-header,
+          //     .tabbed-pane-header-tabs,
+          //     [class*="inspector-view"] > [class*="tabbed-pane-header"],
+          //     [aria-label*="panel"] .tabbed-pane-header {
+          //       background-color: #0A0A0A !important;
+          //       background: #0A0A0A !important;
+          //     }
+              
+          //     /* Override any gray backgrounds from computed styles - including #3C3C3C */
+          //     [style*="#3C3C3C"], [style*="#282828"], [style*="rgb(60, 60, 60)"],
+          //     [style*="rgb(40, 40, 40)"], [style*="background-color: rgb(60, 60, 60)"],
+          //     [style*="background-color: rgb(40, 40, 40)"], [style*="background-color: #3C3C3C"],
+          //     [style*="background-color: #282828"] {
+          //       background-color: #0A0A0A !important;
+          //       background: #0A0A0A !important;
+          //     }
+              
+          //     /* Additional selectors for elements that might have #3C3C3C */
+          //     .toolbar-background, .inspector-view-toolbar, .console-pinpane,
+          //     .tabbed-pane-placeholder, .split-widget-resizer, .toolbar-background,
+          //     .inspector-view-header, .console-status-bar {
+          //       background-color: #0A0A0A !important;
+          //       background: #0A0A0A !important;
+          //     }
+          //   \`;
+          //   document.head.appendChild(style);
+            
+          //   // More aggressive targeting for the top tab bar
+          //   const updateTopTabBar = () => {
+          //     // Look for the main inspector view container
+          //     const inspectorView = document.querySelector('.inspector-view');
+          //     if (inspectorView) {
+          //       const header = inspectorView.querySelector('.tabbed-pane-header');
+          //       if (header) {
+          //         header.style.backgroundColor = '#0A0A0A';
+          //         header.style.background = '#0A0A0A';
+          //       }
+          //     }
+              
+          //     // Also target any direct tabbed-pane-header in the main area
+          //     document.querySelectorAll('.main .tabbed-pane-header, .tabbed-pane-header').forEach(el => {
+          //       el.style.backgroundColor = '#0A0A0A';
+          //       el.style.background = '#0A0A0A';
+          //     });
+          //   };
+            
+          //   // Override any existing inline styles with gray backgrounds
+          //   const observer = new MutationObserver(() => {
+          //     updateTopTabBar();
+              
+          //     document.querySelectorAll('[style*="#3C3C3C"], [style*="#282828"], [style*="rgb(60, 60, 60)"], [style*="rgb(40, 40, 40)"]').forEach(el => {
+          //       el.style.backgroundColor = '#0A0A0A';
+          //       el.style.background = '#0A0A0A';
+          //     });
+              
+          //     // Also check computed styles and override
+          //     document.querySelectorAll('*').forEach(el => {
+          //       const computed = getComputedStyle(el);
+          //       if (computed.backgroundColor === 'rgb(60, 60, 60)' || 
+          //           computed.backgroundColor === 'rgb(40, 40, 40)' ||
+          //           computed.backgroundColor === '#3C3C3C' ||
+          //           computed.backgroundColor === '#282828') {
+          //         el.style.backgroundColor = '#0A0A0A';
+          //         el.style.background = '#0A0A0A';
+          //       }
+          //     });
+          //   });
+          //   observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+            
+          //   // Run initial scan including top tab bar update
+          //   updateTopTabBar();
+          //   document.querySelectorAll('*').forEach(el => {
+          //     const computed = getComputedStyle(el);
+          //     if (computed.backgroundColor === 'rgb(60, 60, 60)' || 
+          //         computed.backgroundColor === 'rgb(40, 40, 40)' ||
+          //         computed.backgroundColor === '#3C3C3C' ||
+          //         computed.backgroundColor === '#282828') {
+          //       el.style.backgroundColor = '#0A0A0A';
+          //       el.style.background = '#0A0A0A';
+          //     }
+          //   });
+            
+          //   // Run the update again after a short delay to catch dynamically loaded content
+          //   setTimeout(updateTopTabBar, 100);
+          //   setTimeout(updateTopTabBar, 500);
+          // `);
+        }
         //   console.log('devtools web contents', devToolsWebContents)
         //   if (!devToolsWebContents) return
         //   // i dont think this is needed tbh

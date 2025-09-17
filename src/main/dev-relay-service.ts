@@ -1,5 +1,4 @@
 import { spawn, ChildProcess } from 'node:child_process'
-import { homedir } from 'node:os'
 import { createServer, Socket, connect } from 'node:net'
 import { unlinkSync, existsSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
@@ -8,6 +7,19 @@ import { StartingProject } from '../shared/types'
 
 /**
  * thsi is also an awful name!
+ */
+
+/**
+ *
+ * i dont even understand how this socket totally works yet e2e
+ *
+ * i think how it works is:
+ * - starter creates metadata file
+ * - created socket to mirror process/channel for general communication
+ * - exposes a way to connect to the socket (but anyone really can connect if they discover it, but thats a private impl detail technically)
+ *
+ *
+ * whats the cli called
  */
 export class DevRelayService {
   private servers = new Map<
@@ -42,10 +54,10 @@ export class DevRelayService {
       }
     }
     proc.stdout?.on('data', (d) => {
-      // forward(d, false)
+      forward(d, false)
     })
     proc.stderr?.on('data', (d) => {
-      // forward(d, true)
+      forward(d, true)
     })
 
     server.on('connection', (sockConn) => {

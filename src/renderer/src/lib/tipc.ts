@@ -167,7 +167,11 @@ type V2Reconnect = (input: string) => Promise<
   | { success: false }
 >
 export const v2Client = client as typeof client & {
-  terminalV2Create: (input?: { cwd?: string; shell?: string }) => Promise<{
+  terminalV2Create: (input?: {
+    cwd?: string
+    shell?: string
+    startCommand?: string | string[]
+  }) => Promise<{
     id: string
     title: string
     cwd: string

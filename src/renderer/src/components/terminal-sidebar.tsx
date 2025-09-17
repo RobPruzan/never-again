@@ -18,8 +18,10 @@ import { Terminalv2 } from './terminal-v2'
 import { TerminalInstance, useAppContext, useFocusedProject } from '@renderer/app-context'
 import { useBrowserState } from './use-browser-state'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
+import { SwappableSidebarArea } from './swappable-sidebar-area'
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './ui/resizable'
 
-export function TerminalSidebar() {
+export function MainSidebar() {
   const runningProjects = useRunningProjects().data
   const { terminals, setTerminals, setFocusedProject } = useAppContext()
   const focusedProject = useFocusedProject()
@@ -186,130 +188,150 @@ export function TerminalSidebar() {
         </div>
       </div>
 
-      {/* Arc-style Terminal Grid */}
-      <div className="bg-[#0A0A0A] p-2">
-        <div className="flex gap-1.5">
-          {terminals
-            .filter((t) => t.projectId === focusedProject?.cwd)
-            .map((tab, index) => (
-              <div
-                key={tab.terminalId}
-                className={`
+      <div className="flex-1 min-h-0">
+        <ResizablePanelGroup direction="vertical">
+          <ResizablePanel defaultSize={30}>
+            <SwappableSidebarArea />
+          </ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel defaultSize={70}>
+            <div className="flex flex-col h-full min-h-0">
+              {/* Arc-style Terminal Grid */}
+              <div className="bg-[#0A0A0A] p-2">
+                <div className="flex gap-1.5">
+                  {terminals
+                    .filter((t) => t.projectId === focusedProject?.cwd)
+                    .map((tab, index) => (
+                      <div
+                        key={tab.terminalId}
+                        className={`
                 flex-1 relative group cursor-pointer overflow-hidden
                 transition-all duration-200 hover:bg-[#1A1A1A]
               `}
-                onClick={() => handleSelectTab(tab.terminalId)}
-                style={{ height: '42px', borderRadius: '2px' }}
-              >
-                {/* Placeholder Terminal Preview */}
-                <div
-                  className={`w-full h-full border ${tab.terminalId === focusedProject?.focusedTerminalId ? 'bg-[#0F0F0F] border-[#1A1A1A]' : 'bg-[#080808] border-[#151515]'}`}
-                  style={{ borderRadius: '2px' }}
-                >
-                  <div className="w-full h-full flex items-center px-2.5 relative">
-                    {/* Show keyboard shortcut hint */}
-                    {index < 9 && (
-                      <span className="text-[9px] mr-2 font-mono" style={{ color: '#444' }}>
-                        ⌘{index + 1}
-                      </span>
-                    )}
-                    {/* Show process title or terminal icon */}
-                    <span
-                      className={`text-xs truncate flex-1 ${
-                        tab.terminalId === focusedProject?.focusedTerminalId
-                          ? 'text-[#999]'
-                          : 'text-[#555]'
-                      }`}
-                    >
-                      {/* todo */}
-                      {/* {tab.processTitle || `Terminal ${index + 1}`} */}
-                      {`Terminal ${index + 1}`}
-                    </span>
+                        onClick={() => handleSelectTab(tab.terminalId)}
+                        style={{ height: '42px', borderRadius: '2px' }}
+                      >
+                        {/* Placeholder Terminal Preview */}
+                        <div
+                          className={`w-full h-full border ${tab.terminalId === focusedProject?.focusedTerminalId ? 'bg-[#0F0F0F] border-[#1A1A1A]' : 'bg-[#080808] border-[#151515]'}`}
+                          style={{ borderRadius: '2px' }}
+                        >
+                          <div className="w-full h-full flex items-center px-2.5 relative">
+                            {/* Show keyboard shortcut hint */}
+                            {index < 9 && (
+                              <span className="text-[9px] mr-2 font-mono" style={{ color: '#444' }}>
+                                ⌘{index + 1}
+                              </span>
+                            )}
+                            {/* Show process title or terminal icon */}
+                            <span
+                              className={`text-xs truncate flex-1 ${
+                                tab.terminalId === focusedProject?.focusedTerminalId
+                                  ? 'text-[#999]'
+                                  : 'text-[#555]'
+                              }`}
+                            >
+                              {/* todo */}
+                              {/* {tab.processTitle || `Terminal ${index + 1}`} */}
+                              {`Terminal ${index + 1}`}
+                            </span>
 
-                    {/* Close button */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        closeTerminal(tab.terminalId)
-                      }}
-                      className="ml-1 p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-[#1A1A1A] transition-opacity"
-                    >
-                      <X className="w-2.5 h-2.5" style={{ color: '#555' }} />
-                    </button>
-                  </div>
+                            {/* Close button */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                closeTerminal(tab.terminalId)
+                              }}
+                              className="ml-1 p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-[#1A1A1A] transition-opacity"
+                            >
+                              <X className="w-2.5 h-2.5" style={{ color: '#555' }} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                  {/* Add Terminal Button */}
+                  <button
+                    onClick={createNewTerminal}
+                    className="flex-shrink-0 cursor-pointer border border-dashed hover:bg-[#0F0F0F] transition-all flex items-center justify-center group"
+                    style={{
+                      width: '42px',
+                      height: '42px',
+                      borderColor: '#1A1A1A',
+                      borderRadius: '2px'
+                    }}
+                    title="New Terminal"
+                  >
+                    <Plus className="w-5 h-5 transition-colors" style={{ color: '#444' }} />
+                  </button>
                 </div>
               </div>
-            ))}
 
-          {/* Add Terminal Button */}
-          <button
-            onClick={createNewTerminal}
-            className="flex-shrink-0 cursor-pointer border border-dashed hover:bg-[#0F0F0F] transition-all flex items-center justify-center group"
-            style={{ width: '42px', height: '42px', borderColor: '#1A1A1A', borderRadius: '2px' }}
-            title="New Terminal"
-          >
-            <Plus className="w-5 h-5 transition-colors" style={{ color: '#444' }} />
-          </button>
-        </div>
-      </div>
+              {/* Terminal content */}
+              <div className="flex-1 min-h-0 relative overflow-hidden">
+                {/* Render ALL terminals but only show ones for active project and active tab */}
+                {terminals.map((tab) => {
+                  // Find the CWD for this terminal's project
+                  const project = runningProjects.find((p) => p.cwd === tab.projectId)
+                  const terminalCwd =
+                    project?.cwd ||
+                    (tab.terminalId === focusedProject?.focusedTerminalId
+                      ? project?.cwd
+                      : undefined)
 
-      {/* Terminal content */}
-      <div className="flex-1 relative overflow-hidden">
-        {/* Render ALL terminals but only show ones for active project and active tab */}
-        {terminals.map((tab) => {
-          // Find the CWD for this terminal's project
-          const project = runningProjects.find((p) => p.cwd === tab.projectId)
-          const terminalCwd =
-            project?.cwd ||
-            (tab.terminalId === focusedProject?.focusedTerminalId ? project?.cwd : undefined)
+                  const isVisible =
+                    tab.projectId === focusedProject?.cwd &&
+                    tab.terminalId === focusedProject?.focusedTerminalId
 
-          const isVisible =
-            tab.projectId === focusedProject?.cwd &&
-            tab.terminalId === focusedProject?.focusedTerminalId
+                  return (
+                    <div
+                      key={tab.terminalId}
+                      className="absolute inset-0 overflow-hidden"
+                      style={{
+                        visibility: isVisible ? 'visible' : 'hidden',
+                        pointerEvents: isVisible ? 'auto' : 'none',
+                        opacity: isVisible ? '1' : '0'
+                      }}
+                    >
+                      <Terminalv2
+                        startCommand={'opencode'}
+                        terminalId={tab.terminalId}
+                        cwd={terminalCwd}
+                        // onReady={(sessionId) => handleTerminalReady(tab.terminalId, sessionId)}
+                        // onExit={() => handleTerminalExit(tab.terminalId)}
+                        // isActive={isVisible}
+                      />
+                    </div>
+                  )
+                })}
 
-          return (
-            <div
-              key={tab.terminalId}
-              className="absolute inset-0 overflow-hidden"
-              style={{
-                visibility: isVisible ? 'visible' : 'hidden',
-                pointerEvents: isVisible ? 'auto' : 'none',
-                opacity: isVisible ? '1' : '0'
-              }}
-            >
-              <Terminalv2
-                terminalId={tab.terminalId}
-                cwd={terminalCwd}
-                // onReady={(sessionId) => handleTerminalReady(tab.terminalId, sessionId)}
-                // onExit={() => handleTerminalExit(tab.terminalId)}
-                isActive={isVisible}
-              />
-            </div>
-          )
-        })}
+                {!focusedProject?.cwd && (
+                  <div className="flex items-center justify-center h-full text-gray-500">
+                    <div className="text-center">
+                      <p>Select a project tab to open terminals</p>
+                    </div>
+                  </div>
+                )}
 
-        {!focusedProject?.cwd && (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            <div className="text-center">
-              <p>Select a project tab to open terminals</p>
-            </div>
-          </div>
-        )}
-
-        {terminals.filter((t) => t.projectId === focusedProject?.cwd).length === 0 &&
-          focusedProject?.cwd && (
-            <div className="flex items-center justify-center h-full text-gray-500">
-              <div className="text-center">
-                <p>No terminals open for this project</p>
-                <button
-                  onClick={createNewTerminal}
-                  className="mt-2 px-3 py-1 bg-[#1A1A1A] hover:bg-[#2A2A2A] rounded text-sm transition-colors"
-                >
-                  Open Terminal
-                </button>
+                {terminals.filter((t) => t.projectId === focusedProject?.cwd).length === 0 &&
+                  focusedProject?.cwd && (
+                    <div className="flex items-center justify-center h-full text-gray-500">
+                      <div className="text-center">
+                        <p>No terminals open for this project</p>
+                        <button
+                          onClick={createNewTerminal}
+                          className="mt-2 px-3 py-1 bg-[#1A1A1A] hover:bg-[#2A2A2A] rounded text-sm transition-colors"
+                        >
+                          Open Terminal
+                        </button>
+                      </div>
+                    </div>
+                  )}
               </div>
             </div>
-          )}
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </div>
     </div>
   )

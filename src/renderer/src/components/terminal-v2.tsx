@@ -17,6 +17,7 @@ type TerminalV2Props = {
   onExit?: () => void
   onTitleChange?: (title: string) => void
   isActive?: boolean
+  startCommand?: string | string[]
 }
 
 export function Terminalv2({
@@ -25,7 +26,8 @@ export function Terminalv2({
   onReady,
   onExit,
   onTitleChange,
-  isActive = true
+  isActive = true,
+  startCommand
 }: TerminalV2Props) {
   const log = (m: string) => console.log('termv2 ' + m)
   // Tracks whether an xterm instance is currently attached (helps cleanup but not to skip init)
@@ -42,6 +44,9 @@ export function Terminalv2({
   const resizeDebounceRef = useRef<number | null>(null)
   const suppressNextResizeRef = useRef(false)
   const lastSizeRef = useRef<{ w: number; h: number } | null>(null)
+  const hasRunStartRef = useRef(false)
+  const [showStartPrompt, setShowStartPrompt] = useState(false)
+  const [startConfirm, setStartConfirm] = useState(false)
 
   //
   //
@@ -169,7 +174,14 @@ export function Terminalv2({
           )
           onReady?.(id)
         } else {
-          const created = await v2Client.terminalV2Create(cwd ? { cwd } : undefined)
+          const created = await v2Client.terminalV2Create(
+            cwd || startCommand
+              ? {
+                  cwd: cwd ?? undefined,
+                  startCommand: startConfirm ? undefined : startCommand
+                }
+              : undefined
+          )
           id = created.id
           setSessionId(id)
           const snap = await v2Client.terminalV2Reconnect(id)
@@ -215,7 +227,11 @@ export function Terminalv2({
           onReady?.(id)
         }
       } else {
-        const created = await v2Client.terminalV2Create(cwd ? { cwd } : undefined)
+        const created = await v2Client.terminalV2Create(
+          cwd || startCommand
+            ? { cwd: cwd ?? undefined, startCommand: startConfirm ? undefined : startCommand }
+            : undefined
+        )
         id = created.id
         setSessionId(id)
         const snap = await v2Client.terminalV2Reconnect(id)
@@ -361,6 +377,9 @@ export function Terminalv2({
       unExit = subscribeTerminalV2Exit(id, () => onExitRef.current?.())
       unTitle = subscribeTerminalV2Title(id, (p) => onTitleRef.current?.(p.title))
       isConnectedRef.current = true
+      if (startCommand && !hasRunStartRef.current && startConfirm) {
+        setShowStartPrompt(true)
+      }
       console.log('termv2 activate: subscribed')
     })()
 
@@ -371,7 +390,7 @@ export function Terminalv2({
       if (unTitle) unTitle()
       isConnectedRef.current = false
     }
-  }, [sessionId, terminalId, isActive])
+  }, [sessionId, terminalId, isActive, startCommand])
 
   useEffect(() => {
     if (!isActive) return
@@ -398,9 +417,42 @@ export function Terminalv2({
     }
   }, [sessionId, terminalId])
 
+  const runStartNow = () => {
+    const id = sessionId || terminalId
+    if (!id || !startCommand) return
+    const cmd = Array.isArray(startCommand) ? startCommand.join(' ') : startCommand
+    v2Client.terminalV2Write({ id, data: cmd + '\r' })
+    hasRunStartRef.current = true
+    setShowStartPrompt(false)
+  }
+
   return (
-    <div className="h-full w-full bg-[#0A0A0A] px-2 pt-2 flex">
+    <div className="h-full w-full bg-[#0A0A0A] px-2 pt-2 flex relative">
       <div ref={containerRef} className="flex-1 min-h-0" />
+      {showStartPrompt && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="rounded-lg border border-white/10 bg-[#111111] text-white shadow-xl p-4 w-[520px] max-w-[92%]">
+            <div className="text-sm text-white/80 mb-2">Run start command?</div>
+            <div className="font-mono text-xs bg-black/60 border border-white/10 rounded px-2 py-2 mb-3 break-all">
+              {Array.isArray(startCommand) ? startCommand.join(' ') : startCommand}
+            </div>
+            <div className="flex items-center gap-2 justify-end">
+              <button
+                className="px-3 py-1.5 rounded bg-white/10 hover:bg-white/15 text-white text-sm"
+                onClick={() => setShowStartPrompt(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-3 py-1.5 rounded bg-white text-black text-sm"
+                onClick={runStartNow}
+              >
+                Run
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

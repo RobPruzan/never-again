@@ -41,7 +41,11 @@ export class TerminalManagerV2 {
     this.mainWindow = window
   }
 
-  create(options?: { cwd?: string; shell?: string }, terminalId?: string, projectName?: string) {
+  create(
+    options?: { cwd?: string; shell?: string; startCommand?: string | string[] },
+    terminalId?: string,
+    projectName?: string
+  ) {
     const shell =
       options?.shell || (os.platform() === 'win32' ? 'powershell.exe' : process.env.SHELL || 'bash')
     const cwd = options?.cwd || process.env.HOME || process.cwd()
@@ -74,6 +78,25 @@ export class TerminalManagerV2 {
     const ring: Array<DataChunk> = []
     const RING_MAX = 1000
 
+    const startCmd = options?.startCommand
+      ? Array.isArray(options.startCommand)
+        ? options.startCommand.join(' ')
+        : options.startCommand
+      : null
+    let startSent = false
+
+    // Fallback: if PTY is silent, still attempt to send start after a short delay
+    if (startCmd) {
+      setTimeout(() => {
+        if (!startSent) {
+          try {
+            p.write(startCmd + '\r')
+            startSent = true
+          } catch {}
+        }
+      }, 200)
+    }
+
     const onData = (data: string) => {
       term.write(data)
       const session = this.sessions.get(id)
@@ -82,6 +105,13 @@ export class TerminalManagerV2 {
       session.seq = seq
       session.ring.push({ seq, data })
       if (session.ring.length > RING_MAX) session.ring.shift()
+      // As soon as we see first output from the shell, send start command once
+      if (startCmd && !startSent) {
+        try {
+          p.write(startCmd + '\r')
+        } catch {}
+        startSent = true
+      }
       if (
         this.mainWindow &&
         !this.mainWindow.isDestroyed() &&
