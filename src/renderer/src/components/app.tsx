@@ -83,17 +83,15 @@ const AppLoader = () => {
   const [tabSwitcherOpen, setTabSwitcherOpen] = useState(false)
   const creatingTerminalsRef = useRef<Set<string>>(new Set())
 
-  // Listen for menu events via tipc handlers
   useEffect(() => {
     const unlistenNewTab = handlers.menuNewTab.listen(() => {
       setCommandPaletteOpen(true)
     })
 
     const unlistenTabSwitcher = handlers.tabSwitcher.listen(() => {
-      // Only open if we have tabs to switch between
-      if (recentTabs.length > 0) {
-        setTabSwitcherOpen(true)
-      }
+      console.log('listen for recent tabs')
+
+      setTabSwitcherOpen(true)
     })
 
     return () => {

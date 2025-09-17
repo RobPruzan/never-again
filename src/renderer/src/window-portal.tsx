@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { client } from './lib/tipc'
+import { WindowContext } from './window-context'
 
 type PercentAnchor = {
   kind: 'percent'
@@ -85,8 +86,11 @@ export function WindowPortal({
 
     // this is awful, should be reactive
     setTimeout(() => {
+      console.log('focus portal window?')
+
       client.focusPortalWindow(id).catch(console.error)
-    }, 50)
+    }, 150) // is there that much latency when creating a portal winodw?? do we need to preopen? i need to profile
+    // wow 150 is the number
 
     // this is all useless, old experiment
     const sendHover = (hovering: boolean) => {
@@ -184,5 +188,9 @@ export function WindowPortal({
     }
   }, [anchor, id])
 
-  return ReactDOM.createPortal(children, containerRef.current!)
+  return (
+    <WindowContext value={{ winRef }}>
+      {ReactDOM.createPortal(children, containerRef.current!)}
+    </WindowContext>
+  )
 }

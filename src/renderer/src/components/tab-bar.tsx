@@ -80,7 +80,7 @@ export function TabBar() {
           </Button>
         </React.Fragment>
         {groupedProjects.map((groupedProject) => (
-          <GroupedTab groupedProject={groupedProject} />
+          <GroupedTab key={groupedProject.cwdGroup} groupedProject={groupedProject} />
         ))}
       </div>
       <button

@@ -17,4 +17,5 @@ export type RendererHandlers = {
   projectsFound: (payload: { projects: Project[] }) => void
   tabSwitcher: () => void
   onProjectStart: (project: StartingProject) => void
+  dismiss:(  ) => void
 }

@@ -2,24 +2,55 @@ import { GroupedProject } from '@renderer/hooks/use-grouped-projects'
 import React from 'react'
 import { BrowserTab } from './browser-tab'
 import { cn, deriveRunningProjectId } from '@renderer/lib/utils'
-import { useAppContext, useFocusedProject } from '@renderer/app-context'
+import { useAppContext } from '@renderer/app-context'
 
 export const GroupedTab = ({ groupedProject }: { groupedProject: GroupedProject }) => {
-  console.log('our grouped proejcts', groupedProject.projects)
+  const { focusedProject, route } = useAppContext()
+
+  const sortedProjects = React.useMemo(() => {
+    const copy = [...groupedProject.projects]
+    copy.sort((a, b) => {
+      if (a.runningKind !== b.runningKind) {
+        if (a.runningKind === 'starting') return -1
+        if (b.runningKind === 'starting') return 1
+      }
+      if (a.runningKind === 'listening' && b.runningKind === 'listening') {
+        return a.port - b.port
+      }
+      return 0
+    })
+    return copy
+  }, [groupedProject.projects])
+
+  const activeProjectId = focusedProject?.projectId ?? null
+  const isGroupActive =
+    route === 'webview' &&
+    !!activeProjectId &&
+    sortedProjects.some((p) => deriveRunningProjectId(p) === activeProjectId)
+
+  const isGrouped = sortedProjects.length > 1
+  const groupLabel = groupedProject.cwdGroup.split('/').pop() || groupedProject.cwdGroup
+
+  if (!isGrouped) {
+    const onlyProject = sortedProjects[0]
+    return <BrowserTab projectId={deriveRunningProjectId(onlyProject)} />
+  }
 
   return (
     <div
-      className={cn([
-        'h-full min-w-fit flex',
-        groupedProject.projects.length > 1 && 'border-blue-500 border-2'
-      ])}
+      className={cn(
+        'h-full min-w-fit flex items-stretch relative rounded-sm overflow-hidden',
+        isGrouped && (isGroupActive ? 'ring-1 ring-blue-500' : 'ring-1 ring-[#1A1A1A]')
+      )}
+      title={`${groupLabel} (${sortedProjects.length})`}
+      data-group-size={sortedProjects.length}
+      data-cwd={groupedProject.cwdGroup}
+      style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
     >
-      {groupedProject.projects.map((project) => (
+      {sortedProjects.map((project) => (
         <React.Fragment key={deriveRunningProjectId(project)}>
           <BrowserTab projectId={deriveRunningProjectId(project)}>
-            {groupedProject.projects.length > 1 && project.runningKind === 'listening' && (
-              <span>:{project.port}</span>
-            )}
+            {project.runningKind === 'listening' && <span>:{project.port}</span>}
           </BrowserTab>
         </React.Fragment>
       ))}

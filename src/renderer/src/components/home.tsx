@@ -127,7 +127,7 @@ export const Home = () => {
     return [...base, ...customs]
   }, [customWorkspaces, assignments, runningProjects])
   const { data: projectsWithSizes = [], isLoading: isLoadingSizes } = useQuery({
-    queryKey: ['projects-meta', projects.map((p) => p.path)],
+    queryKey: ['projects-meta'],
     queryFn: async () => {
       if (projects.length === 0) return []
       console.log(

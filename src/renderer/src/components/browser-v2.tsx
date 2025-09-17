@@ -84,6 +84,7 @@ export const BrowserV2 = () => {
         </WindowPortal>
       )}
 
+      {(console.log('vut', tabSwitcherOpen), null)}
       {tabSwitcherOpen && (
         <WindowPortal
           anchor={{

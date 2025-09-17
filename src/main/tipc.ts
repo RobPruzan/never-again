@@ -184,7 +184,7 @@ export const createRouter = ({
       bufferService.listBuffer()
     )
 
-    const meta = await bufferService.create({devRelayService})
+    const meta = await bufferService.create({ devRelayService })
     t2 = Date.now()
     if (!meta) {
       console.log('wtf')
@@ -656,10 +656,14 @@ export const createRouter = ({
   }),
 
   focusPortalWindow: t.procedure.input<string>().action(async ({ input }) => {
+    console.log('tryin to fcosu')
+
     if (!mainWindow) throw new Error('Invariant')
     const portalView = portalViews.get(input)
     if (!portalView) throw new Error(`Portal ${input} not found`)
     try {
+      console.log('portal focused', portalView)
+
       portalView.webContents.focus()
       return { success: true, portalId: input }
     } catch (error) {

@@ -124,16 +124,17 @@ export class DevRelayService {
     const prev = await detectDevServersForDir(projectDir)
     console.log('prev ports found', prev)
 
+    // fairily confinident this is infinite looping
     const project = await new Promise<
       Awaited<NonNullable<ReturnType<typeof detectDevServersForDir>>>[number]
     >((res) => {
       const poll = async () => {
         const newPorts = await detectDevServersForDir(projectDir)
-        console.log('polling for new ports, found:', newPorts.length, 'ports')
-        console.log('previous ports:', prev.length)
-        
+        // console.log('polling for new ports, found:', newPorts.length, 'ports')
+        // console.log('previous ports:', prev.length)
+
         if (prev.length === 0 && newPorts.length > 0) {
-          console.log('no previous ports, found new port, resolving with:', newPorts[0])
+          // console.log('no previous ports, found new port, resolving with:', newPorts[0])
           res(newPorts[0])
           return
         }
@@ -142,14 +143,14 @@ export class DevRelayService {
           newPorts.find((newProject) => newProject.port !== prevProject.port)
         )
 
-        console.log('looking for new project different from previous ones, found:', newProject)
+        // console.log('looking for new project different from previous ones, found:', newProject)
 
         if (!newProject) {
-          console.log('no new project found, continuing to poll')
+          // console.log('no new project found, continuing to poll')
           setTimeout(poll, 100)
           return
         }
-        console.log('resolving with new project:', newProject)
+        // console.log('resolving with new project:', newProject)
         res(newProject)
       }
       poll()

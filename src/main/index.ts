@@ -73,7 +73,7 @@ export const startProjectIndexing = (
 
 // Controllers for typed tRPC access
 
-function createWindow(): void {
+function createWindow() {
   // what do we have here
   mainWindow = new BrowserWindow({
     // initialize size, this is bad
@@ -205,6 +205,7 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+  return mainWindow
 }
 
 // This method will be called when Electron has finished
@@ -239,6 +240,8 @@ app.whenReady().then(async () => {
   // portsManager = new PortsManager()
   // await portsManager.startWatching()
 
+  console.log('pre index start')
+
   startProjectIndexing((projects: Project[]) => {
     const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
     // this is technically a race condition, but its fine for now
@@ -252,77 +255,80 @@ app.whenReady().then(async () => {
     //
   })
 
-  createWindow()
+  console.log('pre create window')
 
-  if (mainWindow) {
-    const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
-    terminalManagerV2 = new TerminalManagerV2(handlers)
-    // Ensure terminal events can be sent to the renderer
-    terminalManagerV2.setMainWindow(mainWindow)
-    const devRelayService = new DevRelayService()
-    bufferService = new ProjectBufferService()
-    // terminalManager.setMainWindow(mainWindow)
-    // terminalManagerV2.setMainWindow(mainWindow)
-    // portsManager.setMainWindow(mainWindow)
-    registerIpcMain(
-      createRouter({
-        // portsManager,
-        browser: browserController,
-        terminalManager: null!,
-        devRelayService,
-        handlers,
-        bufferService
-      })
-    )
-    console.log('do we need to seed, how many items in buffer:', bufferService.listBuffer().length)
+  const mainWindow = createWindow()
+  console.log('creating window!')
 
-    if (bufferService.listBuffer().length === 0) {
-      console.log('seeding')
+  const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
+  terminalManagerV2 = new TerminalManagerV2(handlers)
+  // Ensure terminal events can be sent to the renderer
+  terminalManagerV2.setMainWindow(mainWindow)
+  const devRelayService = new DevRelayService()
+  bufferService = new ProjectBufferService()
+  // terminalManager.setMainWindow(mainWindow)
+  // terminalManagerV2.setMainWindow(mainWindow)
+  // portsManager.setMainWindow(mainWindow)
+  registerIpcMain(
+    createRouter({
+      // portsManager,
+      browser: browserController,
+      terminalManager: null!,
+      devRelayService,
+      handlers,
+      bufferService
+    })
+  )
+  console.log('do we need to seed, how many items in buffer:', bufferService.listBuffer().length)
 
-      bufferService.seed(5, { devRelayService })
-    }
-    // im an idiot i should of just made it a property what am i doing
-    await bufferService.ensureTemplate()
-    await bufferService.ensureBufferStarted({ devRelayService })
+  if (bufferService.listBuffer().length === 0) {
+    console.log('seeding')
 
-    // Development reload server
-    if (process.env.NODE_ENV === 'development' || is.dev) {
-      startReloadServer()
-    }
-
-    // console.log('ports?', portsManager.getAll())
-
-    // Restore existing terminal sessions and ensure project terminals exist
-    // await terminalManager.restoreSessionsOnStartup()
-    // await terminalManager.ensureProjectTerminals(portsManager.getAll())
-
-    // const ports = Object.entries(portsManager.getAll())
-    // const promises = ports.map(async ([port, data]) => {
-    //   // this will break if we change what project id is (currently its same as data.name so its fine)
-    //   // getProjects
-    //   return await browserController
-    //     .createTab({
-    //       tabId: data.cwd,
-    //       url: `http://localhost:${port}?wrapper=false`
-    //     })
-    //     .catch((e) => {
-    //       console.log('failed dis', e)
-    //     })
-    // })
-    // // eh this is blocking and bad, will cause white screen flash
-    // await Promise.all(promises).catch((e) => {
-    //   console.log('noo', e)
-    // })
-
-    // const [firstPort, firstData] = ports[0]
-    // await browserController
-    //   .loadUrl({ tabId: firstData.cwd, url: `http://localhost:${firstPort}?wrapper=false` })
-    //   .catch((e) => {
-    //     console.log('noo but agian', e)
-    //   })
-
-    // await browserController.switchTab(firstData.name)
+    bufferService.seed(5, { devRelayService })
   }
+  // im an idiot i should of just made it a property what am i doing
+  await bufferService.ensureTemplate()
+  await bufferService.ensureBufferStarted({ devRelayService })
+
+  // Development reload server
+  if (process.env.NODE_ENV === 'development' || is.dev) {
+    startReloadServer()
+  }
+
+  // console.log('ports?', portsManager.getAll())
+
+  // Restore existing terminal sessions and ensure project terminals exist
+  // await terminalManager.restoreSessionsOnStartup()
+  // await terminalManager.ensureProjectTerminals(portsManager.getAll())
+
+  // const ports = Object.entries(portsManager.getAll())
+  // const promises = ports.map(async ([port, data]) => {
+  //   // this will break if we change what project id is (currently its same as data.name so its fine)
+  //   // getProjects
+  //   return await browserController
+  //     .createTab({
+  //       tabId: data.cwd,
+  //       url: `http://localhost:${port}?wrapper=false`
+  //     })
+  //     .catch((e) => {
+  //       console.log('failed dis', e)
+  //     })
+  // })
+  // // eh this is blocking and bad, will cause white screen flash
+  // await Promise.all(promises).catch((e) => {
+  //   console.log('noo', e)
+  // })
+
+  // const [firstPort, firstData] = ports[0]
+  // await browserController
+  //   .loadUrl({ tabId: firstData.cwd, url: `http://localhost:${firstPort}?wrapper=false` })
+  //   .catch((e) => {
+  //     console.log('noo but agian', e)
+  //   })
+
+  // await browserController.switchTab(firstData.name)
+
+  console.log('setting up menu!')
 
   const menu = Menu.buildFromTemplate([
     {
@@ -378,22 +384,42 @@ app.whenReady().then(async () => {
           }
         },
         {
+          label: 'Dismiss',
+          accelerator: 'Escape',
+          click: () => {
+            if (!mainWindow) {
+              console.log('no main window!')
+
+              return
+            }
+
+            const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
+            handlers.dismiss.send()
+          }
+        },
+        {
           label: 'Switch Tab',
           accelerator: 'Ctrl+Tab',
           click: () => {
-            if (mainWindow) {
-              const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
-              handlers.tabSwitcher.send()
+            if (!mainWindow) {
+              return
             }
+            console.log('sending over')
+
+            const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
+            handlers.tabSwitcher.send()
           }
         },
         {
           label: 'Previous Tab',
           accelerator: 'Ctrl+Shift+Tab',
           click: () => {
-            if (mainWindow) {
-              mainWindow.webContents.send('menu:previous-tab')
+            if (!mainWindow) {
+              return
             }
+
+            const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
+            handlers.tabSwitcher.send()
           }
         }
       ]
@@ -571,7 +597,7 @@ app.whenReady().then(async () => {
         },
         {
           label: 'Reload App',
-          accelerator: 'F5',
+          accelerator: 'Cmd+R',
           click: () => {
             if (mainWindow) {
               mainWindow.webContents.reload()
@@ -581,6 +607,8 @@ app.whenReady().then(async () => {
       ]
     }
   ])
+
+  console.log('setup menu!')
 
   Menu.setApplicationMenu(menu)
 
