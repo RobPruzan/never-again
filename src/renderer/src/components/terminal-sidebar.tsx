@@ -30,7 +30,7 @@ export function MainSidebar() {
 
     const newTerminal: TerminalInstance = {
       terminalId: session.id,
-      projectId: deriveRunningProjectId(focusedProject)
+      projectId: focusedProject.cwd
     }
 
     setTerminals((prev) => [...prev, newTerminal])
@@ -48,27 +48,27 @@ export function MainSidebar() {
   // and ensure one is focused.
   useEffect(() => {
     if (!focusedProject?.cwd) return
-    const projectId = deriveRunningProjectId(focusedProject)
-    const projectTerminals = terminals.filter((t) => t.projectId === projectId)
+    const projectKey = focusedProject.cwd
+    const projectTerminals = terminals.filter((t) => t.projectId === projectKey)
 
     // If none exist, auto-create one with default start command
     if (projectTerminals.length === 0) {
-      if (creatingRef.current.has(projectId)) return
-      creatingRef.current.add(projectId)
+      if (creatingRef.current.has(projectKey)) return
+      creatingRef.current.add(projectKey)
       ;(async () => {
         try {
           const session = await v2Client.terminalV2Create({
             cwd: focusedProject.cwd,
             startCommand: 'opencode'
           })
-          setTerminals((prev) => [...prev, { terminalId: session.id, projectId }])
+          setTerminals((prev) => [...prev, { terminalId: session.id, projectId: projectKey }])
           setFocusedProject((prev) => {
             if (!prev) return null
             return { ...prev, focusedTerminalId: session.id }
           })
         } catch {
         } finally {
-          creatingRef.current.delete(projectId)
+          creatingRef.current.delete(projectKey)
         }
       })()
       return
@@ -237,10 +237,7 @@ export function MainSidebar() {
               <div className="bg-[#0A0A0A] p-2">
                 <div className="flex gap-1.5">
                   {terminals
-                    .filter(
-                      (t) =>
-                        focusedProject && t.projectId === deriveRunningProjectId(focusedProject)
-                    )
+                    .filter((t) => focusedProject && t.projectId === focusedProject.cwd)
                     .map((tab, index) => (
                       <div
                         key={tab.terminalId}
@@ -308,8 +305,7 @@ export function MainSidebar() {
                                       newTerminals.length > 0
                                     ) {
                                       const projectTerminals = newTerminals.filter(
-                                        (t) =>
-                                          t.projectId === deriveRunningProjectId(focusedProject)
+                                        (t) => t.projectId === focusedProject.cwd
                                       )
                                       if (projectTerminals.length > 0) {
                                         setFocusedProject((prev) => {
@@ -358,9 +354,7 @@ export function MainSidebar() {
                 {/* Render ALL terminals but only show ones for active project and active tab */}
                 {terminals.map((tab) => {
                   // Find the CWD for this terminal's project
-                  const project = runningProjects.find(
-                    (p) => deriveRunningProjectId(p) === tab.projectId
-                  )
+                  const project = runningProjects.find((p) => p.cwd === tab.projectId)
                   const terminalCwd =
                     project?.cwd ||
                     (tab.terminalId === focusedProject?.focusedTerminalId
@@ -368,8 +362,7 @@ export function MainSidebar() {
                       : undefined)
 
                   const isVisible =
-                    tab.projectId ===
-                      (focusedProject ? deriveRunningProjectId(focusedProject) : null) &&
+                    tab.projectId === (focusedProject ? focusedProject.cwd : null) &&
                     tab.terminalId === focusedProject?.focusedTerminalId
 
                   return (
@@ -386,9 +379,6 @@ export function MainSidebar() {
                         startCommand={'claude ---dangerously-skip-permissions'}
                         terminalId={tab.terminalId}
                         cwd={terminalCwd}
-                        // onReady={(sessionId) => handleTerminalReady(tab.terminalId, sessionId)}
-                        // onExit={() => handleTerminalExit(tab.terminalId)}
-                        // isActive={isVisible}
                       />
                     </div>
                   )
@@ -402,10 +392,8 @@ export function MainSidebar() {
                   </div>
                 )}
 
-                {terminals.filter(
-                  (t) =>
-                    t.projectId === (focusedProject ? deriveRunningProjectId(focusedProject) : '')
-                ).length === 0 &&
+                {terminals.filter((t) => t.projectId === (focusedProject ? focusedProject.cwd : ''))
+                  .length === 0 &&
                   focusedProject?.cwd && (
                     <div className="flex items-center justify-center h-full text-gray-500">
                       <div className="text-center">
