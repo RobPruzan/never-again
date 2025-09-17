@@ -113,6 +113,8 @@ const WebContentViewArea = () => {
   const { focusedProject, route } = useAppContext()
   const runningProjects = useRunningProjects().data
 
+  console.log('whatdafuck', runningProjects)
+
   // Only render when there's a focused project - this prevents WebContentView components
   // from mounting when focusedProject is null (which happens when Home is clicked)
   if (!focusedProject) {

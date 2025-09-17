@@ -41,8 +41,8 @@ export const AppContext = createContext<{
 export const useAppContext = () => useContext(AppContext)
 
 export const useFocusedProject = () => {
-  const { focusedProject } = useAppContext()
-  
+  const { focusedProject, setFocusedProject } = useAppContext()
+
   const runningProjectsQuery = useRunningProjects()
   if (!focusedProject) {
     return null
@@ -53,7 +53,37 @@ export const useFocusedProject = () => {
   const project = runningProjectsQuery.data.find(
     (project) => deriveRunningProjectId(project) === focusedProject?.projectId
   )
+
   if (!project) {
+    // if there is an unmatched starting project that maps to
+    // valid invariant case: what if there is already one up and you are picking between 2
+    // no, u will never try to create a project when there is one up for now in this flow
+    // in the future you might which will be icky, can rethink it then don't need to prefire rn
+    const isStartingProject = focusedProject.projectId.startsWith('starting')
+    const listeningProjects = runningProjectsQuery.data.filter(
+      (project) => project.runningKind === 'listening' && project.cwd === focusedProject.projectCwd
+    )
+
+    if (isStartingProject && listeningProjects.length > 0) {
+      if (listeningProjects.length > 1) {
+        throw new Error('invariant: multiple listening projects with same cwd')
+      }
+
+      const listeningProject = listeningProjects[0]
+      setFocusedProject({
+        ...focusedProject,
+        projectId: deriveRunningProjectId(listeningProject)
+      })
+      return
+    }
+
+    // const oldProject = runningProjectsQuery.data.find(
+    //   (project) => deriveRunningProjectId({
+    //     ...project,
+    //     runningKind: 'starting'
+    //   }) === focusedProject?.projectId
+    // )
+
     throw new Error('invariant tried to focus a non existent project')
   }
 

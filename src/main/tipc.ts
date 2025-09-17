@@ -184,7 +184,7 @@ export const createRouter = ({
       bufferService.listBuffer()
     )
 
-    const meta = await bufferService.create()
+    const meta = await bufferService.create({devRelayService})
     t2 = Date.now()
     if (!meta) {
       console.log('wtf')

@@ -79,10 +79,12 @@ export const ProjectItem = ({ project }: { project: Project }) => {
     mutationFn: ({ projectPath }: { projectPath: string }) => client.startDevRelay({ projectPath }),
     onSuccess: ({ project, runningProject }) => {
       // setProjects((prev) => [...prev, project])
-      // setFocusedProject({
-      //   projectId: project.path,
-      //   focusedTerminalId: runningProject.port.toString()
-      // })
+      setFocusedProject({
+        projectCwd: project.path,
+        focusedTerminalId: runningProject.port.toString(),
+        projectId: deriveRunningProjectId(runningProject)
+      })
+
       // queryClient.setQueryData(['projects'], (prev: Project[]) => [...prev, project])
       // queryClient.setQueryData(['devServers'], (prev: RunningProject[]) => [
       //   ...prev,

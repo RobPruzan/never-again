@@ -14,11 +14,15 @@ import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { useProjects } from '@renderer/hooks/use-projects'
 import { deriveRunningProjectId } from '@renderer/lib/utils'
 
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { ErrorBoundary } from './error-boundary'
 export default function App() {
   const client = new QueryClient()
 
   return (
     <QueryClientProvider client={client}>
+      <ReactQueryDevtools />
+
       {/* nice black loading screen */}
       <Suspense
         fallback={
@@ -27,7 +31,9 @@ export default function App() {
           </div>
         }
       >
-        <AppLoader />
+        <ErrorBoundary fallback={(error) => <>error noo: {error.message}</>}>
+          <AppLoader />
+        </ErrorBoundary>
       </Suspense>
     </QueryClientProvider>
   )

@@ -20,6 +20,7 @@ import { useBrowserState } from './use-browser-state'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { SwappableSidebarArea } from './swappable-sidebar-area'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './ui/resizable'
+import { deriveRunningProjectId } from '@renderer/lib/utils'
 
 export function MainSidebar() {
   const runningProjects = useRunningProjects().data
@@ -35,7 +36,7 @@ export function MainSidebar() {
 
     const newTerminal: TerminalInstance = {
       terminalId: session.id,
-      projectId: focusedProject.cwd
+      projectId: deriveRunningProjectId(focusedProject) 
     }
 
     setTerminals((prev) => [...prev, newTerminal])
@@ -71,7 +72,7 @@ export function MainSidebar() {
       const newTerminals = prev.filter((t) => t.terminalId !== terminalId)
       if (!focusedProject?.cwd) return []
       if (focusedProject.focusedTerminalId === terminalId && newTerminals.length > 0) {
-        const projectTerminals = newTerminals.filter((t) => t.projectId === focusedProject.cwd)
+        const projectTerminals = newTerminals.filter((t) => t.projectId === deriveRunningProjectId(focusedProject))
         if (projectTerminals.length > 0) {
           if (!focusedProject?.cwd) return []
           setFocusedProject((prev) => {
@@ -200,7 +201,7 @@ export function MainSidebar() {
               <div className="bg-[#0A0A0A] p-2">
                 <div className="flex gap-1.5">
                   {terminals
-                    .filter((t) => t.projectId === focusedProject?.cwd)
+                    .filter((t) =>focusedProject &&  t.projectId === deriveRunningProjectId(focusedProject))
                     .map((tab, index) => (
                       <div
                         key={tab.terminalId}
@@ -273,7 +274,7 @@ export function MainSidebar() {
                 {/* Render ALL terminals but only show ones for active project and active tab */}
                 {terminals.map((tab) => {
                   // Find the CWD for this terminal's project
-                  const project = runningProjects.find((p) => p.cwd === tab.projectId)
+                  const project = runningProjects.find((p) => deriveRunningProjectId(p) === tab.projectId)
                   const terminalCwd =
                     project?.cwd ||
                     (tab.terminalId === focusedProject?.focusedTerminalId
@@ -281,7 +282,7 @@ export function MainSidebar() {
                       : undefined)
 
                   const isVisible =
-                    tab.projectId === focusedProject?.cwd &&
+                    tab.projectId === (focusedProject ? deriveRunningProjectId(focusedProject) : null) &&
                     tab.terminalId === focusedProject?.focusedTerminalId
 
                   return (

@@ -69,9 +69,8 @@ export const Home = () => {
       console.log('we got a new project!', project)
 
       // pls clean this up man wtf
-      queryClient.setQueryData(
-        ['projects'],
-        (prev: Project[]) => [...prev, thisIsAwfulFixMe] satisfies Array<Project>
+      queryClient.setQueryData(['projects'], (prev: undefined | Project[]) =>
+        prev ? ([...prev, thisIsAwfulFixMe] satisfies Array<Project>) : [thisIsAwfulFixMe]
       )
       queryClient.setQueryData(['devServers'], (data: Array<RunningProject> | undefined) => {
         // todo: i don't think i know how handlers works, there are multiple subscribers and this plagued terminal too

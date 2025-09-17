@@ -9,7 +9,10 @@ export const GroupedTab = ({ groupedProject }: { groupedProject: GroupedProject 
 
   return (
     <div
-      className={cn(['h-full min-w-fit flex', groupedProject.projects.length > 1 && 'border-blue-500 border-2'])}
+      className={cn([
+        'h-full min-w-fit flex',
+        groupedProject.projects.length > 1 && 'border-blue-500 border-2'
+      ])}
     >
       {groupedProject.projects.map((project) => (
         <React.Fragment key={deriveRunningProjectId(project)}>
