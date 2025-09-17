@@ -14,11 +14,11 @@ const client = connect(sockPath)
 client.setEncoding('utf8')
 
 client.on('connect', () => {
-  console.log(`[dev-relay] Connected to ${sockPath}`)
+  // console.log(`[dev-relay] Connected to ${sockPath}`)
   if (process.argv.includes('--kill')) {
     try {
       client.write('KILL\n')
-      console.log('[dev-relay] Sent KILL signal')
+      // console.log('[dev-relay] Sent KILL signal')
     } catch (e) {}
   }
 })

@@ -1,46 +1,20 @@
 import { useMemo } from 'react'
 import { RunningProject, ListneingProject } from '@shared/types'
 import { useRunningProjects } from './use-running-projects'
+import { iife } from '@renderer/lib/utils'
 
-export type GroupedProject = {
-  cwd: string
-  ports: Array<{
-    port: number
-    project: ListneingProject
-  }>
-  defaultPort: number
-}
+export type GroupedProject = {}
 
 export function useGroupedProjects() {
   const runningProjects = useRunningProjects()
-
-  const groupedProjects = useMemo(() => {
+  const groupedProjects = iife(() => {
     if (!runningProjects.data) return []
-
     const groups = new Map<string, GroupedProject>()
 
     for (const project of runningProjects.data) {
-      // Only include listening projects that have ports
-      if (project.runningKind !== 'listening') continue
-
-      const existing = groups.get(project.cwd)
-
-      if (existing) {
-        existing.ports.push({ port: project.port, project })
-      } else {
-        groups.set(project.cwd, {
-          cwd: project.cwd,
-          ports: [{ port: project.port, project }],
-          defaultPort: project.port
-        })
-      }
     }
-
-    return Array.from(groups.values()).map(group => ({
-      ...group,
-      ports: group.ports.sort((a, b) => a.port - b.port)
-    }))
-  }, [runningProjects.data])
+    return null!
+  })
 
   return {
     ...runningProjects,

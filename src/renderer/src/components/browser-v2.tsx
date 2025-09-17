@@ -19,6 +19,8 @@ import { iife } from '@renderer/lib/utils'
 import { ListneingProject, RunningProject } from '@shared/types'
 import { useProjects } from '@renderer/hooks/use-projects'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
+import { useQuery } from '@tanstack/react-query'
+import { client } from '@renderer/lib/tipc'
 
 const DisplayNoneActivity = ({
   children,
@@ -115,6 +117,12 @@ const WebContentViewArea = () => {
     return null
   }
 
+
+  const groupedProjects = null
+
+  // issue of course there could be one project with multiple ports
+  // it would also be nice to give it a little http client at that port, that should be quite trivial to do
+
   return runningProjects.map((runningProject) => (
     // <StartingProject project={runningProject}>
     //   {(listenignProject) => (
@@ -162,6 +170,15 @@ const StartingProject = ({
   project: RunningProject
   children: (listeningProject: ListneingProject) => React.ReactNode
 }) => {
+  const { data: faviconResult } = useQuery({
+    queryKey: ['project-favicon', project.cwd],
+    queryFn: () => client.getProjectFavicon({ projectPath: project.cwd }),
+    staleTime: 60_000,
+    gcTime: 5 * 60_000,
+    enabled: project.runningKind === 'starting'
+  })
+  const favicon =
+    faviconResult && (faviconResult as any).found ? (faviconResult as any).dataUrl : null
   switch (project.runningKind) {
     case 'listening': {
       return children(project)
@@ -173,68 +190,44 @@ const StartingProject = ({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.06),_transparent_60%)]" />
           </div>
 
-          {/* Cloudy mysterious glow */}
-          <div
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
-            aria-hidden
-          >
+          {favicon && (
             <div
-              className="w-96 h-48 opacity-30 blur-3xl bg-gradient-to-r from-red-500/50 via-yellow-500/50 via-green-500/50 via-blue-500/50 to-purple-500/50"
-              style={{
-                animation: 'float1 8s ease-in-out infinite',
-                borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%'
-              }}
-            />
-            <div
-              className="w-80 h-40 opacity-35 blur-2xl bg-gradient-to-l from-pink-500/60 via-purple-500/60 via-blue-500/60 via-cyan-500/60 to-green-500/60 absolute"
-              style={{
-                animation: 'float2 6s ease-in-out infinite',
-                borderRadius: '40% 60% 70% 30% / 40% 70% 30% 60%',
-                animationDelay: '-1s'
-              }}
-            />
-            <div
-              className="w-72 h-36 opacity-25 blur-xl bg-gradient-to-br from-orange-400/40 via-red-400/40 via-pink-400/40 via-purple-400/40 to-indigo-400/40 absolute"
-              style={{
-                animation: 'float3 7s ease-in-out infinite',
-                borderRadius: '70% 30% 40% 60% / 30% 60% 40% 70%',
-                animationDelay: '-3s'
-              }}
-            />
-          </div>
-
-          <style jsx>{`
-            @keyframes float1 {
-              0% { transform: translateY(0px) translateX(0px) rotate(-15deg) scale(1); }
-              25% { transform: translateY(-30px) translateX(15px) rotate(-5deg) scale(1.1); }
-              50% { transform: translateY(-10px) translateX(-20px) rotate(5deg) scale(0.9); }
-              75% { transform: translateY(20px) translateX(10px) rotate(-10deg) scale(1.05); }
-              100% { transform: translateY(0px) translateX(0px) rotate(-15deg) scale(1); }
-            }
-            @keyframes float2 {
-              0% { transform: translateY(0px) translateX(0px) rotate(25deg) scale(1); }
-              30% { transform: translateY(25px) translateX(-15px) rotate(35deg) scale(0.95); }
-              60% { transform: translateY(-15px) translateX(20px) rotate(15deg) scale(1.08); }
-              100% { transform: translateY(0px) translateX(0px) rotate(25deg) scale(1); }
-            }
-            @keyframes float3 {
-              0% { transform: translateY(0px) translateX(0px) rotate(45deg) scale(1); }
-              40% { transform: translateY(-20px) translateX(-10px) rotate(55deg) scale(1.12); }
-              80% { transform: translateY(15px) translateX(25px) rotate(35deg) scale(0.88); }
-              100% { transform: translateY(0px) translateX(0px) rotate(45deg) scale(1); }
-            }
-          `}</style>
+              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              aria-hidden
+            >
+              <img
+                src={favicon}
+                alt=""
+                className="w-80 h-80 opacity-30 blur-3xl rounded-xl select-none"
+                draggable={false}
+              />
+            </div>
+          )}
 
           <div className="relative flex flex-col items-center">
             <div className="p-6 rounded-full ring-1 ring-white/10 bg-black">
-              <svg
-                viewBox="0 0 100 87"
-                className="w-24 h-24 text-white/90 drop-shadow-[0_0_24px_rgba(255,255,255,0.08)]"
-                aria-label="Vercel"
-                role="img"
-              >
-                <polygon points="50,0 100,86.6 0,86.6" fill="currentColor" />
-              </svg>
+              {favicon ? (
+                <img
+                  src={favicon}
+                  alt="project favicon"
+                  className="w-24 h-24 rounded-md drop-shadow-[0_0_24px_rgba(255,255,255,0.08)]"
+                  draggable={false}
+                />
+              ) : (
+                <svg
+                  viewBox="0 0 24 24"
+                  className="w-24 h-24 text-white/70 drop-shadow-[0_0_24px_rgba(255,255,255,0.08)]"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+              )}
             </div>
           </div>
         </div>

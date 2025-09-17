@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAppContext } from '@renderer/app-context'
 import { BrowserTab } from './browser-tab'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
+import { useCreateProjectMutation } from '@renderer/hooks/use-create-project-mutation'
 
 interface Tab {
   id: string
@@ -30,51 +31,14 @@ interface TabBarProps {
 
 export function TabBar() {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+  // same issue, this should be grouped projects we map over the wrong item and are really creating the wrong item all together
   const runningProjects = useRunningProjects().data
-  console.log('TABS', runningProjects)
 
-  const { setCommandPaletteOpen, setRoute, setFocusedProject, route } = useAppContext()
-  const queryClient = useQueryClient()
+  const groupedProjects = null
+  const { setRoute, setFocusedProject, route } = useAppContext()
 
-  const createProjectMutation = useMutation({
-    mutationFn: async () => client.createProject(),
-    onSuccess: async ({ project, runningProject }) => {
-      setRoute('webview')
-      queryClient.setQueryData(['projects'], (old: any[] = []) => [...(old || []), project])
-      queryClient.setQueryData(['devServers'], (old: any[] = []) => [
-        ...(old || []),
-        runningProject
-      ])
-
-      setFocusedProject({ focusedTerminalId: null!, projectId: runningProject.cwd })
-    }
-  })
-
-  const [showSpinner, setShowSpinner] = useState(false)
-  const spinnerTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const prevPending = useRef(false)
-  // gpt slop to not show the spinner if it takes <50ms to create project
-  useEffect(() => {
-    if (createProjectMutation.isPending && !prevPending.current) {
-      spinnerTimeout.current = setTimeout(() => {
-        setShowSpinner(true)
-      }, 50)
-    }
-    if (!createProjectMutation.isPending && prevPending.current) {
-      setShowSpinner(false)
-      if (spinnerTimeout.current) {
-        clearTimeout(spinnerTimeout.current)
-        spinnerTimeout.current = null
-      }
-    }
-    prevPending.current = createProjectMutation.isPending
-    return () => {
-      if (spinnerTimeout.current) {
-        clearTimeout(spinnerTimeout.current)
-        spinnerTimeout.current = null
-      }
-    }
-  }, [createProjectMutation.isPending])
+  const createProjectMutation = useCreateProjectMutation()
+  const showSpinner = useMinTimeSpinner({ createProjectMutation })
 
   return (
     <div
@@ -138,4 +102,38 @@ export function TabBar() {
       </button>
     </div>
   )
+}
+
+export const useMinTimeSpinner = ({
+  createProjectMutation
+}: {
+  createProjectMutation: ReturnType<typeof useCreateProjectMutation>
+}) => {
+  const [showSpinner, setShowSpinner] = useState(false)
+  const spinnerTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const prevPending = useRef(false)
+
+  useEffect(() => {
+    if (createProjectMutation.isPending && !prevPending.current) {
+      spinnerTimeout.current = setTimeout(() => {
+        setShowSpinner(true)
+      }, 50)
+    }
+    if (!createProjectMutation.isPending && prevPending.current) {
+      setShowSpinner(false)
+      if (spinnerTimeout.current) {
+        clearTimeout(spinnerTimeout.current)
+        spinnerTimeout.current = null
+      }
+    }
+    prevPending.current = createProjectMutation.isPending
+    return () => {
+      if (spinnerTimeout.current) {
+        clearTimeout(spinnerTimeout.current)
+        spinnerTimeout.current = null
+      }
+    }
+  }, [createProjectMutation.isPending])
+
+  return showSpinner
 }
