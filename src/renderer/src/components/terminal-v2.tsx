@@ -47,7 +47,8 @@ function useTerminalSetup(containerRef: React.RefObject<HTMLDivElement | null>) 
         brightCyan: '#9aedfe',
         brightWhite: '#e6e6e6'
       },
-      fontFamily: '"Cascadia Code", "SF Mono", Monaco, Inconsolata, "Roboto Mono", "Source Code Pro", monospace',
+      fontFamily:
+        '"Cascadia Code", "SF Mono", Monaco, Inconsolata, "Roboto Mono", "Source Code Pro", monospace',
       fontSize: 14,
       lineHeight: 1.2,
       cursorBlink: true,
@@ -74,7 +75,12 @@ function useTerminalSetup(containerRef: React.RefObject<HTMLDivElement | null>) 
   return { terminal, fitAddon }
 }
 
-function useTerminalSession(terminal: XTerm | null, terminalId?: string, cwd?: string | null, startCommand?: string | string[]) {
+function useTerminalSession(
+  terminal: XTerm | null,
+  terminalId?: string,
+  cwd?: string | null,
+  startCommand?: string | string[]
+) {
   const [sessionId, setSessionId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -126,7 +132,7 @@ function useTerminalEvents(terminal: XTerm | null, sessionId: string | null) {
       subscribeTerminalV2Title(sessionId, () => {})
     ]
 
-    return () => unsubs.forEach(unsub => unsub())
+    return () => unsubs.forEach((unsub) => unsub())
   }, [sessionId, terminal])
 }
 
@@ -159,7 +165,7 @@ export function Terminalv2({ terminalId, cwd, startCommand }: TerminalV2Props) {
   useTerminalResize(terminal, fitAddon)
 
   return (
-    <div className="h-full w-full bg-[#0A0A0A] px-2 pt-2 flex relative">
+    <div className="h-full w-full bg-[#0A0A0A] flex relative">
       <div ref={containerRef} className="flex-1 min-h-0" />
     </div>
   )

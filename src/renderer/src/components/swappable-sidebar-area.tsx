@@ -6,7 +6,7 @@ export const SwappableSidebarArea = () => {
 
   return (
     <div className="w-full h-full">
-      <Terminalv2 startCommand={`bun run /Users/robby/ide/temp-cli.ts`} cwd={focusedProject?.cwd} />
+      <Terminalv2 cwd={focusedProject?.cwd} />
     </div>
   )
 }

@@ -335,6 +335,24 @@ app.whenReady().then(async () => {
       label: 'Navigation',
       submenu: [
         {
+          label: 'Back',
+          accelerator: process.platform === 'darwin' ? 'Cmd+[' : 'Alt+Left',
+          click: () => {
+            try {
+              browserController.backNav()
+            } catch {}
+          }
+        },
+        {
+          label: 'Forward',
+          accelerator: process.platform === 'darwin' ? 'Cmd+]' : 'Alt+Right',
+          click: () => {
+            try {
+              browserController.forwardNav()
+            } catch {}
+          }
+        },
+        {
           label: 'Change URL',
           accelerator: process.platform === 'darwin' ? 'Cmd+L' : 'Ctrl+L',
           click: () => {

@@ -127,7 +127,12 @@ export class DevRelayService {
     // fairily confinident this is infinite looping
     const project = await new Promise<
       Awaited<NonNullable<ReturnType<typeof detectDevServersForDir>>>[number]
-    >((res) => {
+    >((res, rej) => {
+      const timeout = setTimeout(() => {
+        console.error('DevRelay timeout: Failed to detect dev server after 15 seconds')
+        rej(new Error('Timeout waiting for dev server to start'))
+      }, 15000)
+
       const poll = async () => {
         const newPorts = await detectDevServersForDir(projectDir)
         // console.log('polling for new ports, found:', newPorts.length, 'ports')
@@ -135,6 +140,7 @@ export class DevRelayService {
 
         if (prev.length === 0 && newPorts.length > 0) {
           // console.log('no previous ports, found new port, resolving with:', newPorts[0])
+          clearTimeout(timeout)
           res(newPorts[0])
           return
         }
@@ -151,6 +157,7 @@ export class DevRelayService {
           return
         }
         // console.log('resolving with new project:', newProject)
+        clearTimeout(timeout)
         res(newProject)
       }
       poll()

@@ -52,13 +52,23 @@ export const browserController = {
       tabId,
       url: view.webContents.getURL() || 'about:blank',
       title: view.webContents.getTitle() || tabId,
-      isActive: tabId === activeBrowserViewId.current
+      isActive: tabId === activeBrowserViewId.current,
+      canGoBack:
+        typeof view.webContents.canGoBack === 'function' ? view.webContents.canGoBack() : false,
+      canGoForward:
+        typeof view.webContents.canGoForward === 'function'
+          ? view.webContents.canGoForward()
+          : false
     }))
+
+    const activeTab = tabs.find((t) => t.isActive)
 
     return {
       tabs,
       activeTabId: activeBrowserViewId.current,
-      totalTabs: tabs.length
+      totalTabs: tabs.length,
+      canGoBack: activeTab ? activeTab.canGoBack : false,
+      canGoForward: activeTab ? activeTab.canGoForward : false
     }
   },
   // async createOptimistictab({tabId,url}: { tabId: string; url: string }) {
@@ -480,7 +490,7 @@ export const browserController = {
 
     return { ok: true }
   },
-  async hideTab(tabId: string) {
+  async hideTab(_tabId: string) {
     if (!mainWindow) {
       throw new Error('noo')
       return { ok: false }

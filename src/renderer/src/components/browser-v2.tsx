@@ -144,7 +144,7 @@ const WebContentViewArea = () => {
         // storage={localStorage}
         direction="horizontal"
       >
-        <ResizablePanel defaultSize={80}>
+        <ResizablePanel defaultSize={75}>
           <StartingProject project={runningProject}>
             {(listeningProject) =>
               deriveRunningProjectId(listeningProject) === focusedProject.projectId &&
@@ -171,7 +171,7 @@ const WebContentViewArea = () => {
         </ResizablePanel>
 
         <ResizableHandle className="bg-[#1A1A1A]" withHandle={false} />
-        <ResizablePanel defaultSize={20}>
+        <ResizablePanel defaultSize={25}>
           <MainSidebar />
         </ResizablePanel>
       </ResizablePanelGroup>

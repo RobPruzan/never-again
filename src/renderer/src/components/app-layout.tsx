@@ -3,6 +3,7 @@ import { client } from '../lib/tipc'
 // import { DevToolsSidebar } from './DevToolsSidebar'
 import { useQueryClient } from '@tanstack/react-query'
 import { useListenForProjects } from '@renderer/hooks/use-listen-for-projects'
+import { useListenForUrl } from '@renderer/hooks/use-listen-for-url'
 import { BrowserV2 } from './browser-v2'
 import { DevToolsSidebar } from './devtools-sidebar'
 // import { useListenForProjects } from './use-listen-for-projects'
@@ -12,6 +13,7 @@ export function AppLayout() {
   // wish it was better though tbh
   // uh
   useListenForProjects()
+  useListenForUrl()
   client.showActive().catch(() => {})
   // like we set state on server then synced state
   const queryClient = useQueryClient()

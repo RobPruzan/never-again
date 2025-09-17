@@ -1,11 +1,10 @@
-import { client } from "@renderer/lib/tipc"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { client } from '@renderer/lib/tipc'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
 export const useRunningProjects = () => {
-  
-
   return useSuspenseQuery({
     queryKey: ['devServers'],
-    queryFn: () => client.getDevServers()
+    queryFn: () => client.getDevServers(),
+    refetchInterval: 1000
   })
 }

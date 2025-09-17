@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 // import { Terminalv2 } from './Terminalv2'
 import { client, v2Client } from '../lib/tipc'
 import { Plus, X, ChevronLeft, ChevronRight, RotateCw, Link, HomeIcon } from 'lucide-react'
@@ -14,14 +14,18 @@ import { deriveRunningProjectId } from '@renderer/lib/utils'
 
 export function MainSidebar() {
   const runningProjects = useRunningProjects().data
-  const { terminals, setTerminals, setFocusedProject } = useAppContext()
+  const { terminals, setTerminals, setFocusedProject, swappableSidebarOpen } = useAppContext()
   const focusedProject = useFocusedProject()
+  const creatingRef = useRef<Set<string>>(new Set())
 
   // there's some desync here possible, the actual fix is in the actual browser tba logic
   const createNewTerminal = async () => {
     if (!focusedProject?.cwd) return
 
-    const session = await v2Client.terminalV2Create({ cwd: focusedProject.cwd })
+    const session = await v2Client.terminalV2Create({
+      cwd: focusedProject.cwd,
+      startCommand: 'opencode'
+    })
     if (!focusedProject) return
 
     const newTerminal: TerminalInstance = {
@@ -39,6 +43,49 @@ export function MainSidebar() {
       }
     })
   }
+
+  // Ensure there is ALWAYS a terminal for the current focused project,
+  // and ensure one is focused.
+  useEffect(() => {
+    if (!focusedProject?.cwd) return
+    const projectId = deriveRunningProjectId(focusedProject)
+    const projectTerminals = terminals.filter((t) => t.projectId === projectId)
+
+    // If none exist, auto-create one with default start command
+    if (projectTerminals.length === 0) {
+      if (creatingRef.current.has(projectId)) return
+      creatingRef.current.add(projectId)
+      ;(async () => {
+        try {
+          const session = await v2Client.terminalV2Create({
+            cwd: focusedProject.cwd,
+            startCommand: 'opencode'
+          })
+          setTerminals((prev) => [...prev, { terminalId: session.id, projectId }])
+          setFocusedProject((prev) => {
+            if (!prev) return null
+            return { ...prev, focusedTerminalId: session.id }
+          })
+        } catch {
+        } finally {
+          creatingRef.current.delete(projectId)
+        }
+      })()
+      return
+    }
+
+    // If some exist but focus is missing/mismatched, focus the most recent
+    if (
+      !focusedProject.focusedTerminalId ||
+      !projectTerminals.some((t) => t.terminalId === focusedProject.focusedTerminalId)
+    ) {
+      const last = projectTerminals[projectTerminals.length - 1]
+      setFocusedProject((prev) => {
+        if (!prev) return null
+        return { ...prev, focusedTerminalId: last.terminalId }
+      })
+    }
+  }, [focusedProject?.cwd, focusedProject?.focusedTerminalId, terminals])
 
   // fine, idk
   const handleRefresh = () => {
@@ -96,6 +143,7 @@ export function MainSidebar() {
           <button
             className="p-1 hover:bg-[#1A1A1A] text-gray-500 hover:text-gray-300 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             title="Back"
+            disabled={!browserStateQuery.data?.canGoBack}
             onClick={() => {
               console.log('back nav')
               client.backNav()
@@ -106,6 +154,7 @@ export function MainSidebar() {
           <button
             className="p-1 hover:bg-[#1A1A1A] text-gray-500 hover:text-gray-300 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             title="Forward"
+            disabled={!browserStateQuery.data?.canGoForward}
             onClick={() => {
               console.log('forward nav')
 
@@ -175,11 +224,15 @@ export function MainSidebar() {
 
       <div className="flex-1 min-h-0">
         <ResizablePanelGroup direction="vertical">
-          <ResizablePanel defaultSize={30}>
-            <SwappableSidebarArea />
-          </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel defaultSize={70}>
+          {swappableSidebarOpen && (
+            <>
+              <ResizablePanel defaultSize={30}>
+                <SwappableSidebarArea />
+              </ResizablePanel>
+              <ResizableHandle />
+            </>
+          )}
+          <ResizablePanel defaultSize={swappableSidebarOpen ? 70 : 100}>
             <div className="flex flex-col h-full min-h-0">
               <div className="bg-[#0A0A0A] p-2">
                 <div className="flex gap-1.5">
@@ -249,24 +302,26 @@ export function MainSidebar() {
                                   const newTerminals = prev.filter(
                                     (t) => t.terminalId !== terminalId
                                   )
-                                  if (!focusedProject?.cwd) return []
-                                  if (
-                                    focusedProject.focusedTerminalId === terminalId &&
-                                    newTerminals.length > 0
-                                  ) {
-                                    const projectTerminals = newTerminals.filter(
-                                      (t) => t.projectId === deriveRunningProjectId(focusedProject)
-                                    )
-                                    if (projectTerminals.length > 0) {
-                                      if (!focusedProject?.cwd) return []
-                                      setFocusedProject((prev) => {
-                                        if (!prev) return null
-                                        return {
-                                          ...prev,
-                                          focusedTerminalId:
-                                            projectTerminals[projectTerminals.length - 1].terminalId
-                                        }
-                                      })
+                                  if (focusedProject?.cwd) {
+                                    if (
+                                      focusedProject.focusedTerminalId === terminalId &&
+                                      newTerminals.length > 0
+                                    ) {
+                                      const projectTerminals = newTerminals.filter(
+                                        (t) =>
+                                          t.projectId === deriveRunningProjectId(focusedProject)
+                                      )
+                                      if (projectTerminals.length > 0) {
+                                        setFocusedProject((prev) => {
+                                          if (!prev) return null
+                                          return {
+                                            ...prev,
+                                            focusedTerminalId:
+                                              projectTerminals[projectTerminals.length - 1]
+                                                .terminalId
+                                          }
+                                        })
+                                      }
                                     }
                                   }
                                   return newTerminals
@@ -347,7 +402,10 @@ export function MainSidebar() {
                   </div>
                 )}
 
-                {terminals.filter((t) => t.projectId === focusedProject?.cwd).length === 0 &&
+                {terminals.filter(
+                  (t) =>
+                    t.projectId === (focusedProject ? deriveRunningProjectId(focusedProject) : '')
+                ).length === 0 &&
                   focusedProject?.cwd && (
                     <div className="flex items-center justify-center h-full text-gray-500">
                       <div className="text-center">

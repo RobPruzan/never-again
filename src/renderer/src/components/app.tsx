@@ -1,9 +1,9 @@
-import { Suspense, useState, useEffect, useRef } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 // import { AppLayout } from './components/AppLayout'
 // import { AppContext, FocusedProject, TerminalInstance } from './components/app-context'
 import { QueryClient, QueryClientProvider, useSuspenseQuery } from '@tanstack/react-query'
 // import { client, handlers, v2Client } from './lib/tipc'
-import { Terminal } from '@xterm/xterm'
+// import { Terminal } from '@xterm/xterm'
 
 import { Project, RunningProject } from '@shared/types'
 // import { useListenForProjects } from './components/use-listen-for-projects'
@@ -64,11 +64,12 @@ const AppLoader = () => {
   //     }) satisfies RunningProject
   // )
 
-  // Map terminal sessions to terminal instances
-  const initialTerminals: TerminalInstance[] = terminalsQuery.data.map((session) => ({
-    terminalId: session.id,
-    projectId: session.cwd
-  }))
+  // Map terminal sessions to terminal instances, aligning projectId with deriveRunningProjectId
+  const initialTerminals: TerminalInstance[] = terminalsQuery.data.map((session) => {
+    const match = devServersQuery.data.find((p) => p.cwd === session.cwd)
+    const projectId = match ? deriveRunningProjectId(match) : session.cwd
+    return { terminalId: session.id, projectId }
+  })
 
   // console.log('projects', projects)
   // console.log('terminals', initialTerminals)
@@ -81,7 +82,7 @@ const AppLoader = () => {
   const [focusedProject, setFocusedProject] = useState<FocusedProject | null>(null)
   const [recentTabs, setRecentTabs] = useState<string[]>([]) // Start empty, only track actual navigation
   const [tabSwitcherOpen, setTabSwitcherOpen] = useState(false)
-  const creatingTerminalsRef = useRef<Set<string>>(new Set())
+  const [swappableSidebarOpen, setSwappableSidebarOpen] = useState(false)
 
   useEffect(() => {
     const unlistenNewTab = handlers.menuNewTab.listen(() => {
@@ -115,7 +116,9 @@ const AppLoader = () => {
           recentTabs,
           setRecentTabs,
           tabSwitcherOpen,
-          setTabSwitcherOpen
+          setTabSwitcherOpen,
+          swappableSidebarOpen,
+          setSwappableSidebarOpen
         }}
       >
         <AppLayout />
@@ -125,7 +128,9 @@ const AppLoader = () => {
 
   // Find the first terminal for the first project to set as focused
   const firstProject = devServersQuery.data[0]
-  const firstProjectTerminals = initialTerminals.filter((t) => t.projectId === firstProject.cwd)
+  const firstProjectTerminals = initialTerminals.filter(
+    (t) => t.projectId === deriveRunningProjectId(firstProject)
+  )
 
   // Update focused project now that we have running projects
   useEffect(() => {
@@ -139,55 +144,7 @@ const AppLoader = () => {
     }
   }, [firstProject, firstProjectTerminals])
 
-  // Ensure at least one terminal exists per running project (auto-spawn)
-  useEffect(() => {
-    const run = async () => {
-      try {
-        const running = devServersQuery.data
-        if (!Array.isArray(running) || running.length === 0) return
-
-        const byProject: Record<string, number> = {}
-        for (const t of terminals) byProject[t.projectId] = (byProject[t.projectId] || 0) + 1
-
-        const missing = running.filter((project) => {
-          const projectId = deriveRunningProjectId(project)
-          return !byProject[projectId] && !creatingTerminalsRef.current.has(projectId)
-        })
-
-        if (missing.length === 0) return
-
-        missing.forEach((project) => {
-          const projectId = deriveRunningProjectId(project)
-          creatingTerminalsRef.current.add(projectId)
-        })
-
-        await Promise.all(
-          missing.map(async (project) => {
-            const projectId = deriveRunningProjectId(project)
-            try {
-              const created = await v2Client.terminalV2Create({ cwd: project.cwd })
-              setTerminals((prev) => [...prev, { terminalId: created.id, projectId: projectId }])
-              setFocusedProject((prev) => {
-                if (!prev || prev.projectId === deriveRunningProjectId(project)) {
-                  return {
-                    projectId: projectId,
-                    focusedTerminalId: created.id,
-                    projectCwd: project.cwd
-                  }
-                }
-                return prev
-              })
-            } catch {
-            } finally {
-              creatingTerminalsRef.current.delete(projectId)
-            }
-          })
-        )
-      } catch {}
-    }
-
-    run()
-  }, [devServersQuery.data, terminals])
+  // Auto-spawn is handled in the terminal sidebar to guarantee exactly one per focused project
 
   // Ensure focused terminal is set if it's empty
   useEffect(() => {
@@ -232,7 +189,9 @@ const AppLoader = () => {
         recentTabs,
         setRecentTabs,
         tabSwitcherOpen,
-        setTabSwitcherOpen
+        setTabSwitcherOpen,
+        swappableSidebarOpen,
+        setSwappableSidebarOpen
       }}
     >
       <AppLayout />

@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Project, RunningProject } from '@shared/types'
 import { client } from './lib/tipc'
-import { Loader2 } from 'lucide-react'
 import { useAppContext } from './app-context'
 import { deriveRunningProjectId } from './lib/utils'
 // import { useAppContext } from './components/app-context'
@@ -101,45 +100,29 @@ export const ProjectItem = ({ project }: { project: Project }) => {
       onContextMenu={openContextMenu}
       className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-lg overflow-hidden transition-all duration-300 cursor-pointer relative min-h-[252px] hover:border-[#2a2a2a] hover:shadow-[0_12px_24px_rgba(0,0,0,0.4)] group"
     >
-      <div className="w-full h-[200px] relative bg-[#0B0B0B] overflow-hidden block group/content">
-        <button
-          onClick={() => {
-            const existing = (
-              queryClient.getQueryData(['devServers']) as Array<RunningProject> | undefined
-            )?.find((p) => p.cwd === project.path)
-            console.log('exsting bruh', existing)
+      <div
+        className="w-full h-[200px] relative bg-[#0B0B0B] overflow-hidden block group/content"
+        onClick={() => {
+          if (startDevServerMutation.isPending) return
+          const existing = (
+            queryClient.getQueryData(['devServers']) as Array<RunningProject> | undefined
+          )?.find((p) => p.cwd === project.path)
+          console.log('exsting bruh', existing)
 
-            if (existing) {
-              setRoute('webview')
-              const focusedProejct = {
-                focusedTerminalId: null!,
-                projectCwd: project.path,
-                projectId: deriveRunningProjectId(existing)
-
-                // projectId: deriveRunningProjectId({
-                //   runningKind: 'starting',
-                //   cwd: project.path,
-                //   kind: 'unknown', // whatever fix later :p
-                //   pid: -1 // oops idk heh
-                // })
-              }
-              console.log('SETTING FOCSUED PROJECT', focusedProejct)
-
-              setFocusedProject(focusedProejct)
-              return
+          if (existing) {
+            setRoute('webview')
+            const focusedProejct = {
+              focusedTerminalId: null!,
+              projectCwd: project.path,
+              projectId: deriveRunningProjectId(existing)
             }
-            startDevServerMutation.mutate({ projectPath: project.path })
-          }}
-          className="absolute top-3 right-3 z-20 opacity-0 group-hover/content:opacity-100 transition-all duration-200 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg transform scale-90 group-hover/content:scale-100 hover:bg-white hover:scale-105 active:scale-95"
-        >
-          {startDevServerMutation.isPending ? (
-            <Loader2 className="w-5 h-5 text-black ml-0.5 animate-spin" />
-          ) : (
-            <svg className="w-5 h-5 text-black ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          )}
-        </button>
+            console.log('SETTING FOCSUED PROJECT', focusedProejct)
+            setFocusedProject(focusedProejct)
+            return
+          }
+          startDevServerMutation.mutate({ projectPath: project.path })
+        }}
+      >
         {favicon ? (
           <div className="w-full h-full flex items-center justify-center relative">
             {/* Glow layer - subtle blur */}

@@ -5,7 +5,6 @@ import * as os from 'os'
 import { Terminal as HeadlessTerminal } from '@xterm/headless'
 import { SerializeAddon } from '@xterm/addon-serialize'
 import type { RendererHandlers } from './renderer-handlers'
-import { title } from 'process'
 
 type DataChunk = { seq: number; data: string }
 
@@ -21,6 +20,8 @@ type TerminalV2Session = {
   rows: number
   ring: Array<DataChunk>
   seq: number
+  startCommand: string | null
+  startSent: boolean
 }
 
 export class TerminalManagerV2 {
@@ -84,7 +85,6 @@ export class TerminalManagerV2 {
         ? options.startCommand.join(' ')
         : options.startCommand
       : null
-    let startSent = false
 
     // Fallback: if PTY is silent, still attempt to send start after a short delay
     // if (startCmd) {
@@ -107,11 +107,11 @@ export class TerminalManagerV2 {
       session.ring.push({ seq, data })
       if (session.ring.length > RING_MAX) session.ring.shift()
       // As soon as we see first output from the shell, send start command once
-      if (startCmd && !startSent) {
+      if (startCmd && !session.startSent) {
         try {
           p.write(startCmd + '\r')
+          session.startSent = true
         } catch {}
-        startSent = true
       }
       if (
         this.mainWindow &&
@@ -161,7 +161,9 @@ export class TerminalManagerV2 {
       cols,
       rows,
       ring,
-      seq: 0
+      seq: 0,
+      startCommand: startCmd,
+      startSent: false
     }
 
     this.sessions.set(id, session)

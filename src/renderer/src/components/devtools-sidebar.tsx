@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MousePointer2, Bug, Camera, Command, Code2, PanelBottom } from 'lucide-react'
+import { MousePointer2, Bug, Camera, Command, Code2, PanelBottom, TerminalIcon } from 'lucide-react'
 import { client } from '@renderer/lib/tipc'
 import { useAppContext, useFocusedProject } from '@renderer/app-context'
 // import { useAppContext, useFocusedProject } from './app-context'
@@ -14,7 +14,7 @@ interface Tool {
 export function DevToolsSidebar() {
   const [activeTool, setActiveTool] = useState<string | null>(null)
   const [screenshotCopied, setScreenshotCopied] = useState(false)
-  const { setCommandPaletteOpen } = useAppContext()
+  const { setCommandPaletteOpen, swappableSidebarOpen, setSwappableSidebarOpen } = useAppContext()
 
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
 
@@ -41,16 +41,26 @@ export function DevToolsSidebar() {
     //   title: 'Bottom Panel',
     //   id: 'bottom-panel' as const
     // }
+    {
+      id: 'toggle-sidepanel' as const,
+      icon: <TerminalIcon className="w-4 h-4" />,
+      title: swappableSidebarOpen ? 'Hide Panel' : 'Show Panel'
+    }
   ]
+
   const focusedProject = useFocusedProject()
 
   const handleToolClick = async (
-    toolId: 'screenshot' | 'devtools' | 'command-palette' | 'open-in-editor'
-      // | 'bottom-panel'
+    toolId: 'screenshot' | 'devtools' | 'command-palette' | 'open-in-editor' | 'toggle-sidepanel'
   ) => {
     setActiveTool(toolId)
 
     switch (toolId) {
+      case 'toggle-sidepanel': {
+        setSwappableSidebarOpen((prev) => !prev)
+        setActiveTool(null)
+        break
+      }
       case 'screenshot': {
         await client.takeScreenshot()
         setScreenshotCopied(true)
