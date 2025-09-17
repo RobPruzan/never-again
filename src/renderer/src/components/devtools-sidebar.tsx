@@ -36,16 +36,17 @@ export function DevToolsSidebar() {
       title: 'Open in editor',
       id: 'open-in-editor' as const
     },
-    {
-      icon: <PanelBottom className="w-4 h-4" />,
-      title: 'Bottom Panel',
-      id: 'bottom-panel' as const
-    }
+    // {
+    //   icon: <PanelBottom className="w-4 h-4" />,
+    //   title: 'Bottom Panel',
+    //   id: 'bottom-panel' as const
+    // }
   ]
   const focusedProject = useFocusedProject()
 
   const handleToolClick = async (
-    toolId: 'screenshot' | 'devtools' | 'command-palette' | 'open-in-editor' | 'bottom-panel'
+    toolId: 'screenshot' | 'devtools' | 'command-palette' | 'open-in-editor'
+      // | 'bottom-panel'
   ) => {
     setActiveTool(toolId)
 
@@ -74,11 +75,11 @@ export function DevToolsSidebar() {
         setActiveTool(null)
         break
       }
-      case 'bottom-panel': {
-        setActiveTool(null)
+      // case 'bottom-panel': {
+      //   setActiveTool(null)
 
-        // setActiveTool(null)
-      }
+      //   // setActiveTool(null)
+      // }
       // case 'inspector': {
       //   // todo might delete
       //   break
