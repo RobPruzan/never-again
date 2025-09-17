@@ -279,10 +279,11 @@ app.whenReady().then(async () => {
     if (bufferService.listBuffer().length === 0) {
       console.log('seeding')
 
-      bufferService.seed(5)
+      bufferService.seed(5, { devRelayService })
     }
+    // im an idiot i should of just made it a property what am i doing
     await bufferService.ensureTemplate()
-    await bufferService.ensureBufferStarted()
+    await bufferService.ensureBufferStarted({ devRelayService })
 
     // Development reload server
     if (process.env.NODE_ENV === 'development' || is.dev) {

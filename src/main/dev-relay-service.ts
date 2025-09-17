@@ -27,7 +27,13 @@ export class DevRelayService {
     { server: ReturnType<typeof createServer>; proc: ChildProcess; sock }
   >()
 
-  async start(projectDir: string, onProjectStart?: (project: StartingProject) => void) {
+  async start(
+    projectDir: string,
+    opts?: {
+      port?: number
+      onProjectStart?: (project: StartingProject) => void
+    }
+  ) {
     const cwd = resolve(projectDir)
     const sock = join(cwd, '.devrelay.sock')
     try {
@@ -37,11 +43,15 @@ export class DevRelayService {
     const server = createServer()
     const clients = new Set<Socket>()
 
-    const proc = spawn('pnpm', ['run', 'dev'], {
-      cwd,
-      stdio: ['ignore', 'pipe', 'pipe'],
-      env: { ...process.env, FORCE_COLOR: '1', npm_config_color: 'true' } // why both, are both needed?
-    })
+    const proc = spawn(
+      'pnpm',
+      ['run', 'dev', ...(opts?.port ? ['--port', String(opts.port)] : [])],
+      {
+        cwd,
+        stdio: ['ignore', 'pipe', 'pipe'],
+        env: { ...process.env, FORCE_COLOR: '1', npm_config_color: 'true' } // why both, are both needed?
+      }
+    )
 
     const forward = (buf: Buffer | string, isErr = false) => {
       try {
@@ -96,7 +106,7 @@ export class DevRelayService {
     proc.on('exit', () => cleanup())
 
     server.listen(sock)
-    onProjectStart?.({
+    opts?.onProjectStart?.({
       kind: 'unknown',
       cwd,
       pid: typeof proc.pid === 'number' ? proc.pid : 0,
@@ -137,7 +147,7 @@ export class DevRelayService {
       }
       poll()
     })
-    return { sock, pid: proc.pid ?? null, project }
+    return { sock, pid: proc.pid!, project } // daijobu meme
   }
 
   async stop(projectDir: string): Promise<boolean> {

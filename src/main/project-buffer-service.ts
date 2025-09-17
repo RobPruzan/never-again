@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve, basename } from 'node:path'
 import { browserController } from './browser-controller'
 import { browserViews } from '.'
+import { DevRelayService } from './dev-relay-service'
 
 const execFile = promisify(_execFile)
 
@@ -98,13 +99,15 @@ export class ProjectBufferService {
     return true
   }
 
-  async seed(count: number): Promise<BufferedMeta[]> {
+  async seed(count: number, opts: {
+    devRelayService: DevRelayService
+  }): Promise<BufferedMeta[]> {
     // i mean should be parallel but fine
     const metas: BufferedMeta[] = []
     for (let i = 0; i < count; i++) {
       console.log('seeding da buffer')
 
-      const meta = await this.createBufferedProject()
+      const meta = await this.createBufferedProject(opts)
       if (meta) {
         const url = `http://localhost:${meta.port}`
         const tabId = meta.dir
@@ -122,10 +125,14 @@ export class ProjectBufferService {
     return metas
   }
   // need to test miss case
-  async create() {
+  async create(opts: {
+    port?: number
+    startDev?: (arg: { port: number; cwd: string }) => Promise<{ pid: number }>
+    devRelayService: DevRelayService
+  }) {
     // fine
     if (this.listBuffer().length === 0) {
-      const meta = await this.createMiss()
+      const meta = await this.createMiss(opts)
 
       if (!meta) {
         throw new Error("tood validate this earlier, but this shouldn't happen")
@@ -135,12 +142,12 @@ export class ProjectBufferService {
         tabId: meta.dir,
         url: meta.url
       })
-      this.seed(1)
+      this.seed(1, opts)
       return meta
     }
     const meta = this.instantCreate()
 
-    this.seed(1)
+    this.seed(1 ,opts)
     return meta
   }
 
@@ -152,8 +159,13 @@ export class ProjectBufferService {
   }
 
   async createMiss(
-    targetDir?: string,
-    port?: number
+    // port?: number
+    opts: {
+      port?: number
+      startDev?: (arg: { port: number; cwd: string }) => Promise<{ pid: number }>
+      targetDir?: string
+      devRelayService: DevRelayService
+    }
   ): Promise<{
     url: string
     copyMs: number
@@ -162,10 +174,12 @@ export class ProjectBufferService {
     port: number
     pid: number
   } | null> {
-    const dest = targetDir ? resolve(targetDir) : join(this.projectsRoot, `proj-${Date.now()}`) // thats concerning
+    const dest = opts?.targetDir
+      ? resolve(opts.targetDir)
+      : join(this.projectsRoot, `proj-${Date.now()}`) // thats concerning
     const copy = await this.cpCOW(this.templateRoot, dest)
     if (!copy.ok) return null
-    const started = await this.startDev(dest, port)
+    const started = await this.startDev(dest, opts)
     if (!started.port) return null
     return {
       url: `http://localhost:${started.port}`,
@@ -177,35 +191,32 @@ export class ProjectBufferService {
     }
   }
 
-
-
-
   /**
-   * 
+   *
    * yeah actually you don't want to move and block on that because you pay the copy cost
-   * 
-   * you could move ahead of time, then you're doing that for every seeded item. It may be fine to make that 
+   *
+   * you could move ahead of time, then you're doing that for every seeded item. It may be fine to make that
    * hetergenous
-   * 
-   * the known downside here is that the project is in this weird directory and around a bunch 
+   *
+   * the known downside here is that the project is in this weird directory and around a bunch
    * of other projects that aren't claimed and the user shouldn't know about
-   * 
+   *
    * i don't think copying async works, that would absolutely break some things
-   * 
+   *
    * so maybe just the option to copy over somewhere? Ehhhhhhhhhhhhhhh
-   * 
+   *
    * maybe a specified dir, plus renaming on the fly? i think renaming is totally fine, hm
-   * 
-   * 
+   *
+   *
    * and this isn't even a problem mv is just updating metadata
-   * 
+   *
    * right but you have the issue of moving the project while its up, which is a genuine problem
-   * 
+   *
    * okay maybe heterogenous is fine? like maybe you have realisticly a few items in the buffer, and you have dozens of projects and you don't really care
    * okay yeah we stick with this unless its a really a problem which i don't suspect it will be
-   * 
-   * 
-   * 
+   *
+   *
+   *
    */
   // async assign(targetDir?: string, _port?: number): Promise<string | null> {
   //   const dest = targetDir ? resolve(targetDir) : join(this.projectsRoot, `proj-${Date.now()}`)
@@ -225,13 +236,13 @@ export class ProjectBufferService {
     return this.readIndex()
   }
 
-  async ensureBufferStarted() {
+  async ensureBufferStarted({devRelayService}:{devRelayService:DevRelayService}) {
     const buffer = this.listBuffer()
 
     const promises = buffer.map((b) => {
       return this.httpOk(`http://127.0.0.1:${b.port}/@vite/client`).then(async (isRunning) => {
         if (!isRunning) {
-          const started = await this.startDev(b.dir, b.port)
+          const started = await this.startDev(b.dir, { port: b.port, devRelayService })
           if (started.pid) {
             b.pid = started.pid
           }
@@ -292,7 +303,7 @@ export class ProjectBufferService {
     const num = Math.floor(Math.random() * 900) + 100
     return `${pick(adjectives)}-${pick(animals)}-${num}`
   }
-  async createBufferedProject(): Promise<BufferedMeta | null> {
+  async createBufferedProject({devRelayService} : {devRelayService:DevRelayService}): Promise<BufferedMeta | null> {
     const ok = await this.ensureTemplate()
     if (!ok) return null
     const id = String(Date.now())
@@ -300,7 +311,7 @@ export class ProjectBufferService {
     this.ensureDir(dir)
     const copy = await this.cpCOW(this.templateRoot, dir)
     if (!copy.ok) return null
-    const started = await this.startDev(dir)
+    const started = await this.startDev(dir, {devRelayService})
     if (!started.port || !started.pid) return null
     const meta: BufferedMeta = {
       id,
@@ -385,30 +396,44 @@ export class ProjectBufferService {
 
   private async startDev(
     dir: string,
-    port?: number
+    opts: {
+      port?: number
+      devRelayService: DevRelayService
+    }
   ): Promise<{ pid: number | null; port: number | null; ms: number }> {
     const chosen =
-      port && Number.isFinite(port)
-        ? port
+      opts?.port && Number.isFinite(opts?.port)
+        ? opts.port
         : await this.pickPortFromRange(this.basePort, this.portRangeEnd)
     if (!chosen) return { pid: null, port: null, ms: 0 }
     const t0 = Date.now()
-    const devArgs = ['run', 'dev', '--port', String(chosen)]
-    const child = _spawn('pnpm', devArgs, {
-      cwd: dir,
-      stdio: ['ignore', 'pipe', 'pipe'],
-      detached: false
-    })
-    if (child.stdout) {
-      child.stdout.on('data', (data) => {
-        console.log(`[dev stdout ${chosen}]`, data.toString())
-      })
-    }
-    if (child.stderr) {
-      child.stderr.on('data', (data) => {
-        console.error(`[dev stderr ${chosen}]`, data.toString())
-      })
-    }
+
+    const child = await opts.devRelayService.start(dir, { port: chosen })
+    // const child = await (async () => {
+    //   if (opts?.startDev) {
+    //     const child = await opts.startDev({ port: chosen, cwd: dir })
+    //     return child
+    //   }
+
+    //   const devArgs = ['run', 'dev', '--port', String(chosen)]
+    //   const child = _spawn('pnpm', devArgs, {
+    //     cwd: dir,
+    //     stdio: ['ignore', 'pipe', 'pipe'],
+    //     detached: false
+    //   })
+    //   if (child.stdout) {
+    //     child.stdout.on('data', (data) => {
+    //       console.log(`[dev stdout ${chosen}]`, data.toString())
+    //     })
+    //   }
+    //   if (child.stderr) {
+    //     child.stderr.on('data', (data) => {
+    //       console.error(`[dev stderr ${chosen}]`, data.toString())
+    //     })
+    //   }
+    //   return child
+    // })()
+
     console.log('starting dev on', chosen, dir)
 
     await this.waitForReady(chosen, 1500)

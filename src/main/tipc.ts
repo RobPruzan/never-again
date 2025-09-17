@@ -248,12 +248,14 @@ export const createRouter = ({
     const startingProjectPromise = new Promise<StartingProject>(
       (res) => (startProjectResolve = res)
     )
-    const startRes = await devRelayService.start(input.projectPath, (startingProject) => {
-      startingProjects.add(startingProject)
-      handlers.onProjectStart.send(startingProject)
-      console.log('setting', startingProject)
+    const startRes = await devRelayService.start(input.projectPath, {
+      onProjectStart: (startingProject) => {
+        startingProjects.add(startingProject)
+        handlers.onProjectStart.send(startingProject)
+        console.log('setting', startingProject)
 
-      startProjectResolve?.(startingProject)
+        startProjectResolve?.(startingProject)
+      }
     })
     // i could do a start update? and just do streaming that might be fine... i think
     const runningProject: ListneingProject = {
@@ -336,7 +338,7 @@ export const createRouter = ({
     )
 
     const runningProjects = filteredStarting.concat(listening)
-    console.log('returned running projects what do we got', runningProjects)
+    // console.log('returned running projects what do we got', runningProjects)
 
     return runningProjects
     // for now filter unknown but this needs to be much better
