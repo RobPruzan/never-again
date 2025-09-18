@@ -1,5 +1,5 @@
-import { ListneingProject, LogsObj, Project, StartingProject } from '../shared/types'
-import { browserController } from './browser-controller';
+import { ListneingProject, ProcessLogsMapping, Project, StartingProject } from '../shared/types'
+import { browserController } from './browser-controller'
 
 export type RendererHandlers = {
   terminalData: (payload: { id: string; data: string }) => void
@@ -8,7 +8,7 @@ export type RendererHandlers = {
   terminalV2Data: (payload: { id: string; data: string; seq: number }) => void
   terminalV2Exit: (payload: { id: string; exitCode: number; signal: number }) => void
   terminalV2TitleChanged: (payload: { id: string; title: string }) => void
-  browserStateUpdate: (browserState: ReturnType<typeof browserController.getCurrentState>) =>  void
+  browserStateUpdate: (browserState: ReturnType<typeof browserController.getCurrentState>) => void
   terminalResize: (payload: { id: string; cols: number; rows: number }) => void
   menuNewTab: () => void
   menuNextItem: () => void
@@ -20,5 +20,5 @@ export type RendererHandlers = {
   onProjectStart: (project: StartingProject) => void
   onProjectListen: (project: ListneingProject) => void
   dismiss: () => void
-  onLogsObjUpdate: (logsObj: LogsObj) => void
+  onProcessLogsMappingUpdate: (logsObj: ProcessLogsMapping) => void
 }

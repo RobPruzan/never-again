@@ -1,12 +1,11 @@
 import { execFile as _execFile } from 'node:child_process'
 import { realpathSync, existsSync } from 'node:fs'
-import { resolve, sep } from 'node:path'
+import { readFile } from 'node:fs/promises'
+import { resolve, sep, join } from 'node:path'
 import { promisify } from 'node:util'
 import { DevServerKind } from '../shared/types'
 
 const execFile = promisify(_execFile)
-
-
 
 const normalizePath = (p: string) => {
   if (!p) return ''
@@ -198,14 +197,30 @@ export const detectDevServersForDir = async (
     command: string
     kind: DevServerKind
   }> = []
+
+  const mapPidToStarter = async (listeningPid: number, procCwd: string) => {
+    const metaPath = join(procCwd, '.devrelay.json')
+    if (!existsSync(metaPath)) return listeningPid
+    const raw = await readFile(metaPath, 'utf8').catch(() => '')
+    if (!raw) return listeningPid
+    let starter: number | null = null
+    try {
+      const parsed = JSON.parse(raw) as { pid?: number }
+      starter = typeof parsed.pid === 'number' ? parsed.pid : null
+    } catch {
+      starter = null
+    }
+    return starter ?? listeningPid
+  }
   for (const { pid, command, ports } of pairs) {
     const cwd = cwdMap.get(pid) ?? ''
     if (!cwd || !isSubpath(cwd, projectDir)) continue
+    const reportedPid = await mapPidToStarter(pid, cwd)
     const probes = ports.map(async (port) => {
       const kind = http
         ? await detectDevServerKind(port, timeoutMs).catch(() => 'unknown' as DevServerKind)
         : ('unknown' as DevServerKind)
-      results.push({ port, pid, cwd, command, kind })
+      results.push({ port, pid: reportedPid, cwd, command, kind })
     })
     await Promise.all(probes)
   }

@@ -115,8 +115,8 @@ export const createRouter = ({
 
   devRelayService: DevRelayService
 }) => ({
-  getLogsObj: t.procedure.action(async () => {
-    return devRelayService.logsObj
+  getProcessLogsMapping: t.procedure.action(async () => {
+    return devRelayService.processLogsMapping
   }),
 
   getWorkspaces: t.procedure.action(async () => {
@@ -370,7 +370,7 @@ export const createRouter = ({
         ...project,
         runningKind: 'listening' as const
       }))
-      // .sort((a, b) => a.cwd.localeCompare(b.cwd)) // for stability, id prefer alpahbetical name or port but this is fine for nwo // nvm thsi doens't work for some reason need to investigate
+    // .sort((a, b) => a.cwd.localeCompare(b.cwd)) // for stability, id prefer alpahbetical name or port but this is fine for nwo // nvm thsi doens't work for some reason need to investigate
 
     // typescript stinks here
     // startingProjects should be a getter not property due to timing issues with stale state
@@ -382,7 +382,8 @@ export const createRouter = ({
         !listening.some((listeningProject) => listeningProject.cwd === startingProject.cwd)
     )
 
-    const runningProjects = filteredStarting.concat(listening)
+    const runningProjects = filteredStarting
+      .concat(listening)
       .sort((a, b) => a.cwd.localeCompare(b.cwd))
     // console.log('returned running projects what do we got', runningProjects)
 

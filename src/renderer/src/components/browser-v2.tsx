@@ -118,42 +118,6 @@ const PhaseHeader = ({ phase }: { phase: 'starting' | 'loading' }) => {
   )
 }
 
-// Centralized, type-safe log selection to avoid frame regressions
-const selectLogsForProject = (
-  logsObj: ReturnType<typeof useLogObj>['data'] | undefined,
-  project: RunningProject,
-  savedStartingId: string | null,
-  stableRunningLogsRef: React.MutableRefObject<string[]>
-): string[] => {
-  if (!logsObj) return stableRunningLogsRef.current.length > 0 ? stableRunningLogsRef.current : []
-
-  if (project.runningKind === 'starting') {
-    return logsObj.startingLogs[project.startingId] ?? []
-  }
-
-  // listening
-  const mappedPort = savedStartingId ? logsObj.startingToRunning[savedStartingId] : undefined
-  const mappedLogs = mappedPort != null ? logsObj.runningProjectsLogs[mappedPort] : undefined
-  const portLogs = logsObj.runningProjectsLogs[project.port]
-  const startingLogs = savedStartingId ? logsObj.startingLogs[savedStartingId] : undefined
-
-  let candidate = mappedLogs ?? portLogs ?? startingLogs ?? []
-
-  // If mapping exists but not yet populated, prefer showing prior starting logs asap
-  if (mappedPort != null && mappedLogs === undefined && Array.isArray(startingLogs)) {
-    candidate = startingLogs
-  }
-
-  // Sticky last known logs to prevent blank frames
-  if (candidate.length === 0 && stableRunningLogsRef.current.length > 0) {
-    candidate = stableRunningLogsRef.current
-  } else if (candidate.length > 0) {
-    stableRunningLogsRef.current = candidate
-  }
-
-  return candidate
-}
-
 const WebContentViewArea = () => {
   const { focusedProject, route } = useAppContext()
 
@@ -169,6 +133,67 @@ const WebContentViewArea = () => {
 
   // issue of course there could be one project with multiple ports
   // it would also be nice to give it a little http client at that port, that should be quite trivial to do
+
+  /**
+   * this SHOULD be
+   *
+   * projects.map(project => project.process.ports.map(port => ))
+   *
+   * then what? how is the problem solved
+   *
+   * then we show a <StartingProcess></StartingProcess> wrapper which reads port.parentProcess
+   *
+   * then all ports for the process read the same stdout
+   *
+   * right, then what's the id
+   *
+   * well you have valid id's in all cases
+   *
+   * project.cwd
+   * process.pid
+   * port.value
+   *
+   *
+   * a project is a static thing (something you can index statically once)
+   * a process is something either starting or listening
+   * a port is something definitely listening
+   *
+   *
+   * so how do you know if something is starting or listening?
+   * does it have any ports?
+   *
+   * no that's not valid. that's what we're already doing though, we just can't know
+   *
+   * we need to define an invariant: a process must be listening on a port
+   *
+   * then we can assert the prior state- if a process has no ports its still starting
+   *
+   * how do we handle focused projects? ah this is the correct model
+   *
+   * you focus a PROJECT, but then you need some state that represents what port you want since that's what matters
+   *
+   * you don't want this to be effect based. so you have a selection that can be swapped out at will, that's unique
+   *
+   * then you just need sync which is what we already fucking did
+   *
+   * how close are we to this existing model? like what would it take to go from where we are now to that model
+   *
+   * its like projects are really just flattened projects for their ports
+   *
+   * okay then the fundamnetal problem is that we're mapping logs to ports, when it should be processes, which are really
+   * just projects
+   *
+   * oh wait a project can TOTALLY have mutliple processes, that have different stdout. so we absolutely want to map
+   * to pid
+   *
+   *
+   * fuck but how do we define equality here
+   *
+   * we would need to say its the starting id, but then if there was ever a starting id we back reference that still ug
+   * maybe something we have to do but not confident
+   *
+   * lets just see why it completely doesn't work
+   */
 
   return runningProjects.map((runningProject) => (
     // <StartingProject project={runningProject}>
@@ -227,69 +252,38 @@ const StartingProject = ({
 }) => {
   const logsObjQuery = useLogObj()
   const browserStateQuery = useBrowserState()
-  const savedStartingIdRef = useRef<string | null>(null)
-  const stableRunningLogsRef = useRef<string[]>([])
-  const prevCwdRef = useRef<string>(project.cwd)
+  console.log('the logs obj', logsObjQuery.data)
+  console.log('the project', project)
 
-  console.log('logs obj', logsObjQuery.data)
-  console.log('saved starting id', savedStartingIdRef.current)
-  console.log('project', project)
+  console.log('is it loaded?', browserStateQuery.data.isLoaded)
+  console.log('logs?', logsObjQuery.data[project.pid])
 
   /**
-   *
-   * if i had the browser query then i could know reactively
-   * if the project is loading
-   * and i could guard listening to be on both
+   * now what we want to do is get the logs for the parent process
    */
-
-  if (prevCwdRef.current !== project.cwd) {
-    prevCwdRef.current = project.cwd
-    console.log('SETTING TO NULL', prevCwdRef.current, project.cwd)
-
-    savedStartingIdRef.current = null
-    stableRunningLogsRef.current = []
-  }
-  if (project.runningKind === 'starting') {
-    savedStartingIdRef.current = project.startingId
-  }
 
   switch (project.runningKind) {
     case 'listening': {
       const isLoaded = Boolean(browserStateQuery.data?.isLoaded)
-      const runningLogs = selectLogsForProject(
-        logsObjQuery.data,
-        project,
-        savedStartingIdRef.current,
-        stableRunningLogsRef
-      )
-      return (
-        <div className="relative flex-1 h-full w-full bg-[#0A0A0A] overflow-hidden">
-          {children(project)}
-          <div
-            className={
-              'absolute inset-0 flex items-center justify-center transition-opacity duration-300 ' +
-              (isLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100')
-            }
-          >
-            <div className="w-[min(900px,92vw)] max-w-[92vw]">
+      const logs = logsObjQuery.data[project.pid] ?? []
+      if (!isLoaded) {
+        return (
+          <div className="flex-1 h-full w-full bg-[#0A0A0A] overflow-hidden flex items-center justify-center">
+            <div className="w-[900px] max-w-full">
               <PhaseHeader phase="loading" />
-              <StartingLogViewer lines={runningLogs} />
+              <StartingLogViewer lines={logs} />
             </div>
           </div>
-        </div>
-      )
+        )
+      }
+      return children(project)
     }
     case 'starting': {
-      const logs = selectLogsForProject(
-        logsObjQuery.data,
-        project,
-        savedStartingIdRef.current,
-        stableRunningLogsRef
-      )
+      const logs = logsObjQuery.data[project.pid] ?? []
       return (
-        <div className="relative flex-1 h-full w-full flex items-center justify-center bg-[#0A0A0A] text-white overflow-hidden">
-          <div className="relative w-[min(900px,92vw)] max-w-[92vw]">
-            <PhaseHeader phase="starting" />
+        <div className="flex-1 h-full w-full flex items-center justify-center bg-[#0A0A0A] text-white overflow-hidden">
+          <div className="w-[900px] max-w-full">
+            <PhaseHeader phase="loading" />
             <StartingLogViewer lines={logs} />
           </div>
         </div>
@@ -303,12 +297,6 @@ const StartingProject = ({
 }
 
 const StartingLogViewer = ({ lines }: { lines: string[] }) => {
-  if (lines.length === 0) {
-    console.log('NOOOOOOOOOO LINESSSSSSSSSSSSSSS')
-  } else {
-    console.log('LINESSSSSSSSSSSSSSSS')
-  }
-
   const wrap = true
   const [autoScroll, setAutoScroll] = useState(true)
   const scrollRef = useRef<HTMLDivElement | null>(null)
@@ -321,18 +309,9 @@ const StartingLogViewer = ({ lines }: { lines: string[] }) => {
   }, [lines.length, autoScroll])
 
   const handleScroll = () => {
-    // keep autoScroll always-on; ignore manual scroll pause
     const el = scrollRef.current
     if (!el) return
     setAutoScroll(true)
-  }
-
-  const copyAll = async () => {
-    try {
-      await navigator.clipboard.writeText(lines.join('\n'))
-    } catch (err) {
-      // ignore
-    }
   }
 
   const cleanedLines = useMemo(() => lines.map((raw) => raw.replace(/\r/g, '')), [lines])

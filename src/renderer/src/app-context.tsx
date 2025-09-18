@@ -1,10 +1,11 @@
-import { ListneingProject, LogsObj, Project, RunningProject } from '@shared/types'
+import { ListneingProject, ProcessLogsMapping, Project, RunningProject } from '@shared/types'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Terminal } from '@xterm/xterm'
 import { createContext, Dispatch, SetStateAction, useContext } from 'react'
 import { client } from './lib/tipc'
 import { useRunningProjects } from './hooks/use-running-projects'
 import { deriveRunningProjectId, toFocusedProject } from './lib/utils'
+import { flushSync } from 'react-dom'
 
 type ProjectID = string
 export type FocusedProject =
@@ -94,7 +95,9 @@ export const useFocusedProject = (): RunningProject | null => {
         ...focusedProject,
         projectId: deriveRunningProjectId(listeningProject)
       }
-      setFocusedProject(newFocusedProject)
+      flushSync(() => {
+        setFocusedProject(newFocusedProject)
+      })
       return listeningProject
     }
 
@@ -142,7 +145,9 @@ export const useFocusedProject = (): RunningProject | null => {
         projectUsed = startingProjects[0]
       }
 
-      setFocusedProject(newFocusedProject)
+      flushSync(() => {
+        setFocusedProject(newFocusedProject)
+      })
       return projectUsed
     }
 

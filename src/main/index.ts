@@ -265,8 +265,8 @@ app.whenReady().then(async () => {
   // Ensure terminal events can be sent to the renderer
   terminalManagerV2.setMainWindow(mainWindow)
   const devRelayService = new DevRelayService({
-    onLogsObjUpdate: (logsObj) => {
-      handlers.onLogsObjUpdate.send(logsObj)
+    onProcessLogsMappingUpdate: (logsObj) => {
+      handlers.onProcessLogsMappingUpdate.send(logsObj)
     },
     onProjectListen: (project) => {
       handlers.onProjectListen.send(project)

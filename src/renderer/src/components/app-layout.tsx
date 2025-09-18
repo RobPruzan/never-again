@@ -30,7 +30,7 @@ export function AppLayout() {
 
   queryClient.prefetchQuery({
     queryKey: ['logsObj'],
-    queryFn: () => client.getLogsObj()
+    queryFn: () => client.getProcessLogsMapping()
   })
 
   queryClient.prefetchQuery({
@@ -42,7 +42,7 @@ export function AppLayout() {
     queryFn: () => client.getDevServers()
   })
   // queryClient.prefetchQuery({
-  
+
   //   queryKey: ['projects'],
   //   queryFn: () => client.getProjects()
   // })

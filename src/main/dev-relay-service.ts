@@ -3,7 +3,7 @@ import { createServer, Socket, connect } from 'node:net'
 import { unlinkSync, existsSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { detectDevServersForDir } from './dev-server-detector'
-import { ListneingProject, LogsObj, StartingProject } from '../shared/types'
+import { ListneingProject, ProcessLogsMapping, StartingProject } from '../shared/types'
 
 /**
  * thsi is also an awful name!
@@ -16,16 +16,18 @@ import { ListneingProject, LogsObj, StartingProject } from '../shared/types'
  */
 // we probably want super json so we don't have to think about serializing that kind of obj
 export class DevRelayService {
-  logsObj: LogsObj = {
-    runningProjectsLogs: {},
-    startingLogs: {},
-    startingToRunning: {}
-  }
-  onLogsObjUpdate?: (logs: LogsObj) => void
-  onProjectListen?: (projectListen: ListneingProject) =>void 
+  processLogsMapping: Record<number, Array<string>> = {}
+  onProcessLogsMappingUpdate?: (logs: ProcessLogsMapping) => void
+  onProjectListen?: (projectListen: ListneingProject) => void
 
-  constructor({ onLogsObjUpdate, onProjectListen }: { onLogsObjUpdate?: (logs: LogsObj) => void, onProjectListen?: (project: ListneingProject) => void }) {
-    this.onLogsObjUpdate = onLogsObjUpdate
+  constructor({
+    onProcessLogsMappingUpdate,
+    onProjectListen
+  }: {
+    onProcessLogsMappingUpdate?: (logs: ProcessLogsMapping) => void
+    onProjectListen?: (project: ListneingProject) => void
+  }) {
+    this.onProcessLogsMappingUpdate = onProcessLogsMappingUpdate
     this.onProjectListen = onProjectListen
   }
   private servers = new Map<
@@ -40,8 +42,6 @@ export class DevRelayService {
       onProjectStart?: (project: StartingProject) => void
     }
   ) {
-    const startingClosureId = crypto.randomUUID()
-    this.logsObj.startingLogs[startingClosureId] = []
     const cwd = resolve(projectDir)
     const sock = join(cwd, '.devrelay.sock') // i believe this sock is for future connectors, yes quite confident
     // why would forward be logging it to the process and not sending it over the sock?
@@ -53,36 +53,32 @@ export class DevRelayService {
     const server = createServer()
     const clients = new Set<Socket>()
 
-    const proc = spawn(
-      'pnpm', // this needs to detect package manager, maybe just use ni
-      ['run', 'dev', ...(opts?.port ? ['--port', String(opts.port)] : [])],
-      {
-        cwd,
-        stdio: ['ignore', 'pipe', 'pipe'],
-        env: { ...process.env, FORCE_COLOR: '1', npm_config_color: 'true' } // why both, are both needed?
-      }
-    )
+    const proc = await new Promise<ChildProcess>((resolve, reject) => {
+      const childProc = spawn(
+        'pnpm', // this needs to detect package manager, maybe just use ni
+        ['run', 'dev', ...(opts?.port ? ['--port', String(opts.port)] : [])],
+        {
+          cwd,
+          stdio: ['ignore', 'pipe', 'pipe'],
+          env: { ...process.env, FORCE_COLOR: '1', npm_config_color: 'true' } // why both, are both needed?
+        }
+      )
+
+      childProc.on('spawn', () => resolve(childProc))
+      childProc.on('error', reject)
+    })
+    const pid = proc.pid
+    console.log('proc pid', proc.pid, 'vs our pid', process.pid)
+
+    if (!pid) {
+      throw new Error('invariant')
+    }
+    this.processLogsMapping[pid] = []
     const handleData = (d: { toString: () => string }) => {
       // forward(d, false)
 
-      const startingEntry = this.logsObj.startingLogs[startingClosureId]
-      if (!startingEntry) {
-        const runningMapBack = this.logsObj.startingToRunning[startingClosureId]
-        if (!runningMapBack) {
-          throw new Error('must either be starting or listening no inbetween')
-        }
-
-        const running = this.logsObj.runningProjectsLogs[runningMapBack]
-        if (!running) {
-          throw new Error("must have a running project if there's a map back")
-        }
-        running.push(d.toString())
-
-        this.onLogsObjUpdate?.(this.logsObj)
-        return
-      }
-      this.onLogsObjUpdate?.(this.logsObj)
-      startingEntry.push(d.toString())
+      const processLogs = this.processLogsMapping[pid]
+      processLogs.push(d.toString())
     }
 
     proc.stdout?.on('data', (d) => {
@@ -127,22 +123,16 @@ export class DevRelayService {
 
     proc.on('exit', () => cleanup())
 
+    
     server.listen(sock)
     opts?.onProjectStart?.({
       kind: 'unknown',
       cwd,
-      pid: typeof proc.pid === 'number' ? proc.pid : 0,
-      runningKind: 'starting',
-      startingId: startingClosureId
+      pid: pid,
+      runningKind: 'starting'
     })
     this.servers.set(cwd, { server, proc, sock })
-    try {
-      writeFileSync(
-        join(cwd, '.devrelay.json'),
-        JSON.stringify({ pid: proc.pid, sock }, null, 2),
-        'utf8'
-      )
-    } catch {}
+    writeFileSync(join(cwd, '.devrelay.json'), JSON.stringify({ pid: proc.pid, sock }), 'utf8')
 
     const prev = await detectDevServersForDir(projectDir)
     console.log('prev ports found', prev)
@@ -198,20 +188,14 @@ export class DevRelayService {
       }
       poll()
     })
-    const startingLogs = this.logsObj.startingLogs[startingClosureId]
-    if (!startingLogs) {
-      throw new Error('Invariant no starting logs found')
-    }
-
-    this.logsObj.startingToRunning[startingClosureId] = project.port
-    delete this.logsObj.startingLogs[startingClosureId]
-    this.logsObj.runningProjectsLogs[project.port] = startingLogs
+    // delete delete delete
 
     this.onProjectListen?.({
       ...project,
-      runningKind: "listening"
+      runningKind: 'listening',
+      pid // why is this pid not the same as what project returned? subprocess weirndess maybe?
     })
-    this.onLogsObjUpdate?.(this.logsObj)
+    this.onProcessLogsMappingUpdate?.(this.processLogsMapping)
 
     return { sock, pid: proc.pid!, project } // daijobu meme
   }
