@@ -24,7 +24,7 @@ export function MainSidebar() {
 
     const session = await v2Client.terminalV2Create({
       cwd: focusedProject.cwd,
-      startCommand: 'opencode'
+      startCommand: 'claude --dangerously-skip-permissions'
     })
     if (!focusedProject) return
 
@@ -59,7 +59,7 @@ export function MainSidebar() {
         try {
           const session = await v2Client.terminalV2Create({
             cwd: focusedProject.cwd,
-            startCommand: 'opencode'
+            startCommand: 'claude --dangerously-skip-permissions'
           })
           setTerminals((prev) => [...prev, { terminalId: session.id, projectId: projectKey }])
           setFocusedProject((prev) => {
@@ -376,7 +376,7 @@ export function MainSidebar() {
                       }}
                     >
                       <Terminalv2
-                        startCommand={'claude ---dangerously-skip-permissions'}
+                        startCommand={'claude --dangerously-skip-permissions'}
                         terminalId={tab.terminalId}
                         cwd={terminalCwd}
                       />

@@ -175,6 +175,8 @@ export const createRouter = ({
     // i wish i had an easy kill button
     // maybe i can just do that eh
 
+    console.log('[createProject] Starting project creation process')
+    
     const t0 = Date.now()
     let t1, t2, t3, t4
 
@@ -183,34 +185,50 @@ export const createRouter = ({
       'creating a project!!! do we have items in the buffer available?',
       bufferService.listBuffer()
     )
+    console.log(
+      '[createProject] Buffer status check - available items:',
+      bufferService.listBuffer()
+    )
 
+    console.log('[createProject] Calling bufferService.create...')
     const meta = await bufferService.create({ devRelayService })
     t2 = Date.now()
+    
     if (!meta) {
       console.log('wtf')
+      console.error('[createProject] bufferService.create returned null/undefined')
 
       throw new Error('oh no') // i assume this just forwards it hopefully
     }
     console.log('created new project', meta)
+    console.log('[createProject] Created new project metadata:', meta)
 
     /**
      *
      * TODO: this should be instant, and no flicker, currently there's a flicker which makes no sense
      */
     const url = `http://localhost:${meta.port}`
+    console.log('[createProject] Checking HTTP availability at:', url)
     await bufferService.httpOk(url)
+    console.log('[createProject] HTTP check passed')
+    
     try {
       // await browser.loadUrl({ tabId: meta.dir, url })
     } catch (e) {
       console.log('e', e)
+      console.warn('[createProject] Browser loadUrl failed:', e)
     }
 
     t3 = Date.now()
 
+    console.log('[createProject] Searching for projects at directory:', meta.dir)
     const project = (await findProjectsBFS(meta.dir)).at(0) // this is too slow
     t4 = Date.now()
+    console.log('[createProject] Project search completed, found:', project)
+    
     // what the fuck why
     if (!project) {
+      console.error('[createProject] No project found at directory:', meta.dir)
       throw new Error(
         'Invariant, if you just created a project at a dir, there of course should be a found project at that dir'
       )
@@ -224,6 +242,7 @@ export const createRouter = ({
       pid: meta.pid,
       port: meta.port
     }
+    console.log('[createProject] Created running project object:', runningProject)
 
     const totalMs = t4 - t0
     const report = {
@@ -235,7 +254,10 @@ export const createRouter = ({
       }
     }
     console.table(report)
+    console.log('[createProject] Performance report:')
+    console.table(report)
 
+    console.log('[createProject] Project creation completed successfully')
     return {
       project,
       runningProject,
