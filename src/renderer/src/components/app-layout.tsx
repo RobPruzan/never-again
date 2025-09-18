@@ -27,11 +27,22 @@ export function AppLayout() {
     queryKey: ['browserState'],
     queryFn: () => client.getBrowserState()
   })
+
+  queryClient.prefetchQuery({
+    queryKey: ['logsObj'],
+    queryFn: () => client.getLogsObj()
+  })
+
+  queryClient.prefetchQuery({
+    queryKey: ['browserState'],
+    queryFn: () => client.getBrowserState()
+  })
   queryClient.prefetchQuery({
     queryKey: ['devServers'],
     queryFn: () => client.getDevServers()
   })
   // queryClient.prefetchQuery({
+  
   //   queryKey: ['projects'],
   //   queryFn: () => client.getProjects()
   // })

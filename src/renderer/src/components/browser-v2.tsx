@@ -22,6 +22,7 @@ import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { useLogObj } from '@renderer/hooks/use-log-obj'
 import Ansi from 'ansi-to-react'
 import { useBrowserState } from './use-browser-state'
+import { LeafyGreen } from 'lucide-react'
 
 const DisplayNoneActivity = ({
   children,
@@ -106,8 +107,56 @@ export const BrowserV2 = () => {
   )
 }
 
+const PhaseHeader = ({ phase }: { phase: 'starting' | 'loading' }) => {
+  return (
+    <div className="mb-3 flex items-center justify-center">
+      <span className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white/[0.04] border border-white/10 text-xs text-white/70">
+        <span className="w-3.5 h-3.5 rounded-full border-2 border-white/20 border-t-white/80 animate-spin" />
+        {phase === 'starting' ? 'Starting server…' : 'Server ready — loading page…'}
+      </span>
+    </div>
+  )
+}
+
+// Centralized, type-safe log selection to avoid frame regressions
+const selectLogsForProject = (
+  logsObj: ReturnType<typeof useLogObj>['data'] | undefined,
+  project: RunningProject,
+  savedStartingId: string | null,
+  stableRunningLogsRef: React.MutableRefObject<string[]>
+): string[] => {
+  if (!logsObj) return stableRunningLogsRef.current.length > 0 ? stableRunningLogsRef.current : []
+
+  if (project.runningKind === 'starting') {
+    return logsObj.startingLogs[project.startingId] ?? []
+  }
+
+  // listening
+  const mappedPort = savedStartingId ? logsObj.startingToRunning[savedStartingId] : undefined
+  const mappedLogs = mappedPort != null ? logsObj.runningProjectsLogs[mappedPort] : undefined
+  const portLogs = logsObj.runningProjectsLogs[project.port]
+  const startingLogs = savedStartingId ? logsObj.startingLogs[savedStartingId] : undefined
+
+  let candidate = mappedLogs ?? portLogs ?? startingLogs ?? []
+
+  // If mapping exists but not yet populated, prefer showing prior starting logs asap
+  if (mappedPort != null && mappedLogs === undefined && Array.isArray(startingLogs)) {
+    candidate = startingLogs
+  }
+
+  // Sticky last known logs to prevent blank frames
+  if (candidate.length === 0 && stableRunningLogsRef.current.length > 0) {
+    candidate = stableRunningLogsRef.current
+  } else if (candidate.length > 0) {
+    stableRunningLogsRef.current = candidate
+  }
+
+  return candidate
+}
+
 const WebContentViewArea = () => {
   const { focusedProject, route } = useAppContext()
+
   const runningProjects = useRunningProjects().data
 
   // Only render when there's a focused project - this prevents WebContentView components
@@ -125,7 +174,9 @@ const WebContentViewArea = () => {
     // <StartingProject project={runningProject}>
     //   {(listenignProject) => (
     <div
-      key={deriveRunningProjectId(runningProject)}
+      // key={runningProject.cwd}
+      // like really we want to say the cwd but we want to invalide the web content on new url, but right we dont have okay yeah thats it
+      //
       style={{
         display:
           deriveRunningProjectId(runningProject) !== focusedProject.projectId || route !== 'webview'
@@ -146,6 +197,7 @@ const WebContentViewArea = () => {
               route === 'webview' && (
                 <>
                   <WebContentView
+                    key={deriveRunningProjectId(runningProject)} // i think?
                     url={`http://localhost:${listeningProject.port}`}
                     id={deriveRunningProjectId(listeningProject)}
                   />
@@ -175,6 +227,13 @@ const StartingProject = ({
 }) => {
   const logsObjQuery = useLogObj()
   const browserStateQuery = useBrowserState()
+  const savedStartingIdRef = useRef<string | null>(null)
+  const stableRunningLogsRef = useRef<string[]>([])
+  const prevCwdRef = useRef<string>(project.cwd)
+
+  console.log('logs obj', logsObjQuery.data)
+  console.log('saved starting id', savedStartingIdRef.current)
+  console.log('project', project)
 
   /**
    *
@@ -183,31 +242,54 @@ const StartingProject = ({
    * and i could guard listening to be on both
    */
 
+  if (prevCwdRef.current !== project.cwd) {
+    prevCwdRef.current = project.cwd
+    console.log('SETTING TO NULL', prevCwdRef.current, project.cwd)
+
+    savedStartingIdRef.current = null
+    stableRunningLogsRef.current = []
+  }
+  if (project.runningKind === 'starting') {
+    savedStartingIdRef.current = project.startingId
+  }
+
   switch (project.runningKind) {
     case 'listening': {
       const isLoaded = Boolean(browserStateQuery.data?.isLoaded)
+      const runningLogs = selectLogsForProject(
+        logsObjQuery.data,
+        project,
+        savedStartingIdRef.current,
+        stableRunningLogsRef
+      )
       return (
         <div className="relative flex-1 h-full w-full bg-[#0A0A0A] overflow-hidden">
           {children(project)}
           <div
             className={
-              'absolute inset-0 flex items-center justify-center bg-[#0A0A0A]/60 transition-opacity duration-300 ' +
+              'absolute inset-0 flex items-center justify-center transition-opacity duration-300 ' +
               (isLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100')
             }
           >
-            <div className="flex flex-col items-center gap-3 text-white/80">
-              <div className="w-5 h-5 rounded-full border-2 border-white/20 border-t-white/80 animate-spin" />
-              <div className="text-xs tracking-wide">Loading…</div>
+            <div className="w-[min(900px,92vw)] max-w-[92vw]">
+              <PhaseHeader phase="loading" />
+              <StartingLogViewer lines={runningLogs} />
             </div>
           </div>
         </div>
       )
     }
     case 'starting': {
-      const logs = (logsObjQuery.data?.startingLogs?.[project.startingId] ?? []) as string[]
+      const logs = selectLogsForProject(
+        logsObjQuery.data,
+        project,
+        savedStartingIdRef.current,
+        stableRunningLogsRef
+      )
       return (
         <div className="relative flex-1 h-full w-full flex items-center justify-center bg-[#0A0A0A] text-white overflow-hidden">
           <div className="relative w-[min(900px,92vw)] max-w-[92vw]">
+            <PhaseHeader phase="starting" />
             <StartingLogViewer lines={logs} />
           </div>
         </div>
@@ -221,7 +303,13 @@ const StartingProject = ({
 }
 
 const StartingLogViewer = ({ lines }: { lines: string[] }) => {
-  const [wrap, setWrap] = useState(true)
+  if (lines.length === 0) {
+    console.log('NOOOOOOOOOO LINESSSSSSSSSSSSSSS')
+  } else {
+    console.log('LINESSSSSSSSSSSSSSSS')
+  }
+
+  const wrap = true
   const [autoScroll, setAutoScroll] = useState(true)
   const scrollRef = useRef<HTMLDivElement | null>(null)
 
@@ -233,10 +321,10 @@ const StartingLogViewer = ({ lines }: { lines: string[] }) => {
   }, [lines.length, autoScroll])
 
   const handleScroll = () => {
+    // keep autoScroll always-on; ignore manual scroll pause
     const el = scrollRef.current
     if (!el) return
-    const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 16
-    setAutoScroll(nearBottom)
+    setAutoScroll(true)
   }
 
   const copyAll = async () => {
@@ -253,29 +341,7 @@ const StartingLogViewer = ({ lines }: { lines: string[] }) => {
 
   return (
     <div className="relative rounded-lg border border-[#1A1A1A] bg-[#0A0A0A] overflow-hidden h-[min(380px,45vh)]">
-      <div className="absolute top-3 right-3 z-[1] flex items-center gap-2 text-xs">
-        <button
-          onClick={() => setAutoScroll((v) => !v)}
-          className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 transition"
-          title={autoScroll ? 'Pause autoscroll' : 'Resume autoscroll'}
-        >
-          {autoScroll ? 'Autoscroll' : 'Paused'}
-        </button>
-        <button
-          onClick={() => setWrap((v) => !v)}
-          className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 transition"
-          title={wrap ? 'Disable word wrap' : 'Enable word wrap'}
-        >
-          {wrap ? 'Wrap' : 'No wrap'}
-        </button>
-        <button
-          onClick={copyAll}
-          className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 transition"
-          title="Copy all logs"
-        >
-          Copy
-        </button>
-      </div>
+      {/* controls removed for a calmer, focused view */}
 
       <div
         ref={scrollRef}
@@ -304,16 +370,7 @@ const StartingLogViewer = ({ lines }: { lines: string[] }) => {
         <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
       </div>
 
-      {!autoScroll && (
-        <div className="absolute bottom-3 right-3 z-[1]">
-          <button
-            onClick={() => setAutoScroll(true)}
-            className="px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/20 border border-white/10 text-white/90 text-xs transition shadow-[0_8px_24px_-8px_rgba(0,0,0,0.5)]"
-          >
-            Jump to present
-          </button>
-        </div>
-      )}
+      {/* always autoscroll; no jump control */}
     </div>
   )
 }

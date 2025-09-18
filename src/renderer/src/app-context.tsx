@@ -1,4 +1,4 @@
-import { LogsObj, Project, RunningProject } from '@shared/types'
+import { ListneingProject, LogsObj, Project, RunningProject } from '@shared/types'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Terminal } from '@xterm/xterm'
 import { createContext, Dispatch, SetStateAction, useContext } from 'react'
@@ -47,7 +47,7 @@ export const AppContext = createContext<{
 
 export const useAppContext = () => useContext(AppContext)
 
-export const useFocusedProject = () => {
+export const useFocusedProject = (): RunningProject | null => {
   const { focusedProject, setFocusedProject, route } = useAppContext()
 
   const runningProjectsQuery = useRunningProjects()
@@ -58,6 +58,9 @@ export const useFocusedProject = () => {
   const project = runningProjectsQuery.data.find(
     (project) => deriveRunningProjectId(project) === focusedProject?.projectId
   )
+  if (project) {
+    return project
+  }
 
   // console.log('focused', focusedProject)
   // console.log('running', runningProjectsQuery.data)
@@ -87,11 +90,12 @@ export const useFocusedProject = () => {
       const listeningProject = listeningProjects.reduce((lowest, current) => {
         return current.port < lowest.port ? current : lowest
       })
-      setFocusedProject({
+      const newFocusedProject = {
         ...focusedProject,
         projectId: deriveRunningProjectId(listeningProject)
-      })
-      return
+      }
+      setFocusedProject(newFocusedProject)
+      return listeningProject
     }
 
     /**
@@ -125,23 +129,21 @@ export const useFocusedProject = () => {
       const startingProjects = projectsWithSameCwd.filter((p) => p.runningKind === 'starting')
 
       let newFocusedProject: typeof focusedProject
+      let projectUsed: RunningProject
 
       if (listeningProjects.length > 0) {
         const projectWithLowestPort = listeningProjects.reduce((lowest, current) =>
           current.port < lowest.port ? current : lowest
         )
         newFocusedProject = toFocusedProject(projectWithLowestPort)
+        projectUsed = projectWithLowestPort
       } else {
         newFocusedProject = toFocusedProject(startingProjects[0])
+        projectUsed = startingProjects[0]
       }
 
       setFocusedProject(newFocusedProject)
-    }
-
-    if (
-      runningProjectsQuery.data.some((p) => deriveRunningProjectId(p) === focusedProject?.projectId)
-    ) {
-      throw new Error('invariant tried to focus a non existent project')
+      return projectUsed
     }
 
     // const oldProject = runningProjectsQuery.data.find(
@@ -151,6 +153,5 @@ export const useFocusedProject = () => {
     //   }) === focusedProject?.projectId
     // )
   }
-
-  return { ...project }
+  throw new Error('invariant tried to focus a non existent project')
 }

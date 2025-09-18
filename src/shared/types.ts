@@ -9,10 +9,12 @@ export type Project = {
 
 export type ListneingProject = {
   runningKind: 'listening'
+  
   port: number
   pid: number
   cwd: string
   kind: DevServerKind
+  // startingId: string // we really want this to map back but i dont want to do that rn but will need to, slightly tricky because we need to handle all cases even projects we didn't start or projects we fresh started
 }
 
 export type StartingProject = {

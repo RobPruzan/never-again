@@ -11,6 +11,8 @@ export type GroupedProject = {
 
 export function useGroupedProjects() {
   const runningProjects = useRunningProjects()
+  // console.log('running projects', runningProjects.data)
+
   const groupedProjects = iife(() => {
     const groups = new Map<string, GroupedProject>()
 
@@ -39,8 +41,7 @@ export function useGroupedProjects() {
 
       existing.projects.push(project)
     })
-    return [ ...groups.values() ]
-
+    return [...groups.values()]
   })
 
   return groupedProjects

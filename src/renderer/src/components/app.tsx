@@ -29,6 +29,7 @@ export default function App() {
       <Suspense
         fallback={
           <div className="flex items-center justify-center h-screen bg-[#0A0A0A]">
+            {(console.log("SUSPENDING"), null)}
             <div className="text-white text-2xl font-bold">Loading...</div>
           </div>
         }
