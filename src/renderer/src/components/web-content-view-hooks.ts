@@ -45,8 +45,6 @@ export function useWebContentViewUrl(id: string, url: string, isReady: boolean) 
       }
     }
 
-    console.log('updating url', id);
-    
     updateUrl()
   }, [id, url, isReady])
 }
@@ -86,8 +84,6 @@ export function useWebContentViewPositioning(
   const hasMountedRef = useRef(false)
 
   const updateBounds = async (forceUpdate = false) => {
-    console.log('updating bounds', tabId)
-
     if (!containerRef.current || !isReady) return
 
     const bounds = containerRef.current.getBoundingClientRect()

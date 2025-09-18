@@ -3,6 +3,7 @@ import { RunningProject, ListneingProject } from '@shared/types'
 import { useRunningProjects } from './use-running-projects'
 import { iife } from '@renderer/lib/utils'
 
+// do need a created/started at or something to be able to sort here
 export type GroupedProject = {
   cwdGroup: string
   projects: Array<RunningProject>

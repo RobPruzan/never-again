@@ -12,11 +12,12 @@ import { TerminalInstance, FocusedProject, AppContext } from '@renderer/app-cont
 import { AppLayout } from './app-layout'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { useProjects } from '@renderer/hooks/use-projects'
-import { deriveRunningProjectId } from '@renderer/lib/utils'
+import { deriveRunningProjectId, toFocusedProject } from '@renderer/lib/utils'
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ErrorBoundary } from './error-boundary'
 import { useLogObjUpdate } from '@renderer/hooks/use-log-obj'
+import { useListenForListeningProjects } from '@renderer/hooks/use-listen-for-listening-projects'
 export default function App() {
   const client = new QueryClient()
 
@@ -43,7 +44,6 @@ export default function App() {
 const AppLoader = () => {
   // this is a bad abstraction that technically cause waterfalls but fine for now since its like sub 1ms ipc
   const devServersQuery = useRunningProjects()
-  useLogObjUpdate()
 
   const [route, setRoute] = useState<'home' | 'webview'>('home')
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
@@ -98,10 +98,7 @@ const AppLoader = () => {
   // Update focused project now that we have running projects
   useEffect(() => {
     if (firstProject && !focusedProject) {
-      setFocusedProject({
-        projectId: deriveRunningProjectId(firstProject),
-        projectCwd: firstProject.cwd
-      })
+      setFocusedProject(toFocusedProject(firstProject))
     }
   }, [firstProject])
 
@@ -122,7 +119,10 @@ const AppLoader = () => {
       value={{
         route,
         setRoute,
-        setFocusedProject,
+        setFocusedProject: (project) => {
+          console.log('setFocusedProject called with:', project)
+          setFocusedProject(project)
+        },
         focusedProject,
         commandPaletteOpen,
         setCommandPaletteOpen,

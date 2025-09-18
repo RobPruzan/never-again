@@ -1,6 +1,6 @@
 import { useAppContext } from '@renderer/app-context'
 import { client } from '@renderer/lib/tipc'
-import { deriveRunningProjectId } from '@renderer/lib/utils'
+import { deriveRunningProjectId, toFocusedProject } from '@renderer/lib/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { Project, RunningProject } from '@shared/types'
 
@@ -11,7 +11,6 @@ export function useOpenOrStartProject() {
   const startMutation = useMutation({
     mutationFn: async (projectPath: string) => client.startDevRelay({ projectPath }),
     onSuccess: ({ project, runningProject }) => {
-      // Optimistically add to caches
       queryClient.setQueryData(['projects'], (prev: Project[] | undefined) => {
         if (!prev) return [project]
         if (prev.some((p) => p.path === project.path)) return prev
@@ -24,10 +23,7 @@ export function useOpenOrStartProject() {
       })
 
       setRoute('webview')
-      setFocusedProject({
-        projectCwd: runningProject.cwd,
-        projectId: deriveRunningProjectId(runningProject)
-      })
+      setFocusedProject(toFocusedProject(runningProject))
     }
   })
 
@@ -37,10 +33,7 @@ export function useOpenOrStartProject() {
 
     if (existing) {
       setRoute('webview')
-      setFocusedProject({
-        projectCwd: project.path,
-        projectId: deriveRunningProjectId(existing)
-      })
+      setFocusedProject(toFocusedProject(existing))
       return { alreadyRunning: true as const, runningProject: existing }
     }
 

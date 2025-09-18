@@ -109,7 +109,6 @@ export const ProjectItem = ({ project }: { project: Project }) => {
 
   const { openOrStart, isStarting } = useOpenOrStartProject()
 
-  const { setFocusedProject, setRoute } = useAppContext()
   return (
     <div
       key={project.path}

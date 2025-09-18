@@ -1,4 +1,4 @@
-import { useState, Suspense, Children, cloneElement } from 'react'
+import { useState, useEffect, useMemo, useRef, Suspense, Children, cloneElement } from 'react'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './ui/resizable'
 import { WebContentView } from './web-content-view'
 // import { TerminalSidebar } from './TerminalSidebar'
@@ -16,7 +16,7 @@ import { TabBar } from './tab-bar'
 import { Home } from './home'
 import { TabSwitcher } from './tab-switcher'
 import { deriveRunningProjectId, iife } from '@renderer/lib/utils'
-import { ListneingProject, RunningProject } from '@shared/types'
+import { ListneingProject, RunningProject, LogsObj } from '@shared/types'
 import { useProjects } from '@renderer/hooks/use-projects'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { useQuery } from '@tanstack/react-query'
@@ -24,6 +24,8 @@ import { client } from '@renderer/lib/tipc'
 import { useGroupedProjects } from '@renderer/hooks/use-grouped-projects'
 import { CookingPot } from 'lucide-react'
 import { useLogObj } from '@renderer/hooks/use-log-obj'
+import Ansi from 'ansi-to-react'
+import stripAnsi from 'strip-ansi'
 
 const DisplayNoneActivity = ({
   children,
@@ -45,13 +47,11 @@ export const BrowserV2 = () => {
   const { commandPaletteOpen, setCommandPaletteOpen, route, tabSwitcherOpen, setTabSwitcherOpen } =
     useAppContext()
   const projects = useProjects().data
-  console.log('is tab switcher open', tabSwitcherOpen)
 
   const focusedProject = useFocusedProject()
   if (projects.length === 0) {
     throw new Error('Invariant at least one tab should exist (should be default tab if none)')
   }
-  // console.log('whats da deal', focusedProject.projectId, projects)
 
   return (
     <div className="flex flex-col flex-1 h-full bg-[#0A0A0A] ">
@@ -85,7 +85,6 @@ export const BrowserV2 = () => {
         </WindowPortal>
       )}
 
-      {(console.log('vut', tabSwitcherOpen), null)}
       {tabSwitcherOpen && (
         <WindowPortal
           anchor={{
@@ -115,8 +114,6 @@ const WebContentViewArea = () => {
   const { focusedProject, route } = useAppContext()
   const runningProjects = useRunningProjects().data
 
-  console.log('whatdafuck', runningProjects)
-
   // Only render when there's a focused project - this prevents WebContentView components
   // from mounting when focusedProject is null (which happens when Home is clicked)
   if (!focusedProject) {
@@ -132,6 +129,7 @@ const WebContentViewArea = () => {
     // <StartingProject project={runningProject}>
     //   {(listenignProject) => (
     <div
+      key={deriveRunningProjectId(runningProject)}
       style={{
         display:
           deriveRunningProjectId(runningProject) !== focusedProject.projectId || route !== 'webview'
@@ -151,16 +149,6 @@ const WebContentViewArea = () => {
               deriveRunningProjectId(listeningProject) === focusedProject.projectId &&
               route === 'webview' && (
                 <>
-                  {
-                    (console.log(
-                      'focused project vs id we epxect',
-                      deriveRunningProjectId(listeningProject),
-                      listeningProject,
-                      focusedProject
-                    ),
-                    null)
-                  }
-
                   <WebContentView
                     url={`http://localhost:${listeningProject.port}`}
                     id={deriveRunningProjectId(listeningProject)}
@@ -199,43 +187,34 @@ const StartingProject = ({
   const logsObjQuery = useLogObj()
   const favicon =
     faviconResult && (faviconResult as any).found ? (faviconResult as any).dataUrl : null
+
   switch (project.runningKind) {
     case 'listening': {
       return children(project)
     }
     case 'starting': {
+      console.group()
+
+      console.log('lod id', project.startingId)
+
+      console.log('logs', logsObjQuery.data.startingLogs[project.startingId])
+      console.log('project id', deriveRunningProjectId(project))
+      console.groupEnd()
+      const logs = (logsObjQuery.data?.startingLogs?.[project.startingId] ?? []) as string[]
       return (
         <div className="relative flex-1 h-full w-full flex items-center justify-center bg-[#0A0A0A] text-white overflow-hidden">
-          <div className="absolute inset-0 pointer-events-none" aria-hidden>
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.06),_transparent_60%)]" />
-          </div>
-
-          {favicon && (
-            <div
-              className="absolute inset-0 flex items-center justify-center pointer-events-none"
-              aria-hidden
-            >
-              <img
-                src={favicon}
-                alt=""
-                className="w-80 h-80 opacity-30 blur-3xl rounded-xl select-none"
-                draggable={false}
-              />
-            </div>
-          )}
-
           <div className="relative flex flex-col items-center">
             {favicon ? (
               <img
                 src={favicon}
                 alt="project favicon"
-                className="w-24 h-24 rounded-md drop-shadow-[0_0_24px_rgba(255,255,255,0.08)]"
+                className="w-20 h-20 rounded-md border border-white/10"
                 draggable={false}
               />
             ) : (
               <svg
                 viewBox="0 0 24 24"
-                className="w-24 h-24 text-white/70 drop-shadow-[0_0_24px_rgba(255,255,255,0.08)]"
+                className="w-20 h-20 text-white/60"
                 fill="none"
                 stroke="currentColor"
               >
@@ -247,6 +226,15 @@ const StartingProject = ({
                 />
               </svg>
             )}
+
+            <div className="mt-4 flex items-center gap-2 text-white/70">
+              <CookingPot className="w-4 h-4 text-white/60" />
+              <span className="text-sm tracking-wide">Starting dev server…</span>
+            </div>
+
+            <div className="mt-6 w-[min(900px,92vw)] max-w-[92vw]">
+              <StartingLogViewer lines={logs} />
+            </div>
           </div>
         </div>
       )
@@ -256,4 +244,131 @@ const StartingProject = ({
   // return (
 
   // )
+}
+
+const StartingLogViewer = ({ lines }: { lines: string[] }) => {
+  const [wrap, setWrap] = useState(true)
+  const [autoScroll, setAutoScroll] = useState(true)
+  const scrollRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!autoScroll) return
+    const el = scrollRef.current
+    if (!el) return
+    // Jump to present on new logs
+    el.scrollTop = el.scrollHeight
+  }, [lines.length, autoScroll])
+
+  const handleScroll = () => {
+    const el = scrollRef.current
+    if (!el) return
+    const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 16
+    setAutoScroll(nearBottom)
+  }
+
+  const copyAll = async () => {
+    try {
+      await navigator.clipboard.writeText(lines.join('\n'))
+    } catch (err) {
+      // ignore
+    }
+  }
+
+  const decorated = useMemo(() => {
+    return lines.map((raw) => {
+      const plain = stripAnsi(raw).replace(/\r/g, '')
+      let level: 'error' | 'warn' | 'info' | 'normal' = 'normal'
+      if (/error|failed|exception|trace|eaddrinuse|not\s+found|stack/i.test(plain)) level = 'error'
+      else if (/warn|deprecated|slow|retry|warning/i.test(plain)) level = 'warn'
+      else if (/ready|listening|compiled|started|server|vite|next|webpack/i.test(plain))
+        level = 'info'
+      return { raw, plain, level }
+    })
+  }, [lines])
+
+  const levelAccent = (level: 'error' | 'warn' | 'info' | 'normal') => {
+    switch (level) {
+      case 'error':
+        return 'bg-red-500/30'
+      case 'warn':
+        return 'bg-amber-500/30'
+      case 'info':
+        return 'bg-emerald-500/30'
+      default:
+        return 'bg-white/15'
+    }
+  }
+
+  return (
+    <div className="relative rounded-lg border border-[#1A1A1A] bg-[#0A0A0A] overflow-hidden h-[min(380px,45vh)]">
+      <div className="absolute top-3 right-3 z-[1] flex items-center gap-2 text-xs">
+        <button
+          onClick={() => setAutoScroll((v) => !v)}
+          className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 transition"
+          title={autoScroll ? 'Pause autoscroll' : 'Resume autoscroll'}
+        >
+          {autoScroll ? 'Autoscroll' : 'Paused'}
+        </button>
+        <button
+          onClick={() => setWrap((v) => !v)}
+          className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 transition"
+          title={wrap ? 'Disable word wrap' : 'Enable word wrap'}
+        >
+          {wrap ? 'Wrap' : 'No wrap'}
+        </button>
+        <button
+          onClick={copyAll}
+          className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 transition"
+          title="Copy all logs"
+        >
+          Copy
+        </button>
+      </div>
+
+      <div
+        ref={scrollRef}
+        onScroll={handleScroll}
+        className={
+          'relative h-full overflow-y-auto px-4 py-4 font-mono text-[12.5px] leading-relaxed text-white/80 ' +
+          (wrap ? 'whitespace-pre-wrap' : 'whitespace-pre')
+        }
+        style={{ scrollbarGutter: 'stable' }}
+      >
+        {decorated.length === 0 ? (
+          <div className="h-full w-full flex items-center justify-center text-white/50">
+            Waiting for logs…
+          </div>
+        ) : (
+          <div className="space-y-1">
+            {decorated.map(({ raw, level }, idx) => (
+              <div key={idx} className="grid grid-cols-[auto,1fr] items-start gap-3">
+                <span
+                  className={
+                    'mt-[0.35rem] inline-block w-1.5 h-3.5 rounded-full ' + levelAccent(level)
+                  }
+                />
+                <div className="min-w-0 break-words text-white/75">
+                  <Ansi>{raw.replace(/\r/g, '')}</Ansi>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* bottom fade */}
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
+      </div>
+
+      {!autoScroll && (
+        <div className="absolute bottom-3 right-3 z-[1]">
+          <button
+            onClick={() => setAutoScroll(true)}
+            className="px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/20 border border-white/10 text-white/90 text-xs transition shadow-[0_8px_24px_-8px_rgba(0,0,0,0.5)]"
+          >
+            Jump to present
+          </button>
+        </div>
+      )}
+    </div>
+  )
 }

@@ -266,7 +266,10 @@ app.whenReady().then(async () => {
   terminalManagerV2.setMainWindow(mainWindow)
   const devRelayService = new DevRelayService({
     onLogsObjUpdate: (logsObj) => {
-      handlers.
+      handlers.onLogsObjUpdate.send(logsObj)
+    },
+    onProjectListen: (project) => {
+      handlers.onProjectListen.send(project)
     }
   })
   bufferService = new ProjectBufferService()

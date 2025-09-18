@@ -6,6 +6,8 @@ import { useListenForProjects } from '@renderer/hooks/use-listen-for-projects'
 import { useListenForUrl } from '@renderer/hooks/use-listen-for-url'
 import { BrowserV2 } from './browser-v2'
 import { DevToolsSidebar } from './devtools-sidebar'
+import { useLogObjUpdate } from '@renderer/hooks/use-log-obj'
+import { useListenForListeningProjects } from '@renderer/hooks/use-listen-for-listening-projects'
 // import { useListenForProjects } from './use-listen-for-projects'
 
 export function AppLayout() {
@@ -14,6 +16,9 @@ export function AppLayout() {
   // uh
   useListenForProjects()
   useListenForUrl()
+
+  useLogObjUpdate()
+  useListenForListeningProjects()
   client.showActive().catch(() => {})
   // like we set state on server then synced state
   const queryClient = useQueryClient()
@@ -31,6 +36,7 @@ export function AppLayout() {
   //   queryFn: () => client.getProjects()
   // })
 
+  // it could be something suspending it?
   return (
     <div className="h-screen w-screen bg-[#0A0A0A] overflow-hidden flex">
       <div className="w-12 flex-shrink-0 border-r border-[#1A1A1A]">

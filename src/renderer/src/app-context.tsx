@@ -4,13 +4,21 @@ import { Terminal } from '@xterm/xterm'
 import { createContext, Dispatch, SetStateAction, useContext } from 'react'
 import { client } from './lib/tipc'
 import { useRunningProjects } from './hooks/use-running-projects'
-import { deriveRunningProjectId } from './lib/utils'
+import { deriveRunningProjectId, toFocusedProject } from './lib/utils'
 
 type ProjectID = string
-export type FocusedProject = {
-  projectId: ProjectID
-  projectCwd: string // denormalized ref to the parent
-}
+export type FocusedProject =
+  | {
+      projectId: ProjectID
+      projectCwd: string // denormalized ref to the parent
+      runningKind: 'starting'
+    }
+  | {
+      runningKind: 'listening'
+      projectId: ProjectID
+      projectCwd: string // denormalized ref to the parent
+      port: number
+    }
 
 export type TerminalInstance = {
   terminalId: string
@@ -35,26 +43,26 @@ export const AppContext = createContext<{
   setTabSwitcherOpen: Dispatch<SetStateAction<boolean>>
   swappableSidebarOpen: boolean
   setSwappableSidebarOpen: Dispatch<SetStateAction<boolean>>
-
 }>(null!)
 
 export const useAppContext = () => useContext(AppContext)
 
 export const useFocusedProject = () => {
-  const { focusedProject, setFocusedProject } = useAppContext()
+  const { focusedProject, setFocusedProject, route } = useAppContext()
 
   const runningProjectsQuery = useRunningProjects()
   if (!focusedProject) {
     return null
   }
-  console.log('running projecst query', runningProjectsQuery.data)
-  console.log('focused project', focusedProject)
 
   const project = runningProjectsQuery.data.find(
     (project) => deriveRunningProjectId(project) === focusedProject?.projectId
   )
 
-  if (!project) {
+  // console.log('focused', focusedProject)
+  // console.log('running', runningProjectsQuery.data)
+
+  if (!project && route !== 'home') {
     // if there is an unmatched starting project that maps to
     // valid invariant case: what if there is already one up and you are picking between 2
     // no, u will never try to create a project when there is one up for now in this flow
@@ -65,9 +73,10 @@ export const useFocusedProject = () => {
     // exact moment the server starts, but we can't time that we just poll so its fundamentally a race
     // so this is really the only good non effect solution i can think of which i think is fine
     // the worst part is matching the id with a string which can change and will likely cause a bug
-    const isStartingProject = focusedProject.projectId.startsWith('starting')
+    const isStartingProject = focusedProject.runningKind === 'starting'
     const listeningProjects = runningProjectsQuery.data.filter(
-      (project) => project.runningKind === 'listening' && project.cwd === focusedProject.projectCwd
+      (project): project is Extract<typeof project, { runningKind: 'listening' }> =>
+        project.runningKind === 'listening' && project.cwd === focusedProject.projectCwd
     )
 
     if (isStartingProject && listeningProjects.length > 0) {
@@ -75,12 +84,64 @@ export const useFocusedProject = () => {
         throw new Error('invariant: multiple listening projects with same cwd')
       }
 
-      const listeningProject = listeningProjects[0]
+      const listeningProject = listeningProjects.reduce((lowest, current) => {
+        return current.port < lowest.port ? current : lowest
+      })
       setFocusedProject({
         ...focusedProject,
         projectId: deriveRunningProjectId(listeningProject)
       })
       return
+    }
+
+    /**
+     * there is a case where we set a project, and it dissapears, we shuld be listening to that destroy, and reacting
+     * to it cleanly, gr
+     *
+     * we dont have a destroy event, and we can't reliably track that without polling
+     *
+     * we could do this on the server, but we're already polling on the client so we can just keep doing that
+     *
+     * maybe we want to derive the polling from the server and listen to that, TBD
+     *
+     *
+     * for now we will just handle the ugly sync, the case is
+     *
+     * - if we are focused on a project cwd
+     * - and the port no longer exists
+     * - and we are focused on a running project
+     * - the running project port no longer exists FUCK
+     * - then we want to switch to any other project with the same cwd, preference to one already running, preference to the one with the lower port
+     *
+     *
+     */
+
+    const projectsWithSameCwd = runningProjectsQuery.data.filter(
+      (project) => project.cwd === focusedProject.projectCwd
+    )
+
+    if (projectsWithSameCwd.length > 0) {
+      const listeningProjects = projectsWithSameCwd.filter((p) => p.runningKind === 'listening')
+      const startingProjects = projectsWithSameCwd.filter((p) => p.runningKind === 'starting')
+
+      let newFocusedProject: typeof focusedProject
+
+      if (listeningProjects.length > 0) {
+        const projectWithLowestPort = listeningProjects.reduce((lowest, current) =>
+          current.port < lowest.port ? current : lowest
+        )
+        newFocusedProject = toFocusedProject(projectWithLowestPort)
+      } else {
+        newFocusedProject = toFocusedProject(startingProjects[0])
+      }
+
+      setFocusedProject(newFocusedProject)
+    }
+
+    if (
+      runningProjectsQuery.data.some((p) => deriveRunningProjectId(p) === focusedProject?.projectId)
+    ) {
+      throw new Error('invariant tried to focus a non existent project')
     }
 
     // const oldProject = runningProjectsQuery.data.find(
@@ -89,9 +150,7 @@ export const useFocusedProject = () => {
     //     runningKind: 'starting'
     //   }) === focusedProject?.projectId
     // )
-
-    throw new Error('invariant tried to focus a non existent project')
   }
 
-  return { ...project,  }
+  return { ...project }
 }

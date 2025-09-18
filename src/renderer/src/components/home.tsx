@@ -23,19 +23,18 @@ type Workspace = {
   filter: (projects: ProjectWithSize[], runningProjects: RunningProject[]) => ProjectWithSize[]
 }
 
-
 /**
  * ah a little scattered, what's a good entrypoint to start working on the terminals
- * 
+ *
  * creating is the most reasonable entrypoint, where do we create terminals
- * 
+ *
  * well i really do want it to be instant, if its not instant/one frame im quite unhappy
- * 
+ *
  * i wonder if terminal manager is a good place to start? im actually not sure the ds
  * its storing termianls in
- * 
+ *
  * sessions it seemsl ike
- * 
+ *
  */
 
 export const Home = () => {
@@ -81,7 +80,6 @@ export const Home = () => {
         tags: [],
         workspaces: false
       }
-      console.log('we got a new project!', project)
 
       // pls clean this up man wtf
       queryClient.setQueryData(['projects'], (prev: undefined | Project[]) =>
@@ -99,12 +97,18 @@ export const Home = () => {
       })
 
       setRoute('webview')
-      setFocusedProject({
+      console.log()
+      const newFocused = {
         projectCwd: project.cwd,
-        projectId: deriveRunningProjectId(project)
-      })
+        projectId: deriveRunningProjectId(project),
+        runningKind: project.runningKind
+      }
+      console.log('focusing new project', newFocused)
+
+      setFocusedProject(newFocused)
     })
     return () => {
+      // lmao i don't think this is unsubbing fuck this
       unsub()
     }
   }, [])
@@ -144,10 +148,6 @@ export const Home = () => {
     queryKey: ['projects-meta'],
     queryFn: async () => {
       if (projects.length === 0) return []
-      console.log(
-        'projects with undefined paths',
-        projects.filter((p) => p.path === undefined)
-      )
 
       const meta = await client.getProjectsMeta({ paths: projects.map((p) => p.path) })
       const map = new Map(meta.map((m) => [m.path, m]))

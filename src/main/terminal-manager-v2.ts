@@ -30,49 +30,49 @@ type TerminalV2Session = {
 
 /**
  * it would be nice to pre warm terminals and just cd into the right directory :think-dumbass
- * 
+ *
  * this is actually obviously correct
- * 
+ *
  * the simple answer is to model it identically to the buffer service
- * 
- * i mean it would be even cooler if we could have that be one thing that just 
+ *
+ * i mean it would be even cooler if we could have that be one thing that just
  * starts long running things ahead of time and then dependency injects implementation
  * but i have a feeling they will be different enough that it will just be hard to
- * 
+ *
  * but we can follow the approach
- * 
+ *
  * - seed the cache
  * - have a buffer
  * - persist it to disk
  * - start from disk
- * 
+ *
  * the start command can really just be a cd && claude, which is cool
- * 
- * i would like to kill 2 birds with one stone here and make it so i can track the 
+ *
+ * i would like to kill 2 birds with one stone here and make it so i can track the
  * dev server immediately, but maybe that's not feasible to do here
- * 
+ *
  * lets think for one minute what would take to do that
- * 
- * maybe a global map of connections that you're accumulating? 
- * 
- * actually no its a terminal instance that's preloaded that runs the connect, which 
+ *
+ * maybe a global map of connections that you're accumulating?
+ *
+ * actually no its a terminal instance that's preloaded that runs the connect, which
  * should absolutely be available if we are starting it, we can order the events
  * so that's guaranteed
- * 
- * 
- * 
- * so if we have the ability to preload terminals with a start command, why can't 
+ *
+ *
+ *
+ * so if we have the ability to preload terminals with a start command, why can't
  * we do that here?
- * 
+ *
  * well this is simple and we built the infra to do this from the start
- * 
+ *
  * we just have a list of terminals on the client
- * 
+ *
  * and those can be used to preload/ look up and we have pointers to them
- * 
+ *
  * then on the server we have a buffer on unallocated termianls that we can assign
  * on request, which we already have implemented and can reference
- * 
+ *
  * so visually that might be
  *
  */
@@ -104,7 +104,7 @@ export class TerminalManagerV2 {
   ) {
     const startTime = performance.now()
     const timings: Record<string, number> = {}
-    
+
     const shell =
       options?.shell || (os.platform() === 'win32' ? 'powershell.exe' : process.env.SHELL || 'bash')
     const cwd = options?.cwd || process.env.HOME || process.cwd()
@@ -148,6 +148,7 @@ export class TerminalManagerV2 {
         ? options.startCommand.join(' ')
         : options.startCommand
       : null
+    console.log('starting start command', startCmd)
 
     const handlersStart = performance.now()
     const onData = (data: string) => {
@@ -221,17 +222,17 @@ export class TerminalManagerV2 {
 
     this.sessions.set(id, session)
     timings.sessionSetup = performance.now() - sessionStart
-    
+
     const totalTime = performance.now() - startTime
     timings.total = totalTime
 
     console.table({
-      'Setup': `${timings.setup.toFixed(2)}ms`,
-      'PTY Spawn': `${timings.ptySpawn.toFixed(2)}ms`, 
+      Setup: `${timings.setup.toFixed(2)}ms`,
+      'PTY Spawn': `${timings.ptySpawn.toFixed(2)}ms`,
       'Terminal Setup': `${timings.terminalSetup.toFixed(2)}ms`,
       'Event Handlers': `${timings.eventHandlers.toFixed(2)}ms`,
       'Session Setup': `${timings.sessionSetup.toFixed(2)}ms`,
-      'Total': `${totalTime.toFixed(2)}ms`
+      Total: `${totalTime.toFixed(2)}ms`
     })
 
     return { id, title: session.title, cwd: session.cwd, projectName: session.projectName }

@@ -1,3 +1,4 @@
+import { FocusedProject } from '@renderer/app-context'
 import { RunningProject } from '@shared/types'
 import { clsx, type ClassValue } from 'clsx'
 import { useEffect, useRef, useState } from 'react'
@@ -38,4 +39,25 @@ export function useUnmountSignal() {
   }, [abortController])
 
   return abortController.signal
+}
+
+
+export const toFocusedProject = (runningProject: RunningProject): FocusedProject => {
+  switch (runningProject.runningKind) {
+    case 'listening': {
+      return {
+        port: runningProject.port,
+        projectCwd: runningProject.cwd,
+        projectId: deriveRunningProjectId(runningProject),
+        runningKind: 'listening'
+      }
+    }
+    case 'starting': {
+      return {
+        projectCwd: runningProject.cwd,
+        projectId: deriveRunningProjectId(runningProject),
+        runningKind: 'starting'
+      }
+    }
+  }
 }

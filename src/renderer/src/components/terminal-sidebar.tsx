@@ -14,7 +14,7 @@ type Terminal = {
   terminalId: string
 }
 
-export function MainSidebar({runningProject} : {runningProject: RunningProject}) {
+export function MainSidebar({ runningProject }: { runningProject: RunningProject }) {
   const [terminals, setTerminals] = useState<Array<Terminal>>([])
   const { setFocusedProject, swappableSidebarOpen } = useAppContext()
   const focusedProject = useFocusedProject()
@@ -24,12 +24,13 @@ export function MainSidebar({runningProject} : {runningProject: RunningProject})
 
   // there's some desync here possible, the actual fix is in the actual browser tba logic // what the hell was i talking about
   const createNewTerminal = useCallback(async () => {
+
     if (!focusedProject?.cwd) return
 
     setTerminalLoading(true)
     const session = await v2Client.terminalV2Create({
       cwd: runningProject.cwd,
-      startCommand: 'claude --dangerously-skip-permissions' //  pretty fast so wont blow up my computer if we make too many terminals when testing
+      startCommand: 'opencode' //  pretty fast so wont blow up my computer if we make too many terminals when testing
     })
 
     setTerminals((prev) => [
@@ -161,7 +162,6 @@ export function MainSidebar({runningProject} : {runningProject: RunningProject})
             title="Back"
             disabled={!browserStateQuery.data?.canGoBack}
             onClick={() => {
-              console.log('back nav')
               client.backNav()
             }}
           >
@@ -172,7 +172,6 @@ export function MainSidebar({runningProject} : {runningProject: RunningProject})
             title="Forward"
             disabled={!browserStateQuery.data?.canGoForward}
             onClick={() => {
-              console.log('forward nav')
 
               client.forwardNav()
             }}

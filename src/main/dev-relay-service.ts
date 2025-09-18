@@ -3,7 +3,7 @@ import { createServer, Socket, connect } from 'node:net'
 import { unlinkSync, existsSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { detectDevServersForDir } from './dev-server-detector'
-import { LogsObj, StartingProject } from '../shared/types'
+import { ListneingProject, LogsObj, StartingProject } from '../shared/types'
 
 /**
  * thsi is also an awful name!
@@ -22,9 +22,11 @@ export class DevRelayService {
     startingToRunning: {}
   }
   onLogsObjUpdate?: (logs: LogsObj) => void
+  onProjectListen?: (projectListen: ListneingProject) =>void 
 
-  constructor({ onLogsObjUpdate }: { onLogsObjUpdate?: (logs: LogsObj) => void }) {
+  constructor({ onLogsObjUpdate, onProjectListen }: { onLogsObjUpdate?: (logs: LogsObj) => void, onProjectListen?: (project: ListneingProject) => void }) {
     this.onLogsObjUpdate = onLogsObjUpdate
+    this.onProjectListen = onProjectListen
   }
   private servers = new Map<
     string,
@@ -202,9 +204,13 @@ export class DevRelayService {
     }
 
     this.logsObj.startingToRunning[startingClosureId] = project.port
-    this.logsObj.startingLogs[startingClosureId] = []
+    delete this.logsObj.startingLogs[startingClosureId]
     this.logsObj.runningProjectsLogs[project.port] = startingLogs
 
+    this.onProjectListen?.({
+      ...project,
+      runningKind: "listening"
+    })
     this.onLogsObjUpdate?.(this.logsObj)
 
     return { sock, pid: proc.pid!, project } // daijobu meme
