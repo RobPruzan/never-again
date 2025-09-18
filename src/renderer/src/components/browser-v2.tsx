@@ -16,16 +16,12 @@ import { TabBar } from './tab-bar'
 import { Home } from './home'
 import { TabSwitcher } from './tab-switcher'
 import { deriveRunningProjectId, iife } from '@renderer/lib/utils'
-import { ListneingProject, RunningProject, LogsObj } from '@shared/types'
+import { ListneingProject, RunningProject } from '@shared/types'
 import { useProjects } from '@renderer/hooks/use-projects'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
-import { useQuery } from '@tanstack/react-query'
-import { client } from '@renderer/lib/tipc'
-import { useGroupedProjects } from '@renderer/hooks/use-grouped-projects'
-import { CookingPot } from 'lucide-react'
 import { useLogObj } from '@renderer/hooks/use-log-obj'
 import Ansi from 'ansi-to-react'
-import stripAnsi from 'strip-ansi'
+import { useBrowserState } from './use-browser-state'
 
 const DisplayNoneActivity = ({
   children,
@@ -177,64 +173,27 @@ const StartingProject = ({
   project: RunningProject
   children: (listeningProject: ListneingProject) => React.ReactNode
 }) => {
-  const { data: faviconResult } = useQuery({
-    queryKey: ['project-favicon', project.cwd],
-    queryFn: () => client.getProjectFavicon({ projectPath: project.cwd }),
-    staleTime: 60_000,
-    gcTime: 5 * 60_000,
-    enabled: project.runningKind === 'starting'
-  })
   const logsObjQuery = useLogObj()
-  const favicon =
-    faviconResult && (faviconResult as any).found ? (faviconResult as any).dataUrl : null
+  const browserStateQuery = useBrowserState()
+
+  browserStateQuery.data.isLoaded
+  /**
+   *
+   * if i had the browser query then i could know reactively
+   * if the project is loading
+   * and i could guard listening to be on both
+   */
 
   switch (project.runningKind) {
     case 'listening': {
       return children(project)
     }
     case 'starting': {
-      console.group()
-
-      console.log('lod id', project.startingId)
-
-      console.log('logs', logsObjQuery.data.startingLogs[project.startingId])
-      console.log('project id', deriveRunningProjectId(project))
-      console.groupEnd()
       const logs = (logsObjQuery.data?.startingLogs?.[project.startingId] ?? []) as string[]
       return (
         <div className="relative flex-1 h-full w-full flex items-center justify-center bg-[#0A0A0A] text-white overflow-hidden">
-          <div className="relative flex flex-col items-center">
-            {favicon ? (
-              <img
-                src={favicon}
-                alt="project favicon"
-                className="w-20 h-20 rounded-md border border-white/10"
-                draggable={false}
-              />
-            ) : (
-              <svg
-                viewBox="0 0 24 24"
-                className="w-20 h-20 text-white/60"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
-            )}
-
-            <div className="mt-4 flex items-center gap-2 text-white/70">
-              <CookingPot className="w-4 h-4 text-white/60" />
-              <span className="text-sm tracking-wide">Starting dev server…</span>
-            </div>
-
-            <div className="mt-6 w-[min(900px,92vw)] max-w-[92vw]">
-              <StartingLogViewer lines={logs} />
-            </div>
+          <div className="relative w-[min(900px,92vw)] max-w-[92vw]">
+            <StartingLogViewer lines={logs} />
           </div>
         </div>
       )
@@ -255,7 +214,6 @@ const StartingLogViewer = ({ lines }: { lines: string[] }) => {
     if (!autoScroll) return
     const el = scrollRef.current
     if (!el) return
-    // Jump to present on new logs
     el.scrollTop = el.scrollHeight
   }, [lines.length, autoScroll])
 
@@ -274,17 +232,7 @@ const StartingLogViewer = ({ lines }: { lines: string[] }) => {
     }
   }
 
-  const decorated = useMemo(() => {
-    return lines.map((raw) => {
-      const plain = stripAnsi(raw).replace(/\r/g, '')
-      let level: 'error' | 'warn' | 'info' | 'normal' = 'normal'
-      if (/error|failed|exception|trace|eaddrinuse|not\s+found|stack/i.test(plain)) level = 'error'
-      else if (/warn|deprecated|slow|retry|warning/i.test(plain)) level = 'warn'
-      else if (/ready|listening|compiled|started|server|vite|next|webpack/i.test(plain))
-        level = 'info'
-      return { raw, plain, level }
-    })
-  }, [lines])
+  const cleanedLines = useMemo(() => lines.map((raw) => raw.replace(/\r/g, '')), [lines])
 
   const levelAccent = (level: 'error' | 'warn' | 'info' | 'normal') => {
     switch (level) {
@@ -334,22 +282,15 @@ const StartingLogViewer = ({ lines }: { lines: string[] }) => {
         }
         style={{ scrollbarGutter: 'stable' }}
       >
-        {decorated.length === 0 ? (
+        {cleanedLines.length === 0 ? (
           <div className="h-full w-full flex items-center justify-center text-white/50">
             Waiting for logs…
           </div>
         ) : (
           <div className="space-y-1">
-            {decorated.map(({ raw, level }, idx) => (
-              <div key={idx} className="grid grid-cols-[auto,1fr] items-start gap-3">
-                <span
-                  className={
-                    'mt-[0.35rem] inline-block w-1.5 h-3.5 rounded-full ' + levelAccent(level)
-                  }
-                />
-                <div className="min-w-0 break-words text-white/75">
-                  <Ansi>{raw.replace(/\r/g, '')}</Ansi>
-                </div>
+            {cleanedLines.map((line, idx) => (
+              <div key={idx} className="min-w-0 break-words text-white/75">
+                <Ansi>{line}</Ansi>
               </div>
             ))}
           </div>

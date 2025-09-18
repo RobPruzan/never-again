@@ -1,6 +1,7 @@
 import { WebContentsView, Menu, clipboard } from 'electron'
 import { getRendererHandlers } from '@egoist/tipc/main'
 import { mainWindow, browserViews, activeBrowserViewId } from '.'
+import { RendererHandlers } from './renderer-handlers'
 
 // fuck you claude
 // LEGACY: These constants are only used for fallback layout when no specific bounds are stored
@@ -58,7 +59,8 @@ export const browserController = {
       canGoForward:
         typeof view.webContents.canGoForward === 'function'
           ? view.webContents.canGoForward()
-          : false
+          : false,
+      isLoaded: !view.webContents.isLoading()
     }))
 
     const activeTab = tabs.find((t) => t.isActive)
@@ -68,7 +70,8 @@ export const browserController = {
       activeTabId: activeBrowserViewId.current,
       totalTabs: tabs.length,
       canGoBack: activeTab ? activeTab.canGoBack : false,
-      canGoForward: activeTab ? activeTab.canGoForward : false
+      canGoForward: activeTab ? activeTab.canGoForward : false,
+      isLoaded: activeTab ? activeTab.isLoaded : false
     }
   },
   // async createOptimistictab({tabId,url}: { tabId: string; url: string }) {
@@ -97,16 +100,34 @@ export const browserController = {
           validatedURL
         )
       })
-      view.webContents.on('did-finish-load', () => {
-        // console.log(`BrowserView ${args.tabId} finished loading`)
+
+
+      view.webContents.on('dom-ready', () => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          try {
+            const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
+            handlers.browserStateUpdate.send(browserController.getCurrentState())
+          } catch {}
+        }
       })
+
+      view.webContents.on('did-finish-load', () => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          try {
+            const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
+            handlers.browserStateUpdate.send(browserController.getCurrentState())
+          } catch {}
+        }
+      })
+
+
 
       // Track URL changes
       view.webContents.on('did-navigate', (_event, url) => {
         if (mainWindow && !mainWindow.isDestroyed()) {
           try {
-            const handlers = getRendererHandlers<any>(mainWindow.webContents)
-            handlers.browserUrlChanged.send({ tabId: args.tabId, url })
+            const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
+            handlers.browserStateUpdate.send(browserController.getCurrentState())
           } catch {}
         }
       })
@@ -114,8 +135,8 @@ export const browserController = {
       view.webContents.on('did-navigate-in-page', (_event, url) => {
         if (mainWindow && !mainWindow.isDestroyed()) {
           try {
-            const handlers = getRendererHandlers<any>(mainWindow.webContents)
-            handlers.browserUrlChanged.send({ tabId: args.tabId, url })
+            const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
+            handlers.browserStateUpdate.send(browserController.getCurrentState())
           } catch {}
         }
       })

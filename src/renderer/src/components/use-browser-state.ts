@@ -6,16 +6,11 @@ export const useBrowserState = () => {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    const unlisten = handlers.browserUrlChanged.listen((evtOrPayload: any, maybe?: any) => {
-      const p = (maybe !== undefined ? maybe : evtOrPayload) as { tabId: string; url: string }
+    const unlisten = handlers.browserStateUpdate.listen((browserState) => {
       queryClient.setQueryData(
         ['browserState'],
-        (prev: Awaited<ReturnType<typeof client.getBrowserState>> | undefined) => {
-          if (!prev) return prev
-          return {
-            ...prev,
-            tabs: prev.tabs.map((t) => (t.tabId === p.tabId ? { ...t, url: p.url } : t))
-          }
+        () => {
+          return browserState
         }
       )
     })
