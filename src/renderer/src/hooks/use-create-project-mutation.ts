@@ -17,7 +17,6 @@ export const useCreateProjectMutation = () => {
       ])
 
       setFocusedProject({
-        focusedTerminalId: null!,
         projectCwd: runningProject.cwd,
 
         projectId: deriveRunningProjectId(runningProject)

@@ -112,7 +112,6 @@ export const ProjectItem = ({ project }: { project: Project }) => {
           if (existing) {
             setRoute('webview')
             const focusedProejct = {
-              focusedTerminalId: null!,
               projectCwd: project.path,
               projectId: deriveRunningProjectId(existing)
             }

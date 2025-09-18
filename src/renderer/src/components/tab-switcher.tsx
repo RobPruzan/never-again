@@ -78,7 +78,6 @@ export const TabSwitcher = () => {
           setFocusedProject((prev) => ({
             projectId: projectId,
             projectCwd: selectedProject.cwd,
-            focusedTerminalId: null!
           }))
           closeSwitcher()
         }
@@ -127,7 +126,6 @@ export const TabSwitcher = () => {
                   setFocusedProject((prev) => ({
                     projectId: projectId,
                     projectCwd: project.cwd,
-                    focusedTerminalId: prev?.focusedTerminalId || ''
                   }))
                   closeSwitcher()
                 }}

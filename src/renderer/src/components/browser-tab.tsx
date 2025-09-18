@@ -16,17 +16,17 @@ interface BrowserTabProps {
 }
 
 /**
- *  i mean realisticly i just need to confirm that the projects are refetched by the time that the 
- * wait whats the condition wut, the focused project is just fucked? right because before it didn't rely on the 
+ *  i mean realisticly i just need to confirm that the projects are refetched by the time that the
+ * wait whats the condition wut, the focused project is just fucked? right because before it didn't rely on the
  * id now it does, we just need to update the id hm that's interesting
- * 
+ *
  * okay shit now we do need to know when the stuff is refetched? i think? like where the fuck is it happening
- * 
+ *
  * so that we know to flip it, gr, i don't want to do that imperatively
- * 
- * 
+ *
+ *
  * dev servers must be refetched at some point, or is it just fetching it?
- * 
+ *
  * lol but when does it know to stop suspending, i get its supposed to subscirbe to it but who the fuck invalidates it
  */
 export function BrowserTab({
@@ -39,7 +39,9 @@ export function BrowserTab({
   const { setFocusedProject, setRoute, route } = useAppContext()
   const runningProjects = useRunningProjects().data
   const focusedProject = useFocusedProject()
-  const isActive = focusedProject ? projectId === deriveRunningProjectId(focusedProject) && route === 'webview' : false
+  const isActive = focusedProject
+    ? projectId === deriveRunningProjectId(focusedProject) && route === 'webview'
+    : false
 
   const project = runningProjects.find((p) => deriveRunningProjectId(p) === projectId)
   const killProjectMutation = useMutation({
@@ -72,7 +74,6 @@ export function BrowserTab({
           setRoute('webview')
           setFocusedProject({
             projectId: deriveRunningProjectId(project),
-            focusedTerminalId: null!, // uh
             projectCwd: project.cwd
           })
         })

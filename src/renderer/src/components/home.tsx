@@ -100,7 +100,6 @@ export const Home = () => {
 
       setRoute('webview')
       setFocusedProject({
-        focusedTerminalId: null!,
         projectCwd: project.cwd,
         projectId: deriveRunningProjectId(project)
       })

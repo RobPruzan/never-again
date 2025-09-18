@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { client, v2Client } from '../lib/tipc'
 import { Plus, X, ChevronLeft, ChevronRight, RotateCw, Link, HomeIcon } from 'lucide-react'
 import { Terminalv2 } from './terminal-v2'
@@ -8,6 +8,7 @@ import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { SwappableSidebarArea } from './swappable-sidebar-area'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './ui/resizable'
 import { iife } from '@renderer/lib/utils'
+import { useMutation } from '@tanstack/react-query'
 type Terminal = {
   terminalId: string
 }
@@ -16,10 +17,11 @@ export function MainSidebar() {
   const [terminals, setTerminals] = useState<Array<Terminal>>([])
   const { setFocusedProject, swappableSidebarOpen } = useAppContext()
   const focusedProject = useFocusedProject()
+  const [focusedTerminalId, setFocusedTerminalId] = useState<string | null>(null)
   const [terminalLoading, setTerminalLoading] = useState(false)
 
   // there's some desync here possible, the actual fix is in the actual browser tba logic // what the hell was i talking about
-  const createNewTerminal = async () => {
+  const createNewTerminal = useCallback(async () => {
     if (!focusedProject?.cwd) return
 
     setTerminalLoading(true)
@@ -35,27 +37,19 @@ export function MainSidebar() {
       }
     ])
     setTerminalLoading(false)
-    if (!focusedProject) return
 
-    // const newTerminal: TerminalInstance = {
-    //   terminalId: session.id,
-    //   projectId: focusedProject.cwd
-    // }
-
-    setFocusedProject((prev) => {
-      if (!prev) return null
-      return {
-        ...prev,
-        focusedTerminalId: session.id
-      }
-    })
-  }
+    setFocusedTerminalId(session.id)
+    return session
+  }, [focusedProject?.cwd])
 
   useEffect(() => {
     iife(async () => {
+      if (terminals.length !== 0) {
+        return
+      }
       await createNewTerminal()
     })
-  }, [])
+  }, [terminals.length])
 
   // fine, idk
   const handleRefresh = () => {
@@ -69,6 +63,29 @@ export function MainSidebar() {
   const [urlInput, setUrlInput] = useState(activeTabUrl || '')
   const [isEditing, setIsEditing] = useState(false)
   const [isCommitting, setIsCommitting] = useState(false)
+
+  const deleteTerminalMutation = useMutation({
+    mutationFn: (opts: { terminalId: string }) => {
+      return client.terminalDestroy(opts.terminalId)
+    },
+    onSuccess: async (_, variables) => {
+      setTerminals((prev) => prev.filter((p) => p.terminalId !== variables.terminalId))
+      if (terminals.length === 1) {
+        const newTerminal = await createNewTerminal()
+        if (!newTerminal) {
+          throw new Error(
+            'todo error handling, but prefer pre create validation if possible future me'
+          )
+        }
+        setFocusedTerminalId(newTerminal.id)
+        return
+      }
+      setFocusedTerminalId(terminals[0].terminalId)
+    },
+    onError: (e) => {
+      console.log('shit', e)
+    }
+  })
 
   useEffect(() => {
     if (!isEditing) {
@@ -102,6 +119,31 @@ export function MainSidebar() {
     await browserStateQuery.refetch().catch(() => {})
     setIsCommitting(false)
   }
+
+  // TODO: this is wrong set in application menu shortcut later
+  useEffect(() => {
+    const handleKeyDown = async (e: KeyboardEvent) => {
+      if (e.metaKey && e.shiftKey && e.key === 'T') {
+        e.preventDefault()
+        const newTerminal = await createNewTerminal()
+        if (newTerminal) {
+          setFocusedTerminalId(newTerminal.id)
+        }
+        return
+      }
+
+      if (!e.metaKey || e.key < '1' || e.key > '9') return
+      if (!terminals) return
+
+      const terminalIndex = parseInt(e.key) - 1
+      if (!terminals[terminalIndex]) return
+
+      setFocusedTerminalId(terminals[terminalIndex].terminalId)
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [terminals, setFocusedProject, createNewTerminal])
 
   return (
     <div className="flex flex-col h-full bg-[#0A0A0A]">
@@ -191,6 +233,7 @@ export function MainSidebar() {
           </div>
         </div>
       </div>
+      {/* mark: terminal stuff */}
 
       <div className="flex-1 min-h-0">
         <ResizablePanelGroup direction="vertical">
@@ -203,24 +246,26 @@ export function MainSidebar() {
               <ResizableHandle />
             </>
           )}
+
           <ResizablePanel defaultSize={swappableSidebarOpen ? 70 : 100}>
             <div className="flex flex-col h-full min-h-0">
               <div className="bg-[#0A0A0A] p-2">
                 <div className="flex gap-1.5">
-                  {terminals.map((tab, index) => (
+                  {/* mark: terminal tabs */}
+                  {terminals.map((terminal, index) => (
                     <div
-                      key={tab.terminalId}
+                      key={terminal.terminalId}
                       className={`
                 flex-1 relative group cursor-pointer overflow-hidden
                 transition-all duration-200 hover:bg-[#1A1A1A]
               `}
                       onClick={() => {
-                        // select tab shit
+                        setFocusedTerminalId(terminal.terminalId)
                       }}
                       style={{ height: '42px', borderRadius: '2px' }}
                     >
                       <div
-                        className={`w-full h-full border ${tab.terminalId === focusedProject?.focusedTerminalId ? 'bg-[#0F0F0F] border-[#1A1A1A]' : 'bg-[#080808] border-[#151515]'}`}
+                        className={`w-full h-full border ${terminal.terminalId === focusedTerminalId ? 'bg-[#0F0F0F] border-[#1A1A1A]' : 'bg-[#080808] border-[#151515]'}`}
                         style={{ borderRadius: '2px' }}
                       >
                         <div className="w-full h-full flex items-center px-2.5 relative">
@@ -231,7 +276,7 @@ export function MainSidebar() {
                           )}
                           <span
                             className={`text-xs truncate flex-1 ${
-                              tab.terminalId === focusedProject?.focusedTerminalId
+                              terminal.terminalId === focusedTerminalId
                                 ? 'text-[#999]'
                                 : 'text-[#555]'
                             }`}
@@ -242,10 +287,16 @@ export function MainSidebar() {
                           </span>
 
                           <button
-                            onClick={async () => {}}
+                            onClick={async () => {
+                              deleteTerminalMutation.mutate({ terminalId: terminal.terminalId })
+                            }}
                             className="ml-1 p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-[#1A1A1A] transition-opacity"
                           >
-                            <X className="w-2.5 h-2.5" style={{ color: '#555' }} />
+                            {deleteTerminalMutation.isPending ? (
+                              <div className="w-2.5 h-2.5 border border-[#555] border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <X className="w-2.5 h-2.5" style={{ color: '#555' }} />
+                            )}
                           </button>
                         </div>
                       </div>
@@ -280,13 +331,19 @@ export function MainSidebar() {
                   </div>
                 ) : (
                   terminals.map((tab) => {
+                    const isActive = tab.terminalId === focusedTerminalId
                     return (
-                      <Terminalv2
+                      <div
                         key={tab.terminalId}
-                        startCommand={'claude --dangerously-skip-permissions'}
-                        terminalId={tab.terminalId}
-                        cwd={focusedProject?.cwd}
-                      />
+                        style={{ display: isActive ? 'block' : 'none' }}
+                        className="h-full"
+                      >
+                        <Terminalv2
+                          startCommand={'claude --dangerously-skip-permissions'}
+                          terminalId={tab.terminalId}
+                          cwd={focusedProject?.cwd}
+                        />
+                      </div>
                     )
                   })
                 )}

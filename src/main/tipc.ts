@@ -176,7 +176,7 @@ export const createRouter = ({
     // maybe i can just do that eh
 
     console.log('[createProject] Starting project creation process')
-    
+
     const t0 = Date.now()
     let t1, t2, t3, t4
 
@@ -193,7 +193,7 @@ export const createRouter = ({
     console.log('[createProject] Calling bufferService.create...')
     const meta = await bufferService.create({ devRelayService })
     t2 = Date.now()
-    
+
     if (!meta) {
       console.log('wtf')
       console.error('[createProject] bufferService.create returned null/undefined')
@@ -211,7 +211,7 @@ export const createRouter = ({
     console.log('[createProject] Checking HTTP availability at:', url)
     await bufferService.httpOk(url)
     console.log('[createProject] HTTP check passed')
-    
+
     try {
       // await browser.loadUrl({ tabId: meta.dir, url })
     } catch (e) {
@@ -225,7 +225,7 @@ export const createRouter = ({
     const project = (await findProjectsBFS(meta.dir)).at(0) // this is too slow
     t4 = Date.now()
     console.log('[createProject] Project search completed, found:', project)
-    
+
     // what the fuck why
     if (!project) {
       console.error('[createProject] No project found at directory:', meta.dir)
@@ -269,8 +269,8 @@ export const createRouter = ({
     return browser.backNav()
   }),
   forwardNav: t.procedure.action(async () => {
-    console.log('forwardNav');
-    
+    console.log('forwardNav')
+
     return browser.forwardNav()
   }),
 
@@ -290,8 +290,8 @@ export const createRouter = ({
         startProjectResolve?.(startingProject)
       }
     })
-    console.log('started!', startRes);
-    
+    console.log('started!', startRes)
+
     // i could do a start update? and just do streaming that might be fine... i think
     const runningProject: ListneingProject = {
       ...startRes.project,
@@ -619,7 +619,10 @@ export const createRouter = ({
       return { ok: true }
     }),
   terminalDestroy: t.procedure.input<string>().action(async ({ input }) => {
-    return terminalManager.destroy(input)
+    // dude what the actual fuck am i reading fixme pls
+    const mgr = TerminalManagerV2.getInstance()
+    if (!mgr) throw new Error('TerminalManagerV2 not initialized')
+    return mgr.destroy(input)
   }),
   terminalList: t.procedure.action(async () => {
     return terminalManager.list()

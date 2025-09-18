@@ -9,7 +9,6 @@ import { deriveRunningProjectId } from './lib/utils'
 type ProjectID = string
 export type FocusedProject = {
   projectId: ProjectID
-  focusedTerminalId: string
   projectCwd: string // denormalized ref to the parent
 }
 
@@ -93,5 +92,5 @@ export const useFocusedProject = () => {
     throw new Error('invariant tried to focus a non existent project')
   }
 
-  return { ...project, focusedTerminalId: focusedProject?.focusedTerminalId }
+  return { ...project,  }
 }
