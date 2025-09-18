@@ -1,11 +1,12 @@
 import React from 'react'
 import { createPortal } from 'react-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Project, RunningProject } from '@shared/types'
+import { Project } from '@shared/types'
 import { client } from './lib/tipc'
 import { useAppContext } from './app-context'
 import { deriveRunningProjectId } from './lib/utils'
 // import { useAppContext } from './components/app-context'
+import { useOpenOrStartProject } from './hooks/use-open-or-start-project'
 
 export const ProjectItem = ({ project }: { project: Project }) => {
   const { data: faviconResult } = useQuery({
@@ -74,23 +75,7 @@ export const ProjectItem = ({ project }: { project: Project }) => {
       queryClient.invalidateQueries({ queryKey: ['workspaces'] })
     }
   })
-  const startDevServerMutation = useMutation({
-    mutationFn: ({ projectPath }: { projectPath: string }) => client.startDevRelay({ projectPath }),
-    onSuccess: ({ project, runningProject }) => {
-      // setProjects((prev) => [...prev, project])
-      setFocusedProject({
-        projectCwd: project.path,
-        focusedTerminalId: runningProject.port.toString(),
-        projectId: deriveRunningProjectId(runningProject)
-      })
-
-      // queryClient.setQueryData(['projects'], (prev: Project[]) => [...prev, project])
-      // queryClient.setQueryData(['devServers'], (prev: RunningProject[]) => [
-      //   ...prev,
-      //   runningProject
-      // ])
-    }
-  })
+  const { openOrStart, isStarting } = useOpenOrStartProject()
 
   const { setFocusedProject, setRoute } = useAppContext()
   return (
@@ -102,24 +87,9 @@ export const ProjectItem = ({ project }: { project: Project }) => {
     >
       <div
         className="w-full h-[200px] relative bg-[#0B0B0B] overflow-hidden block group/content"
-        onClick={() => {
-          if (startDevServerMutation.isPending) return
-          const existing = (
-            queryClient.getQueryData(['devServers']) as Array<RunningProject> | undefined
-          )?.find((p) => p.cwd === project.path)
-          console.log('exsting bruh', existing)
-
-          if (existing) {
-            setRoute('webview')
-            const focusedProejct = {
-              projectCwd: project.path,
-              projectId: deriveRunningProjectId(existing)
-            }
-            console.log('SETTING FOCSUED PROJECT', focusedProejct)
-            setFocusedProject(focusedProejct)
-            return
-          }
-          startDevServerMutation.mutate({ projectPath: project.path })
+        onClick={async () => {
+          if (isStarting) return
+          await openOrStart(project)
         }}
       >
         {favicon ? (

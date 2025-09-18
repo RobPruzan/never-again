@@ -1,16 +1,21 @@
-import { useState, useEffect, useRef, useMemo, type ReactNode } from 'react'
+import React, { useState, useEffect, useRef, useMemo, type ReactNode } from 'react'
 // import { useAppContext } from './app-context'
 import { client } from '../lib/tipc'
 import { useQuery } from '@tanstack/react-query'
-import { Search, Sparkles } from 'lucide-react'
+import { Search, Sparkles, Plus, Home, Wrench } from 'lucide-react'
 import { useAppContext } from '@renderer/app-context'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { useProjects } from '@renderer/hooks/use-projects'
 import { deriveRunningProjectId } from '@renderer/lib/utils'
+import { useOpenOrStartProject } from '@renderer/hooks/use-open-or-start-project'
+import { useCreateProjectMutation } from '@renderer/hooks/use-create-project-mutation'
 
 export const CommandPalette = () => {
-  const { setCommandPaletteOpen, setFocusedProject } = useAppContext()
-  const projects = useRunningProjects().data
+  const { setCommandPaletteOpen, setFocusedProject, setRoute } = useAppContext()
+  const runningProjects = useRunningProjects().data
+  const allProjects = useProjects().data
+  const { openOrStart } = useOpenOrStartProject()
+  const createProject = useCreateProjectMutation()
   const [input, setInput] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [activeCategory, setActiveCategory] = useState<'all' | 'projects' | 'tools'>('all')
@@ -33,6 +38,8 @@ export const CommandPalette = () => {
     favicon?: string | null
     onSelect: () => Promise<void> | void
     category?: 'projects' | 'tools'
+    faviconProjectPath?: string
+    icon?: ReactNode
   }
 
   const closePalette = async () => {
@@ -41,78 +48,93 @@ export const CommandPalette = () => {
     await client.focusActiveWebContent().catch(console.error)
   }
 
-  // Fetch favicons for all projects
-  const faviconQueries = projects.map((project) => ({
-    project,
-    query: useQuery({
-      queryKey: ['project-favicon', project.cwd],
-      queryFn: () => client.getProjectFavicon({ projectPath: project.cwd }),
-      staleTime: 60_000,
-      gcTime: 5 * 60_000
-    })
-  }))
+  // Favicons are fetched lazily per visible row; avoid calling hooks in arrays here
 
   const projectItems: CommandItem[] = useMemo(() => {
-    return projects.map((project, index) => {
-      const projectName = project.cwd.split('/').pop() || project.cwd
-      const portInfo =
-        project.runningKind === 'listening' ? `localhost:${project.port}` : 'Not running'
-      const faviconData = faviconQueries[index]?.query.data
-      const favicon = faviconData?.found ? faviconData.dataUrl : null
+    // Build a map of running projects by path for quick lookup
+    const runningByPath = new Map(runningProjects.map((p) => [p.cwd, p]))
+
+    return allProjects.map((proj) => {
+      const running = runningByPath.get(proj.path)
+      const projectName = proj.name || proj.path.split('/').pop() || proj.path
+      const description = running
+        ? running.runningKind === 'listening'
+          ? `localhost:${running.port}`
+          : 'Starting…'
+        : 'Not running'
 
       return {
-        id: project.cwd,
+        id: proj.path,
         label: projectName,
-        description: portInfo,
+        description,
         category: 'projects' as const,
-        favicon,
+        faviconProjectPath: running ? proj.path : undefined,
         onSelect: async () => {
-          setFocusedProject((prev) => ({
-            projectCwd: project.cwd,
-            focusedTerminalId: prev?.focusedTerminalId || '',
-            projectId: deriveRunningProjectId(project)
-          }))
-          await closePalette()
+          await openOrStart({
+            path: proj.path,
+            name: proj.name,
+            devScript: proj.devScript,
+            packageManager: proj.packageManager,
+            tags: proj.tags,
+            workspaces: proj.workspaces
+          })
         }
       }
     })
-  }, [projects, setFocusedProject, faviconQueries])
+  }, [allProjects, runningProjects, openOrStart])
 
   const extraItems: CommandItem[] = useMemo(() => {
     return [
+      {
+        id: 'create-new-project',
+        label: 'Create new project',
+        description: 'Scaffold and start a new project',
+        category: 'tools' as const,
+        icon: <Plus size={14} />,
+        onSelect: async () => {
+          await createProject.mutateAsync()
+        }
+      },
+      {
+        id: 'go-home',
+        label: 'Go to Home',
+        description: 'Open Home view',
+        category: 'tools' as const,
+        icon: <Home size={14} />,
+        onSelect: async () => {
+          setRoute('home')
+        }
+      },
       {
         id: 'toggle-devtools',
         label: 'Toggle DevTools',
         description: 'Show or hide developer tools',
         category: 'tools' as const,
+        icon: <Wrench size={14} />,
         onSelect: async () => {
           await client.toggleDevTools()
-          await closePalette()
         }
       }
     ]
-  }, [])
+  }, [setRoute])
 
   const items: CommandItem[] = useMemo(() => {
-    let list: CommandItem[] = [...projectItems, ...extraItems]
+    let tools: CommandItem[] = extraItems
+    let projects: CommandItem[] = projectItems
 
     // Filter by category
     if (activeCategory !== 'all') {
-      list = list.filter((item) => item.category === activeCategory)
+      tools = activeCategory === 'tools' ? tools : []
+      projects = activeCategory === 'projects' ? projects : []
     }
 
     const q = input.trim().toLowerCase()
-    if (!q) return list
+    if (!q) return [...tools, ...projects]
 
-    // Enhanced fuzzy search
-    return list.filter((i) => {
+    const matches = (i: CommandItem) => {
       const label = i.label.toLowerCase()
       const desc = (i.description || '').toLowerCase()
-
-      // Check for exact substring match
       if (label.includes(q) || desc.includes(q)) return true
-
-      // Check for fuzzy match (each char in order)
       let queryIndex = 0
       for (const char of label) {
         if (char === q[queryIndex]) {
@@ -120,13 +142,18 @@ export const CommandPalette = () => {
           if (queryIndex === q.length) return true
         }
       }
-
       return false
-    })
+    }
+
+    const filteredTools = tools.filter(matches)
+    const filteredProjects = projects.filter(matches)
+    return [...filteredTools, ...filteredProjects]
   }, [projectItems, extraItems, input, activeCategory])
 
   const handleSelectItem = async (item: CommandItem | undefined) => {
     if (!item) return
+    // Close immediately so long-running actions (e.g., start project) don't block UI closing
+    closePalette().catch(console.error)
     try {
       await item.onSelect()
     } catch (error) {
@@ -306,8 +333,38 @@ const CommandItem = ({
   onClick: () => void
   index: number
 }) => {
+  const rowRef = React.useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!rowRef.current) return
+    const target = rowRef.current
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setIsVisible(true)
+          }
+        }
+      },
+      { root: null, rootMargin: '0px', threshold: 0.1 }
+    )
+    observer.observe(target)
+    return () => observer.unobserve(target)
+  }, [])
+
+  const { data: faviconResult } = useQuery({
+    queryKey: ['project-favicon', item.faviconProjectPath],
+    queryFn: () => client.getProjectFavicon({ projectPath: item.faviconProjectPath! }),
+    staleTime: 60_000,
+    gcTime: 5 * 60_000,
+    enabled: Boolean(item.faviconProjectPath) && isVisible
+  })
+  const favicon = faviconResult && faviconResult.found ? faviconResult.dataUrl : null
+
   return (
     <div
+      ref={rowRef}
       data-command-item
       data-index={index}
       className={`flex items-center px-3 py-2 cursor-pointer ${
@@ -315,10 +372,12 @@ const CommandItem = ({
       }`}
       onClick={onClick}
     >
-      {/* Favicon or placeholder */}
+      {/* Icon: commands show icons; projects show favicon */}
       <div className="w-6 h-6 mr-3 flex items-center justify-center flex-shrink-0">
-        {item.favicon ? (
-          <img src={item.favicon} alt="" className="w-4 h-4 rounded" draggable={false} />
+        {item.category === 'tools' && item.icon ? (
+          item.icon
+        ) : favicon ? (
+          <img src={favicon} alt="" className="w-4 h-4 rounded" draggable={false} />
         ) : (
           <div className="w-4 h-4 rounded bg-white/10" />
         )}
