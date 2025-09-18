@@ -9,19 +9,30 @@ import { deriveRunningProjectId } from './lib/utils'
 import { useOpenOrStartProject } from './hooks/use-open-or-start-project'
 
 export const ProjectItem = ({ project }: { project: Project }) => {
-  const { data: faviconResult } = useQuery({
-    queryKey: ['project-favicon', project.path],
-    queryFn: () => client.getProjectFavicon({ projectPath: project.path }),
-    staleTime: 60_000,
-    gcTime: 5 * 60_000
-  })
-  const queryClient = useQueryClient()
-  const favicon = faviconResult && faviconResult.found ? faviconResult.dataUrl : null
-  const { data: workspacesData } = useQuery({
-    queryKey: ['workspaces'],
-    queryFn: () => client.getWorkspaces()
-  })
+  const [faviconResult, setFaviconResult] = React.useState<{ found: boolean; dataUrl?: string } | null>(null)
+  const [workspacesData, setWorkspacesData] = React.useState<{ workspaces: any[]; assignments: Record<string, string[]> } | null>(null)
 
+  React.useEffect(() => {
+    let mounted = true
+    client.getProjectFavicon({ projectPath: project.path }).then((result) => {
+      if (mounted) {
+        setFaviconResult(result)
+      }
+    }).catch(console.error)
+    return () => { mounted = false }
+  }, [project.path])
+
+  React.useEffect(() => {
+    let mounted = true
+    client.getWorkspaces().then((data) => {
+      if (mounted) {
+        setWorkspacesData(data)
+      }
+    }).catch(console.error)
+    return () => { mounted = false }
+  }, [])
+
+  const favicon = faviconResult && faviconResult.found ? faviconResult.dataUrl : null
   const customWorkspaces = workspacesData?.workspaces ?? []
   const assignments: Record<string, string[]> = workspacesData?.assignments ?? {}
   const assignedWorkspaceIds = new Set(
@@ -53,28 +64,49 @@ export const ProjectItem = ({ project }: { project: Project }) => {
     setMenuOpen(true)
   }
 
-  const assignMutation = useMutation({
-    mutationFn: ({ workspaceId }: { workspaceId: string }) =>
-      client.assignProjectToWorkspace({ workspaceId, projectPath: project.path }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workspaces'] })
-    }
-  })
+  const [assignPending, setAssignPending] = React.useState(false)
+  const [unassignPending, setUnassignPending] = React.useState(false)
+  const [createWorkspacePending, setCreateWorkspacePending] = React.useState(false)
 
-  const unassignMutation = useMutation({
-    mutationFn: ({ workspaceId }: { workspaceId: string }) =>
-      client.unassignProjectFromWorkspace({ workspaceId, projectPath: project.path }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+  const assignToWorkspace = async (workspaceId: string) => {
+    setAssignPending(true)
+    try {
+      await client.assignProjectToWorkspace({ workspaceId, projectPath: project.path })
+      const data = await client.getWorkspaces()
+      setWorkspacesData(data)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setAssignPending(false)
     }
-  })
+  }
 
-  const createWorkspaceMutation = useMutation({
-    mutationFn: ({ label }: { label: string }) => client.createWorkspace({ label }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+  const unassignFromWorkspace = async (workspaceId: string) => {
+    setUnassignPending(true)
+    try {
+      await client.unassignProjectFromWorkspace({ workspaceId, projectPath: project.path })
+      const data = await client.getWorkspaces()
+      setWorkspacesData(data)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setUnassignPending(false)
     }
-  })
+  }
+
+  const createWorkspace = async (label: string) => {
+    setCreateWorkspacePending(true)
+    try {
+      await client.createWorkspace({ label })
+      const data = await client.getWorkspaces()
+      setWorkspacesData(data)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setCreateWorkspacePending(false)
+    }
+  }
+
   const { openOrStart, isStarting } = useOpenOrStartProject()
 
   const { setFocusedProject, setRoute } = useAppContext()
@@ -94,18 +126,6 @@ export const ProjectItem = ({ project }: { project: Project }) => {
       >
         {favicon ? (
           <div className="w-full h-full flex items-center justify-center relative">
-            {/* Glow layer - subtle blur */}
-            {/* <img
-              src={favicon}
-              alt=""
-              className="absolute w-16 h-16 rounded-md opacity-30"
-              style={{
-                filter: 'blur(2px)',
-                transform: 'scale(1.2)'
-              }}
-              draggable={false}
-            /> */}
-            {/* Main favicon */}
             <img
               src={favicon}
               alt="project favicon"
@@ -115,7 +135,6 @@ export const ProjectItem = ({ project }: { project: Project }) => {
           </div>
         ) : (
           <div className="w-full h-full bg-[#0B0B0B] flex flex-col items-center justify-center gap-3">
-            {/* Default app icon */}
             <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#1a1a1a] to-[#151515] flex items-center justify-center shadow-lg border border-[#2a2a2a]">
               <svg
                 className="w-8 h-8 text-[#606060]"
@@ -150,7 +169,6 @@ export const ProjectItem = ({ project }: { project: Project }) => {
           title="Click to copy path"
         >
           {project.path}
-          {/* Copy icon that appears on hover */}
           <div className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
             <svg
               className="w-3 h-3 text-[#808080]"
@@ -185,7 +203,7 @@ export const ProjectItem = ({ project }: { project: Project }) => {
               ) : (
                 customWorkspaces.map((ws) => {
                   const assigned = assignedWorkspaceIds.has(ws.id)
-                  const pending = assignMutation.isPending || unassignMutation.isPending
+                  const pending = assignPending || unassignPending
                   return (
                     <button
                       key={ws.id}
@@ -195,9 +213,9 @@ export const ProjectItem = ({ project }: { project: Project }) => {
                       disabled={pending}
                       onClick={() => {
                         if (assigned) {
-                          unassignMutation.mutate({ workspaceId: ws.id })
+                          unassignFromWorkspace(ws.id)
                         } else {
-                          assignMutation.mutate({ workspaceId: ws.id })
+                          assignToWorkspace(ws.id)
                         }
                         setMenuOpen(false)
                       }}
@@ -219,7 +237,7 @@ export const ProjectItem = ({ project }: { project: Project }) => {
                 onClick={() => {
                   const label = window.prompt('New workspace name')?.trim()
                   if (label) {
-                    createWorkspaceMutation.mutate({ label })
+                    createWorkspace(label)
                   }
                   setMenuOpen(false)
                 }}

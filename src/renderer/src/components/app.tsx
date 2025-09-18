@@ -16,6 +16,7 @@ import { deriveRunningProjectId } from '@renderer/lib/utils'
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ErrorBoundary } from './error-boundary'
+import { useLogObjUpdate } from '@renderer/hooks/use-log-obj'
 export default function App() {
   const client = new QueryClient()
 
@@ -40,45 +41,12 @@ export default function App() {
 }
 
 const AppLoader = () => {
-  // const portsQuery = useSuspenseQuery({
-  //   queryKey: ['ports'],
-  //   queryFn: () => client.getPorts()
-  // })
-
-  const projectsQuery = useProjects()
+  // this is a bad abstraction that technically cause waterfalls but fine for now since its like sub 1ms ipc
   const devServersQuery = useRunningProjects()
+  useLogObjUpdate()
 
-  // Query existing v2 terminal sessions
-  const terminalsQuery = useSuspenseQuery({
-    queryKey: ['terminals'],
-    queryFn: async () => v2Client.terminalV2List()
-  })
-
-  // const runningProjects = Object.entries(portsQuery.data).map(
-  //   ([port, data]) =>
-  //     ({
-  //       cwd: data.cwd,
-  //       port: Number(port),
-  //       name: data.name,
-  //       projectId: data.name // should be something else
-  //     }) satisfies RunningProject
-  // )
-
-  // Map terminal sessions to terminal instances, aligning projectId with deriveRunningProjectId
-  const initialTerminals: TerminalInstance[] = terminalsQuery.data.map((session) => {
-    const match = devServersQuery.data.find((p) => p.cwd === session.cwd)
-    const projectId = match ? deriveRunningProjectId(match) : session.cwd
-    return { terminalId: session.id, projectId }
-  })
-
-  // console.log('projects', projects)
-  // console.log('terminals', initialTerminals)
-
-  // State that needs to be available even when no projects are running
-  const [projects, setProjects] = useState<Project[]>(projectsQuery.data)
   const [route, setRoute] = useState<'home' | 'webview'>('home')
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
-  const [terminals, setTerminals] = useState<TerminalInstance[]>(initialTerminals)
   const [focusedProject, setFocusedProject] = useState<FocusedProject | null>(null)
   const [recentTabs, setRecentTabs] = useState<string[]>([]) // Start empty, only track actual navigation
   const [tabSwitcherOpen, setTabSwitcherOpen] = useState(false)
@@ -108,9 +76,7 @@ const AppLoader = () => {
           route,
           setRoute,
           setFocusedProject,
-          terminals,
           focusedProject,
-          setTerminals,
           commandPaletteOpen,
           setCommandPaletteOpen,
           recentTabs,
@@ -128,40 +94,16 @@ const AppLoader = () => {
 
   // Find the first terminal for the first project to set as focused
   const firstProject = devServersQuery.data[0]
-  const firstProjectTerminals = initialTerminals.filter(
-    (t) => t.projectId === deriveRunningProjectId(firstProject)
-  )
 
   // Update focused project now that we have running projects
   useEffect(() => {
     if (firstProject && !focusedProject) {
       setFocusedProject({
-        focusedTerminalId:
-          firstProjectTerminals.length > 0 ? firstProjectTerminals[0].terminalId : '',
         projectId: deriveRunningProjectId(firstProject),
         projectCwd: firstProject.cwd
       })
     }
-  }, [firstProject, firstProjectTerminals])
-
-  // Auto-spawn is handled in the terminal sidebar to guarantee exactly one per focused project
-
-  // Ensure focused terminal is set if it's empty
-  useEffect(() => {
-    if (!focusedProject?.focusedTerminalId && terminals.length > 0) {
-      const projectTerminals = terminals.filter((t) => t.projectId === focusedProject?.projectId)
-      if (projectTerminals.length > 0) {
-        // console.log('Setting focusedTerminalId via useEffect:', projectTerminals[0].terminalId)
-        setFocusedProject((prev) => {
-          if (!prev) return null
-          return {
-            ...prev,
-            focusedTerminalId: projectTerminals[0].terminalId
-          }
-        })
-      }
-    }
-  }, [terminals, focusedProject?.projectId, focusedProject?.focusedTerminalId])
+  }, [firstProject])
 
   // Don't initialize recent tabs - only track actual navigation
 
@@ -181,9 +123,7 @@ const AppLoader = () => {
         route,
         setRoute,
         setFocusedProject,
-        terminals, // should sync terminal state from server to restore
         focusedProject,
-        setTerminals,
         commandPaletteOpen,
         setCommandPaletteOpen,
         recentTabs,

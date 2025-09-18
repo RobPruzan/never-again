@@ -23,6 +23,7 @@ import { useQuery } from '@tanstack/react-query'
 import { client } from '@renderer/lib/tipc'
 import { useGroupedProjects } from '@renderer/hooks/use-grouped-projects'
 import { CookingPot } from 'lucide-react'
+import { useLogObj } from '@renderer/hooks/use-log-obj'
 
 const DisplayNoneActivity = ({
   children,
@@ -195,6 +196,7 @@ const StartingProject = ({
     gcTime: 5 * 60_000,
     enabled: project.runningKind === 'starting'
   })
+  const logsObjQuery = useLogObj()
   const favicon =
     faviconResult && (faviconResult as any).found ? (faviconResult as any).dataUrl : null
   switch (project.runningKind) {

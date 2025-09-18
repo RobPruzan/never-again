@@ -3,25 +3,29 @@ import { createServer, Socket, connect } from 'node:net'
 import { unlinkSync, existsSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { detectDevServersForDir } from './dev-server-detector'
-import { StartingProject } from '../shared/types'
+import { LogsObj, StartingProject } from '../shared/types'
 
 /**
  * thsi is also an awful name!
  */
 
 /**
- *
- * i dont even understand how this socket totally works yet e2e
- *
- * i think how it works is:
- * - starter creates metadata file
- * - created socket to mirror process/channel for general communication
- * - exposes a way to connect to the socket (but anyone really can connect if they discover it, but thats a private impl detail technically)
+ * does it make sense to put the mapping (cwd -> {starting map closure id-> buffer, running projects map port -> buffer})
  *
  *
- * whats the cli called
  */
+// we probably want super json so we don't have to think about serializing that kind of obj
 export class DevRelayService {
+  logsObj: LogsObj = {
+    runningProjectsLogs: {},
+    startingLogs: {},
+    startingToRunning: {}
+  }
+  onLogsObjUpdate?: (logs: LogsObj) => void
+
+  constructor({ onLogsObjUpdate }: { onLogsObjUpdate?: (logs: LogsObj) => void }) {
+    this.onLogsObjUpdate = onLogsObjUpdate
+  }
   private servers = new Map<
     string,
     { server: ReturnType<typeof createServer>; proc: ChildProcess; sock }
@@ -34,8 +38,12 @@ export class DevRelayService {
       onProjectStart?: (project: StartingProject) => void
     }
   ) {
+    const startingClosureId = crypto.randomUUID()
+    this.logsObj.startingLogs[startingClosureId] = []
     const cwd = resolve(projectDir)
-    const sock = join(cwd, '.devrelay.sock')
+    const sock = join(cwd, '.devrelay.sock') // i believe this sock is for future connectors, yes quite confident
+    // why would forward be logging it to the process and not sending it over the sock?
+    // yeah this sock does jack shit rn i believe
     try {
       if (existsSync(sock)) unlinkSync(sock)
     } catch {}
@@ -44,7 +52,7 @@ export class DevRelayService {
     const clients = new Set<Socket>()
 
     const proc = spawn(
-      'pnpm',
+      'pnpm', // this needs to detect package manager, maybe just use ni
       ['run', 'dev', ...(opts?.port ? ['--port', String(opts.port)] : [])],
       {
         cwd,
@@ -52,29 +60,41 @@ export class DevRelayService {
         env: { ...process.env, FORCE_COLOR: '1', npm_config_color: 'true' } // why both, are both needed?
       }
     )
+    const handleData = (d: { toString: () => string }) => {
+      // forward(d, false)
 
-    const forward = (buf: Buffer | string, isErr = false) => {
-      try {
-        ;(isErr ? process.stderr : process.stdout).write(buf)
-      } catch {}
-      for (const s of clients) {
-        try {
-          s.write(buf)
-        } catch {}
+      const startingEntry = this.logsObj.startingLogs[startingClosureId]
+      if (!startingEntry) {
+        const runningMapBack = this.logsObj.startingToRunning[startingClosureId]
+        if (!runningMapBack) {
+          throw new Error('must either be starting or listening no inbetween')
+        }
+
+        const running = this.logsObj.runningProjectsLogs[runningMapBack]
+        if (!running) {
+          throw new Error("must have a running project if there's a map back")
+        }
+        running.push(d.toString())
+
+        this.onLogsObjUpdate?.(this.logsObj)
+        return
       }
+      this.onLogsObjUpdate?.(this.logsObj)
+      startingEntry.push(d.toString())
     }
+
     proc.stdout?.on('data', (d) => {
-      forward(d, false)
+      handleData(d)
     })
     proc.stderr?.on('data', (d) => {
-      forward(d, true)
+      handleData(d)
     })
 
     server.on('connection', (sockConn) => {
       sockConn.setEncoding('utf8')
       clients.add(sockConn)
       try {
-        sockConn.write('CONNECTED\n')
+        // sockConn.write('CONNECTED\n')
       } catch {}
       sockConn.on('data', (data: string) => {
         if (typeof data === 'string' && data.trim().toUpperCase() === 'KILL') {
@@ -110,7 +130,8 @@ export class DevRelayService {
       kind: 'unknown',
       cwd,
       pid: typeof proc.pid === 'number' ? proc.pid : 0,
-      runningKind: 'starting'
+      runningKind: 'starting',
+      startingId: startingClosureId
     })
     this.servers.set(cwd, { server, proc, sock })
     try {
@@ -125,6 +146,19 @@ export class DevRelayService {
     console.log('prev ports found', prev)
 
     // fairily confinident this is infinite looping
+    /**
+     * we should fix this infinite loopin i definitely want ot be sure i know this
+     *
+     * but wait how does this tie in?
+     *
+     * the singleton needs a lock on it only available in the context here
+     *
+     * what if you start multiple at the same time
+     *
+     * well of course dumbass there's no lock its just an id mapping
+     *
+     * then we can transfer it over and clean it up after it ups, and if we make sure this actually works we're chillin
+     */
     const project = await new Promise<
       Awaited<NonNullable<ReturnType<typeof detectDevServersForDir>>>[number]
     >((res, rej) => {
@@ -162,6 +196,17 @@ export class DevRelayService {
       }
       poll()
     })
+    const startingLogs = this.logsObj.startingLogs[startingClosureId]
+    if (!startingLogs) {
+      throw new Error('Invariant no starting logs found')
+    }
+
+    this.logsObj.startingToRunning[startingClosureId] = project.port
+    this.logsObj.startingLogs[startingClosureId] = []
+    this.logsObj.runningProjectsLogs[project.port] = startingLogs
+
+    this.onLogsObjUpdate?.(this.logsObj)
+
     return { sock, pid: proc.pid!, project } // daijobu meme
   }
 

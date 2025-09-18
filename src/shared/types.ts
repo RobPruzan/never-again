@@ -20,7 +20,14 @@ export type StartingProject = {
   cwd:string 
   pid: number
   kind: DevServerKind
+  startingId: string
 }
 
 export type RunningProject = ListneingProject | StartingProject
 export type DevServerKind = 'vite' | 'next' | 'webpack-dev-server' | 'unknown'
+
+export type LogsObj = {
+  startingLogs: Record<string, Array<string>>
+  runningProjectsLogs: Record<number, Array<string>>
+  startingToRunning: Record<string, number>
+}

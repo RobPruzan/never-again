@@ -264,7 +264,11 @@ app.whenReady().then(async () => {
   terminalManagerV2 = new TerminalManagerV2(handlers)
   // Ensure terminal events can be sent to the renderer
   terminalManagerV2.setMainWindow(mainWindow)
-  const devRelayService = new DevRelayService()
+  const devRelayService = new DevRelayService({
+    onLogsObjUpdate: (logsObj) => {
+      handlers.
+    }
+  })
   bufferService = new ProjectBufferService()
   // terminalManager.setMainWindow(mainWindow)
   // terminalManagerV2.setMainWindow(mainWindow)
@@ -595,15 +599,15 @@ app.whenReady().then(async () => {
           }
         },
         { type: 'separator' },
-        {
-          label: 'Reload WebView',
-          accelerator: process.platform === 'darwin' ? 'Cmd+R' : 'Ctrl+R',
-          click: () => {
-            if (mainWindow) {
-              mainWindow.webContents.send('menu:reload')
-            }
-          }
-        },
+        // {
+        //   label: 'Reload WebView',
+        //   accelerator: process.platform === 'darwin' ? 'Cmd+R' : 'Ctrl+R',
+        //   click: () => {
+        //     if (mainWindow) {
+        //       mainWindow.webContents.send('menu:reload')
+        //     }
+        //   }
+        // },
         {
           label: 'Force Reload WebView',
           accelerator: process.platform === 'darwin' ? 'Cmd+Shift+R' : 'Ctrl+Shift+R',

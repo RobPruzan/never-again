@@ -115,7 +115,13 @@ export const createRouter = ({
 
   devRelayService: DevRelayService
 }) => ({
-  // Workspace APIs
+
+
+  getLogsObj: t.procedure.action(async () => {
+
+    return devRelayService.logsObj
+  }),
+
   getWorkspaces: t.procedure.action(async () => {
     return loadWorkspaces()
   }),
@@ -288,7 +294,13 @@ export const createRouter = ({
         console.log('setting', startingProject)
 
         startProjectResolve?.(startingProject)
-      }
+      },
+      // onStdout: (chunk) => {
+      //   console.log('stdout', chunk)
+      // },
+      // onStderr: (chunk) => {
+      //   console.error('stderr', chunk)
+      // }
     })
     console.log('started!', startRes)
 

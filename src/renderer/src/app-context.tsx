@@ -1,4 +1,4 @@
-import { Project, RunningProject } from '@shared/types'
+import { LogsObj, Project, RunningProject } from '@shared/types'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Terminal } from '@xterm/xterm'
 import { createContext, Dispatch, SetStateAction, useContext } from 'react'
@@ -35,6 +35,7 @@ export const AppContext = createContext<{
   setTabSwitcherOpen: Dispatch<SetStateAction<boolean>>
   swappableSidebarOpen: boolean
   setSwappableSidebarOpen: Dispatch<SetStateAction<boolean>>
+
 }>(null!)
 
 export const useAppContext = () => useContext(AppContext)

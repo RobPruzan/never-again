@@ -1,8 +1,10 @@
 import { contextBridge, ipcRenderer } from 'electron'
+
+// @ts-ignore
+console.createTask = null
 // TIPC uses plain ipcRenderer.invoke; expose under window.ipcRenderer
 import { electronAPI } from '@electron-toolkit/preload'
 
-// Increase max listeners to prevent warnings with multiple terminals
 ipcRenderer.setMaxListeners(50)
 
 process.once('loaded', () => {

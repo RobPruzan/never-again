@@ -1,4 +1,4 @@
-import { Project, StartingProject } from '../shared/types'
+import { LogsObj, Project, StartingProject } from '../shared/types'
 
 export type RendererHandlers = {
   terminalData: (payload: { id: string; data: string }) => void
@@ -18,4 +18,5 @@ export type RendererHandlers = {
   tabSwitcher: () => void
   onProjectStart: (project: StartingProject) => void
   dismiss:(  ) => void
+  onLogsObjUpdate: (logsObj: LogsObj) => void
 }
