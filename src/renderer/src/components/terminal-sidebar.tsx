@@ -1,39 +1,46 @@
-import { useEffect, useRef, useState } from 'react'
-// import { Terminalv2 } from './Terminalv2'
+import { useEffect, useState } from 'react'
 import { client, v2Client } from '../lib/tipc'
 import { Plus, X, ChevronLeft, ChevronRight, RotateCw, Link, HomeIcon } from 'lucide-react'
-// import { useAppContext, useFocusedProject, type TerminalInstance } from './app-context'
-// import { useBrowserState } from './use-browser-state'
 import { Terminalv2 } from './terminal-v2'
-import { TerminalInstance, useAppContext, useFocusedProject } from '@renderer/app-context'
+import { useAppContext, useFocusedProject } from '@renderer/app-context'
 import { useBrowserState } from './use-browser-state'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { SwappableSidebarArea } from './swappable-sidebar-area'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './ui/resizable'
-import { deriveRunningProjectId } from '@renderer/lib/utils'
+import { iife } from '@renderer/lib/utils'
+type Terminal = {
+  terminalId: string
+}
 
 export function MainSidebar() {
-  const runningProjects = useRunningProjects().data
-  const { terminals, setTerminals, setFocusedProject, swappableSidebarOpen } = useAppContext()
+  const [terminals, setTerminals] = useState<Array<Terminal>>([])
+  const { setFocusedProject, swappableSidebarOpen } = useAppContext()
   const focusedProject = useFocusedProject()
-  const creatingRef = useRef<Set<string>>(new Set())
+  const [terminalLoading, setTerminalLoading] = useState(false)
 
-  // there's some desync here possible, the actual fix is in the actual browser tba logic
+  // there's some desync here possible, the actual fix is in the actual browser tba logic // what the hell was i talking about
   const createNewTerminal = async () => {
     if (!focusedProject?.cwd) return
 
+    setTerminalLoading(true)
     const session = await v2Client.terminalV2Create({
       cwd: focusedProject.cwd,
-      startCommand: 'claude --dangerously-skip-permissions'
+      startCommand: 'opencode' //  pretty fast so wont blow up my computer if we make too many terminals when testing
     })
+
+    setTerminals((prev) => [
+      ...prev,
+      {
+        terminalId: session.id
+      }
+    ])
+    setTerminalLoading(false)
     if (!focusedProject) return
 
-    const newTerminal: TerminalInstance = {
-      terminalId: session.id,
-      projectId: focusedProject.cwd
-    }
-
-    setTerminals((prev) => [...prev, newTerminal])
+    // const newTerminal: TerminalInstance = {
+    //   terminalId: session.id,
+    //   projectId: focusedProject.cwd
+    // }
 
     setFocusedProject((prev) => {
       if (!prev) return null
@@ -44,48 +51,11 @@ export function MainSidebar() {
     })
   }
 
-  // Ensure there is ALWAYS a terminal for the current focused project,
-  // and ensure one is focused.
   useEffect(() => {
-    if (!focusedProject?.cwd) return
-    const projectKey = focusedProject.cwd
-    const projectTerminals = terminals.filter((t) => t.projectId === projectKey)
-
-    // If none exist, auto-create one with default start command
-    if (projectTerminals.length === 0) {
-      if (creatingRef.current.has(projectKey)) return
-      creatingRef.current.add(projectKey)
-      ;(async () => {
-        try {
-          const session = await v2Client.terminalV2Create({
-            cwd: focusedProject.cwd,
-            startCommand: 'claude --dangerously-skip-permissions'
-          })
-          setTerminals((prev) => [...prev, { terminalId: session.id, projectId: projectKey }])
-          setFocusedProject((prev) => {
-            if (!prev) return null
-            return { ...prev, focusedTerminalId: session.id }
-          })
-        } catch {
-        } finally {
-          creatingRef.current.delete(projectKey)
-        }
-      })()
-      return
-    }
-
-    // If some exist but focus is missing/mismatched, focus the most recent
-    if (
-      !focusedProject.focusedTerminalId ||
-      !projectTerminals.some((t) => t.terminalId === focusedProject.focusedTerminalId)
-    ) {
-      const last = projectTerminals[projectTerminals.length - 1]
-      setFocusedProject((prev) => {
-        if (!prev) return null
-        return { ...prev, focusedTerminalId: last.terminalId }
-      })
-    }
-  }, [focusedProject?.cwd, focusedProject?.focusedTerminalId, terminals])
+    iife(async () => {
+      await createNewTerminal()
+    })
+  }, [])
 
   // fine, idk
   const handleRefresh = () => {
@@ -226,6 +196,7 @@ export function MainSidebar() {
         <ResizablePanelGroup direction="vertical">
           {swappableSidebarOpen && (
             <>
+              {/* not sure how i feel about this yet and what it truly should represent */}
               <ResizablePanel defaultSize={30}>
                 <SwappableSidebarArea />
               </ResizablePanel>
@@ -236,101 +207,50 @@ export function MainSidebar() {
             <div className="flex flex-col h-full min-h-0">
               <div className="bg-[#0A0A0A] p-2">
                 <div className="flex gap-1.5">
-                  {terminals
-                    .filter((t) => focusedProject && t.projectId === focusedProject.cwd)
-                    .map((tab, index) => (
-                      <div
-                        key={tab.terminalId}
-                        className={`
+                  {terminals.map((tab, index) => (
+                    <div
+                      key={tab.terminalId}
+                      className={`
                 flex-1 relative group cursor-pointer overflow-hidden
                 transition-all duration-200 hover:bg-[#1A1A1A]
               `}
-                        onClick={() => {
-                          const terminalId = tab.terminalId
-                          console.log('handleSelectTab called with:', terminalId)
-                          console.log('current focusedProject:', focusedProject)
-                          if (!focusedProject) return
-                          setFocusedProject((prev) => {
-                            if (!prev) return null
-                            const newState = {
-                              ...prev,
-                              focusedTerminalId: terminalId
-                            }
-                            console.log('setting new focusedProject state:', newState)
-                            return newState
-                          })
-                          const handleSelectTab = (terminalId: string) => {}
-                        }}
-                        style={{ height: '42px', borderRadius: '2px' }}
+                      onClick={() => {
+                        // select tab shit
+                      }}
+                      style={{ height: '42px', borderRadius: '2px' }}
+                    >
+                      <div
+                        className={`w-full h-full border ${tab.terminalId === focusedProject?.focusedTerminalId ? 'bg-[#0F0F0F] border-[#1A1A1A]' : 'bg-[#080808] border-[#151515]'}`}
+                        style={{ borderRadius: '2px' }}
                       >
-                        {/* Placeholder Terminal Preview */}
-                        <div
-                          className={`w-full h-full border ${tab.terminalId === focusedProject?.focusedTerminalId ? 'bg-[#0F0F0F] border-[#1A1A1A]' : 'bg-[#080808] border-[#151515]'}`}
-                          style={{ borderRadius: '2px' }}
-                        >
-                          <div className="w-full h-full flex items-center px-2.5 relative">
-                            {/* Show keyboard shortcut hint */}
-                            {index < 9 && (
-                              <span className="text-[9px] mr-2 font-mono" style={{ color: '#444' }}>
-                                ⌘{index + 1}
-                              </span>
-                            )}
-                            {/* Show process title or terminal icon */}
-                            <span
-                              className={`text-xs truncate flex-1 ${
-                                tab.terminalId === focusedProject?.focusedTerminalId
-                                  ? 'text-[#999]'
-                                  : 'text-[#555]'
-                              }`}
-                            >
-                              {/* todo */}
-                              {/* {tab.processTitle || `Terminal ${index + 1}`} */}
-                              {`Terminal ${index + 1}`}
+                        <div className="w-full h-full flex items-center px-2.5 relative">
+                          {index < 9 && (
+                            <span className="text-[9px] mr-2 font-mono" style={{ color: '#444' }}>
+                              ⌘{index + 1}
                             </span>
+                          )}
+                          <span
+                            className={`text-xs truncate flex-1 ${
+                              tab.terminalId === focusedProject?.focusedTerminalId
+                                ? 'text-[#999]'
+                                : 'text-[#555]'
+                            }`}
+                          >
+                            {/* todo */}
+                            {/* {tab.processTitle || `Terminal ${index + 1}`} */}
+                            {`Terminal ${index + 1}`}
+                          </span>
 
-                            {/* Close button */}
-                            <button
-                              onClick={async (e) => {
-                                e.stopPropagation()
-                                const terminalId = tab.terminalId
-                                await v2Client.terminalV2Destroy(terminalId)
-                                setTerminals((prev) => {
-                                  if (!prev) return []
-                                  const newTerminals = prev.filter(
-                                    (t) => t.terminalId !== terminalId
-                                  )
-                                  if (focusedProject?.cwd) {
-                                    if (
-                                      focusedProject.focusedTerminalId === terminalId &&
-                                      newTerminals.length > 0
-                                    ) {
-                                      const projectTerminals = newTerminals.filter(
-                                        (t) => t.projectId === focusedProject.cwd
-                                      )
-                                      if (projectTerminals.length > 0) {
-                                        setFocusedProject((prev) => {
-                                          if (!prev) return null
-                                          return {
-                                            ...prev,
-                                            focusedTerminalId:
-                                              projectTerminals[projectTerminals.length - 1]
-                                                .terminalId
-                                          }
-                                        })
-                                      }
-                                    }
-                                  }
-                                  return newTerminals
-                                })
-                              }}
-                              className="ml-1 p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-[#1A1A1A] transition-opacity"
-                            >
-                              <X className="w-2.5 h-2.5" style={{ color: '#555' }} />
-                            </button>
-                          </div>
+                          <button
+                            onClick={async () => {}}
+                            className="ml-1 p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-[#1A1A1A] transition-opacity"
+                          >
+                            <X className="w-2.5 h-2.5" style={{ color: '#555' }} />
+                          </button>
                         </div>
                       </div>
-                    ))}
+                    </div>
+                  ))}
 
                   {/* Add Terminal Button */}
                   <button
@@ -351,62 +271,25 @@ export function MainSidebar() {
 
               {/* Terminal content */}
               <div className="flex-1 min-h-0 relative overflow-hidden">
-                {/* Render ALL terminals but only show ones for active project and active tab */}
-                {terminals.map((tab) => {
-                  // Find the CWD for this terminal's project
-                  const project = runningProjects.find((p) => p.cwd === tab.projectId)
-                  const terminalCwd =
-                    project?.cwd ||
-                    (tab.terminalId === focusedProject?.focusedTerminalId
-                      ? project?.cwd
-                      : undefined)
-
-                  const isVisible =
-                    tab.projectId === (focusedProject ? focusedProject.cwd : null) &&
-                    tab.terminalId === focusedProject?.focusedTerminalId
-
-                  return (
-                    <div
-                      key={tab.terminalId}
-                      className="absolute inset-0 overflow-hidden"
-                      style={{
-                        visibility: isVisible ? 'visible' : 'hidden',
-                        pointerEvents: isVisible ? 'auto' : 'none',
-                        opacity: isVisible ? '1' : '0'
-                      }}
-                    >
-                      <Terminalv2
-                        startCommand={'claude --dangerously-skip-permissions'}
-                        terminalId={tab.terminalId}
-                        cwd={terminalCwd}
-                      />
-                    </div>
-                  )
-                })}
-
-                {!focusedProject?.cwd && (
-                  <div className="flex items-center justify-center h-full text-gray-500">
+                {terminalLoading ? (
+                  <div className="flex items-center justify-center h-full">
                     <div className="text-center">
-                      <p>Select a project tab to open terminals</p>
+                      <div className="w-8 h-8 border-2 border-[#333] border-t-[#666] rounded-full animate-spin mx-auto mb-3"></div>
+                      <p className="text-[#666] text-sm">Loading terminal...</p>
                     </div>
                   </div>
+                ) : (
+                  terminals.map((tab) => {
+                    return (
+                      <Terminalv2
+                        key={tab.terminalId}
+                        startCommand={'claude --dangerously-skip-permissions'}
+                        terminalId={tab.terminalId}
+                        cwd={focusedProject?.cwd}
+                      />
+                    )
+                  })
                 )}
-
-                {terminals.filter((t) => t.projectId === (focusedProject ? focusedProject.cwd : ''))
-                  .length === 0 &&
-                  focusedProject?.cwd && (
-                    <div className="flex items-center justify-center h-full text-gray-500">
-                      <div className="text-center">
-                        <p>No terminals open for this project</p>
-                        <button
-                          onClick={createNewTerminal}
-                          className="mt-2 px-3 py-1 bg-[#1A1A1A] hover:bg-[#2A2A2A] rounded text-sm transition-colors"
-                        >
-                          Open Terminal
-                        </button>
-                      </div>
-                    </div>
-                  )}
               </div>
             </div>
           </ResizablePanel>

@@ -23,6 +23,21 @@ type Workspace = {
   filter: (projects: ProjectWithSize[], runningProjects: RunningProject[]) => ProjectWithSize[]
 }
 
+
+/**
+ * ah a little scattered, what's a good entrypoint to start working on the terminals
+ * 
+ * creating is the most reasonable entrypoint, where do we create terminals
+ * 
+ * well i really do want it to be instant, if its not instant/one frame im quite unhappy
+ * 
+ * i wonder if terminal manager is a good place to start? im actually not sure the ds
+ * its storing termianls in
+ * 
+ * sessions it seemsl ike
+ * 
+ */
+
 export const Home = () => {
   const projects = useProjects().data
   const runningProjects = useRunningProjects().data

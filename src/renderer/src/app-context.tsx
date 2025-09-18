@@ -28,8 +28,6 @@ export const AppContext = createContext<{
   // todo: remove project state derive directly from react query
   focusedProject: FocusedProject | null
   setFocusedProject: Dispatch<SetStateAction<FocusedProject | null>>
-  terminals: Array<TerminalInstance>
-  setTerminals: Dispatch<SetStateAction<TerminalInstance[]>>
   commandPaletteOpen: boolean
   setCommandPaletteOpen: Dispatch<SetStateAction<boolean>>
   recentTabs: string[] // Array of project IDs in order of recency

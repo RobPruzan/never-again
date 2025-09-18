@@ -100,8 +100,8 @@ export const TabSwitcher = () => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-[60] pointer-events-none">
-      <div className="bg-black/95 rounded-lg border border-white/10 p-4 pointer-events-auto max-w-[600px]">
-        <div className="flex items-center gap-3 flex-wrap justify-center">
+      <div className="bg-black/95 rounded-xl border border-white/10 p-8 pointer-events-auto max-w-[1000px] shadow-2xl">
+        <div className="flex items-center gap-6 flex-wrap justify-center">
           {/* <input
             ref={(ref) => ref?.focus()}
             placeholder="heya"
@@ -119,8 +119,8 @@ export const TabSwitcher = () => {
             return (
               <div
                 key={projectId}
-                className={`flex flex-col items-center gap-1 p-2 rounded-lg cursor-pointer ${
-                  isSelected ? 'bg-white/10' : ''
+                className={`flex flex-col items-center gap-2 p-4 rounded-xl cursor-pointer transition-transform ${
+                  isSelected ? 'bg-white/10 scale-105' : ''
                 } hover:bg-white/5`}
                 onClick={() => {
                   setRoute('webview')
@@ -134,21 +134,21 @@ export const TabSwitcher = () => {
               >
                 {/* Favicon */}
                 <div
-                  className={`w-12 h-12 flex items-center justify-center rounded-lg ${
-                    isCurrent ? 'ring-2 ring-blue-500' : ''
+                  className={`w-20 h-20 flex items-center justify-center rounded-xl ${
+                    isCurrent ? 'ring-4 ring-blue-500' : ''
                   }`}
                 >
                   {favicon ? (
-                    <img src={favicon} alt="" className="w-10 h-10 rounded-lg" draggable={false} />
+                    <img src={favicon} alt="" className="w-16 h-16 rounded-xl" draggable={false} />
                   ) : (
-                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                      <div className="w-5 h-5 rounded bg-white/20" />
+                    <div className="w-16 h-16 rounded-xl bg-white/10 flex items-center justify-center">
+                      <div className="w-8 h-8 rounded bg-white/20" />
                     </div>
                   )}
                 </div>
 
                 {/* Project name */}
-                <div className="text-[10px] text-white/60 max-w-[60px] truncate">{projectName}</div>
+                <div className="text-sm text-white/70 max-w-[120px] truncate">{projectName}</div>
               </div>
             )
           })}

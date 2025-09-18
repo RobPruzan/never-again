@@ -642,6 +642,7 @@ export const createRouter = ({
   terminalV2Create: t.procedure
     .input<undefined | { cwd?: string; shell?: string; startCommand?: string | string[] }>()
     .action(async ({ input }) => {
+      // what the fuck am i reading
       const mgr = TerminalManagerV2.getInstance()
       if (!mgr) throw new Error('TerminalManagerV2 not initialized')
       return mgr.create(input)
