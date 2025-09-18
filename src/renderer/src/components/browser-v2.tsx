@@ -176,7 +176,6 @@ const StartingProject = ({
   const logsObjQuery = useLogObj()
   const browserStateQuery = useBrowserState()
 
-  browserStateQuery.data.isLoaded
   /**
    *
    * if i had the browser query then i could know reactively
@@ -186,7 +185,23 @@ const StartingProject = ({
 
   switch (project.runningKind) {
     case 'listening': {
-      return children(project)
+      const isLoaded = Boolean(browserStateQuery.data?.isLoaded)
+      return (
+        <div className="relative flex-1 h-full w-full bg-[#0A0A0A] overflow-hidden">
+          {children(project)}
+          <div
+            className={
+              'absolute inset-0 flex items-center justify-center bg-[#0A0A0A]/60 transition-opacity duration-300 ' +
+              (isLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100')
+            }
+          >
+            <div className="flex flex-col items-center gap-3 text-white/80">
+              <div className="w-5 h-5 rounded-full border-2 border-white/20 border-t-white/80 animate-spin" />
+              <div className="text-xs tracking-wide">Loading…</div>
+            </div>
+          </div>
+        </div>
+      )
     }
     case 'starting': {
       const logs = (logsObjQuery.data?.startingLogs?.[project.startingId] ?? []) as string[]
@@ -234,18 +249,7 @@ const StartingLogViewer = ({ lines }: { lines: string[] }) => {
 
   const cleanedLines = useMemo(() => lines.map((raw) => raw.replace(/\r/g, '')), [lines])
 
-  const levelAccent = (level: 'error' | 'warn' | 'info' | 'normal') => {
-    switch (level) {
-      case 'error':
-        return 'bg-red-500/30'
-      case 'warn':
-        return 'bg-amber-500/30'
-      case 'info':
-        return 'bg-emerald-500/30'
-      default:
-        return 'bg-white/15'
-    }
-  }
+  // (levels removed to keep UI simple and robust)
 
   return (
     <div className="relative rounded-lg border border-[#1A1A1A] bg-[#0A0A0A] overflow-hidden h-[min(380px,45vh)]">
