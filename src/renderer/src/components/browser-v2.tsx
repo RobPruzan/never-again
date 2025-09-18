@@ -172,7 +172,7 @@ const WebContentViewArea = () => {
 
         <ResizableHandle className="bg-[#1A1A1A]" withHandle={false} />
         <ResizablePanel defaultSize={25}>
-          <MainSidebar />
+          <MainSidebar runningProject={runningProject} />
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

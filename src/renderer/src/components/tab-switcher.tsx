@@ -22,7 +22,7 @@ export const TabSwitcher = () => {
     setRoute
   } = useAppContext()
 
-  const [selectedIndex, setSelectedIndex] = useState(1)
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
   // use
 
@@ -50,26 +50,24 @@ export const TabSwitcher = () => {
   const closeSwitcher = useCallback(() => {
     setTabSwitcherOpen(false)
     window.api?.portal?.close('tab-switcher')
-    setSelectedIndex(1)
+    setSelectedIndex(0)
   }, [setTabSwitcherOpen])
 
   useEffect(() => {
     if (tabSwitcherOpen) {
-      setSelectedIndex(1)
+      setSelectedIndex(validRecentTabs.length > 1 ? 1 : 0)
     }
-  }, [tabSwitcherOpen])
+  }, [tabSwitcherOpen, validRecentTabs.length])
   const { winRef } = useWindowContext()
 
   useEffect(() => {
-    if (!winRef.current) {
+    if (!winRef.current || !tabSwitcherOpen) {
       return
     }
     const handleKeyDown = (event: KeyboardEvent) => {
-      console.log('keydown', event)
-
+      // TODO: these shortcuts should be in application menu, window handlers here are wrong
       if (event.key === 'Escape') {
         closeSwitcher()
-        console.log('closing switcher pls')
       } else if (event.key === 'Enter') {
         const selectedProject = validRecentTabs[selectedIndex]
         if (selectedProject) {
@@ -77,21 +75,36 @@ export const TabSwitcher = () => {
           setRoute('webview')
           setFocusedProject((prev) => ({
             projectId: projectId,
-            projectCwd: selectedProject.cwd,
+            projectCwd: selectedProject.cwd
           }))
           closeSwitcher()
+        }
+      } else if (event.key === 'Tab') {
+        event.preventDefault()
+        if (validRecentTabs.length === 0) return
+        if (event.shiftKey) {
+          setSelectedIndex((prev) => (prev - 1 + validRecentTabs.length) % validRecentTabs.length)
+        } else {
+          setSelectedIndex((prev) => (prev + 1) % validRecentTabs.length)
         }
       }
     }
 
-    if (winRef.current) {
-      winRef.current.addEventListener('keydown', handleKeyDown)
-      return () => {
-        winRef.current?.removeEventListener('keydown', handleKeyDown)
-      }
+    winRef.current.addEventListener('keydown', handleKeyDown)
+    return () => {
+      winRef.current?.removeEventListener('keydown', handleKeyDown)
     }
-    return
-  }, [])
+  }, [winRef, tabSwitcherOpen, selectedIndex, validRecentTabs])
+
+  useEffect(() => {
+    if (!tabSwitcherOpen) return
+    if (validRecentTabs.length === 0) return
+    setSelectedIndex((prev) => {
+      if (prev < 0) return 0
+      if (prev >= validRecentTabs.length) return validRecentTabs.length - 1
+      return prev
+    })
+  }, [validRecentTabs.length, tabSwitcherOpen])
   console.log('im definitely rendered, window focused:', document.hasFocus())
 
   // const [shit, fuck] = useState('')
@@ -99,7 +112,7 @@ export const TabSwitcher = () => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-[60] pointer-events-none">
-      <div className="bg-black/95 rounded-xl border border-white/10 p-8 pointer-events-auto max-w-[1000px] shadow-2xl">
+      <div className="bg-black rounded-xl border border-white/10 p-8 pointer-events-auto max-w-[1000px] shadow-2xl">
         <div className="flex items-center gap-6 flex-wrap justify-center">
           {/* <input
             ref={(ref) => ref?.focus()}
@@ -125,7 +138,7 @@ export const TabSwitcher = () => {
                   setRoute('webview')
                   setFocusedProject((prev) => ({
                     projectId: projectId,
-                    projectCwd: project.cwd,
+                    projectCwd: project.cwd
                   }))
                   closeSwitcher()
                 }}

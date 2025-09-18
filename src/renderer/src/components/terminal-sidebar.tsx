@@ -9,16 +9,18 @@ import { SwappableSidebarArea } from './swappable-sidebar-area'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './ui/resizable'
 import { iife } from '@renderer/lib/utils'
 import { useMutation } from '@tanstack/react-query'
+import { RunningProject } from '@shared/types'
 type Terminal = {
   terminalId: string
 }
 
-export function MainSidebar() {
+export function MainSidebar({runningProject} : {runningProject: RunningProject}) {
   const [terminals, setTerminals] = useState<Array<Terminal>>([])
   const { setFocusedProject, swappableSidebarOpen } = useAppContext()
   const focusedProject = useFocusedProject()
   const [focusedTerminalId, setFocusedTerminalId] = useState<string | null>(null)
   const [terminalLoading, setTerminalLoading] = useState(false)
+  const [isReloadSpinning, setIsReloadSpinning] = useState(false)
 
   // there's some desync here possible, the actual fix is in the actual browser tba logic // what the hell was i talking about
   const createNewTerminal = useCallback(async () => {
@@ -26,8 +28,8 @@ export function MainSidebar() {
 
     setTerminalLoading(true)
     const session = await v2Client.terminalV2Create({
-      cwd: focusedProject.cwd,
-      startCommand: 'opencode' //  pretty fast so wont blow up my computer if we make too many terminals when testing
+      cwd: runningProject.cwd,
+      startCommand: 'claude --dangerously-skip-permissions' //  pretty fast so wont blow up my computer if we make too many terminals when testing
     })
 
     setTerminals((prev) => [
@@ -54,6 +56,7 @@ export function MainSidebar() {
   // fine, idk
   const handleRefresh = () => {
     client.reload().catch(() => {})
+    setIsReloadSpinning(true)
   }
 
   const browserStateQuery = useBrowserState()
@@ -139,6 +142,7 @@ export function MainSidebar() {
       if (!terminals[terminalIndex]) return
 
       setFocusedTerminalId(terminals[terminalIndex].terminalId)
+      // todo: we need to focus the terminal but that means we need to access that set of terminal refs, which we will do later
     }
 
     window.addEventListener('keydown', handleKeyDown)
@@ -180,7 +184,10 @@ export function MainSidebar() {
             className="p-1 hover:bg-[#1A1A1A] text-gray-500 hover:text-gray-300 rounded transition-colors"
             title="Refresh"
           >
-            <RotateCw className="w-4 h-4" />
+            <RotateCw
+              className={`w-4 h-4 ${isReloadSpinning ? 'animate-[spin_0.6s_linear_1]' : ''}`}
+              onAnimationEnd={() => setIsReloadSpinning(false)}
+            />
           </button>
         </div>
 
