@@ -1,14 +1,13 @@
-import React from 'react'
+import { useEffect, useMemo, useState } from "react"
 
 export function useProgressive<T>(items: T[], batchSize = 50, intervalMs = 200): T[] {
-  const [count, setCount] = React.useState(() => Math.min(batchSize, items.length))
+  const [count, setCount] = useState(() => Math.min(batchSize, items.length))
 
-  // Reset the counter when the source items array changes
-  React.useEffect(() => {
+  useEffect(() => {
     setCount(Math.min(batchSize, items.length))
   }, [items, batchSize])
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (count >= items.length) return
 
     const id = setInterval(() => {
@@ -24,5 +23,5 @@ export function useProgressive<T>(items: T[], batchSize = 50, intervalMs = 200):
     return () => clearInterval(id)
   }, [count, items.length, batchSize, intervalMs])
 
-  return React.useMemo(() => items.slice(0, count), [items, count])
+  return useMemo(() => items.slice(0, count), [items, count])
 }
