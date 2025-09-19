@@ -69,6 +69,25 @@ export const Home = () => {
     queryFn: () => client.getWorkspaces(),
     staleTime: 0
   })
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === '/' && !event.ctrlKey && !event.metaKey && !event.altKey) {
+        const activeElement = document.activeElement
+        if (activeElement?.tagName === 'INPUT' || activeElement?.tagName === 'TEXTAREA') {
+          return
+        }
+        event.preventDefault()
+        searchInputRef.current?.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   useEffect(() => {
     const unsub = handlers.onProjectStart.listen((project) => {
@@ -196,10 +215,14 @@ export const Home = () => {
       <div className="bg-[#0a0a0a] border-b border-[#1a1a1a] px-3 py-2 flex items-center gap-4 flex-shrink-0">
         <div className="relative w-64 flex-shrink-0">
           <input
+            onKeyDown={(e) => {
+              // on enter we should select the first item
+            }}
+            ref={searchInputRef}
             type="text"
             className="w-full px-2.5 pr-8 py-1 bg-[#050505] border border-[#1a1a1a] rounded text-[#e0e0e0] text-xs outline-none transition-colors focus:border-[#2a2a2a] h-6"
             id="search-input"
-            placeholder="Search projects... (s)"
+            placeholder="Search projects... (/)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

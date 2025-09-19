@@ -136,7 +136,7 @@ function createWindow() {
           writeToStitchedLog({
             order: 2,
             time: Date.now(),
-                    meta: "create window start"
+            meta: 'create window start'
           })
 
           const wc = (options as any).webContents as Electron.WebContents
@@ -145,12 +145,11 @@ function createWindow() {
           view.setBounds({ x: 0, y: 0, width: 1, height: 1 })
           mainWindow!.contentView.addChildView(view)
           portalViews.set(portalId, view)
-          console.log('port view set', Date.now())
 
           writeToStitchedLog({
             order: 3,
             time: Date.now(),
-            meta: "create window finish"
+            meta: 'create window finish'
           })
 
           wc.once('destroyed', () => {
@@ -361,13 +360,13 @@ app.whenReady().then(async () => {
           accelerator: process.platform === 'darwin' ? 'Cmd+T' : 'Ctrl+T',
           click: () => {
             writeToStitchedLog({
-              kind: "MARKER START",
+              kind: 'MARKER START',
               time: Date.now()
             })
             writeToStitchedLog({
               order: 0,
               time: Date.now(),
-              meta: "shortcut start"
+              meta: 'shortcut start'
             })
             if (terminalManagerV2) {
               const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)

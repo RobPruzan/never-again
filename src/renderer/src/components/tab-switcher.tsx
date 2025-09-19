@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { client } from '../lib/tipc'
 import { useAppContext } from '@renderer/app-context'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
-import { deriveRunningProjectId } from '@renderer/lib/utils'
+import { deriveRunningProjectId, toFocusedProject } from '@renderer/lib/utils'
 import { RunningProject } from '@shared/types'
 import { useWindowContext } from '@renderer/window-context'
 
@@ -73,10 +73,7 @@ export const TabSwitcher = () => {
         if (selectedProject) {
           const projectId = deriveRunningProjectId(selectedProject)
           setRoute('webview')
-          setFocusedProject((prev) => ({
-            projectId: projectId,
-            projectCwd: selectedProject.cwd
-          }))
+          setFocusedProject((prev) => toFocusedProject(selectedProject))
           closeSwitcher()
         }
       } else if (event.key === 'Tab') {
@@ -131,22 +128,19 @@ export const TabSwitcher = () => {
             return (
               <div
                 key={projectId}
-                className={`flex flex-col items-center gap-2 p-4 rounded-xl cursor-pointer transition-transform ${
-                  isSelected ? 'bg-white/10 scale-105' : ''
+                className={`flex flex-col items-center gap-2 p-4 rounded-xl cursor-pointer ${
+                  isSelected ? 'bg-white/10' : ''
                 } hover:bg-white/5`}
                 onClick={() => {
                   setRoute('webview')
-                  setFocusedProject((prev) => ({
-                    projectId: projectId,
-                    projectCwd: project.cwd
-                  }))
+                  setFocusedProject((prev) => toFocusedProject(project))
                   closeSwitcher()
                 }}
               >
                 {/* Favicon */}
                 <div
                   className={`w-20 h-20 flex items-center justify-center rounded-xl ${
-                    isCurrent ? 'ring-4 ring-blue-500' : ''
+                    isCurrent ? 'ring-2 ring-white/20' : ''
                   }`}
                 >
                   {favicon ? (
