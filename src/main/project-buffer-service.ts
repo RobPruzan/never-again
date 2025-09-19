@@ -253,7 +253,11 @@ export class ProjectBufferService {
     const promises = buffer.map((b) => {
       return this.httpOk(`http://127.0.0.1:${b.port}/@vite/client`).then(async (isRunning) => {
         if (!isRunning) {
-          const started = await this.startDev(b.dir, { port: b.port, devRelayService })
+          const started = await this.startDev(b.dir, {
+            port: b.port,
+            devRelayService,
+            isSeeding: true
+          })
           if (started.pid) {
             b.pid = started.pid
           }

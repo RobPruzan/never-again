@@ -13,6 +13,8 @@ import { RunningProject } from '@shared/types'
 type Terminal = {
   terminalId: string
 }
+// TODO: reconnect
+const projectTerminalCache = new Map<string, Terminal[]>()
 
 export function MainSidebar({ runningProject }: { runningProject: RunningProject }) {
   const [terminals, setTerminals] = useState<Array<Terminal>>([])
@@ -33,26 +35,41 @@ export function MainSidebar({ runningProject }: { runningProject: RunningProject
       startCommand: 'opencode' //  pretty fast so wont blow up my computer if we make too many terminals when testing
     })
 
+    const newTerminal = {
+      terminalId: session.id
+    }
+
     setTerminals((prev) => [
       ...prev,
-      {
-        terminalId: session.id
-      }
+      newTerminal
     ])
+    
+    projectTerminalCache.set(runningProject.cwd, [
+      ...(projectTerminalCache.get(runningProject.cwd) || []),
+      newTerminal
+    ])
+
     setTerminalLoading(false)
 
     setFocusedTerminalId(session.id)
     return session
-  }, [focusedProject?.cwd])
+  }, []) // purposefully should only run once
 
   useEffect(() => {
+    const cachedTerminals = projectTerminalCache.get(runningProject.cwd)
+    if (cachedTerminals && cachedTerminals.length > 0) {
+      setTerminals(cachedTerminals)
+      setFocusedTerminalId(cachedTerminals[0].terminalId)
+      return
+    }
+
     iife(async () => {
       if (terminals.length !== 0) {
         return
       }
       await createNewTerminal()
     })
-  }, [terminals.length])
+  }, [])
 
   // fine, idk
   const handleRefresh = () => {

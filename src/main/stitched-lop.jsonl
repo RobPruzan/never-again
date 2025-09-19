@@ -109,3 +109,77 @@
 {"order":3,"time":1758253196474,"meta":"create window finish"}
 {"order":2,"time":1758253197601,"meta":"create window start"}
 {"order":3,"time":1758253197602,"meta":"create window finish"}
+{"order":2,"time":1758253718683,"meta":"create window start"}
+{"order":3,"time":1758253718684,"meta":"create window finish"}
+{"order":2,"time":1758253719731,"meta":"create window start"}
+{"order":3,"time":1758253719731,"meta":"create window finish"}
+{"order":2,"time":1758253720441,"meta":"create window start"}
+{"order":3,"time":1758253720441,"meta":"create window finish"}
+{"order":2,"time":1758253720978,"meta":"create window start"}
+{"order":3,"time":1758253720979,"meta":"create window finish"}
+{"order":2,"time":1758253723511,"meta":"create window start"}
+{"order":3,"time":1758253723512,"meta":"create window finish"}
+{"order":2,"time":1758253724131,"meta":"create window start"}
+{"order":3,"time":1758253724131,"meta":"create window finish"}
+{"order":2,"time":1758253724678,"meta":"create window start"}
+{"order":3,"time":1758253724678,"meta":"create window finish"}
+{"order":2,"time":1758253725142,"meta":"create window start"}
+{"order":3,"time":1758253725143,"meta":"create window finish"}
+{"order":2,"time":1758253725651,"meta":"create window start"}
+{"order":3,"time":1758253725651,"meta":"create window finish"}
+{"order":2,"time":1758253726097,"meta":"create window start"}
+{"order":3,"time":1758253726098,"meta":"create window finish"}
+{"order":2,"time":1758253726566,"meta":"create window start"}
+{"order":3,"time":1758253726567,"meta":"create window finish"}
+{"order":2,"time":1758253727015,"meta":"create window start"}
+{"order":3,"time":1758253727016,"meta":"create window finish"}
+{"order":2,"time":1758253727437,"meta":"create window start"}
+{"order":3,"time":1758253727437,"meta":"create window finish"}
+{"order":2,"time":1758253727938,"meta":"create window start"}
+{"order":3,"time":1758253727938,"meta":"create window finish"}
+{"order":2,"time":1758253728408,"meta":"create window start"}
+{"order":3,"time":1758253728409,"meta":"create window finish"}
+{"order":2,"time":1758253729067,"meta":"create window start"}
+{"order":3,"time":1758253729067,"meta":"create window finish"}
+{"kind":"MARKER START","time":1758253730558}
+{"order":0,"time":1758253730559,"meta":"shortcut start"}
+{"order":1,"time":1758253730560,"meta":"shortcut recv"}
+{"order":1,"time":1758253730560,"meta":"shortcut recv"}
+{"order":1,"time":1758253730560,"meta":"shortcut recv"}
+{"order":1,"time":1758253730560,"meta":"shortcut recv"}
+{"order":4,"time":1758253730571,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758253730571}
+{"order":2,"time":1758253730577,"meta":"create window start"}
+{"order":3,"time":1758253730578,"meta":"create window finish"}
+{"order":4,"time":1758253730623,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758253730623}
+{"order":4,"time":1758253730630,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758253730630}
+{"order":4,"time":1758253730847,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758253730847}
+{"order":4,"time":1758253730851,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758253730851}
+{"order":4,"time":1758253730955,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758253730955}
+{"order":4,"time":1758253730958,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758253730958}
+{"kind":"MARKER END","time":1758253731024}
+{"order":4,"time":1758253731024,"meta":"pallete open"}
+{"order":4,"time":1758253731027,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758253731027}
+{"order":4,"time":1758253731117,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758253731117}
+{"order":4,"time":1758253731119,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758253731119}
+{"order":4,"time":1758253731748,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758253731748}
+{"order":4,"time":1758253731752,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758253731752}
+{"order":2,"time":1758253745437,"meta":"create window start"}
+{"order":3,"time":1758253745438,"meta":"create window finish"}
+{"order":2,"time":1758253746417,"meta":"create window start"}
+{"order":3,"time":1758253746417,"meta":"create window finish"}
+{"order":3,"time":1758253747427,"meta":"create window finish"}
+{"order":2,"time":1758253747427,"meta":"create window start"}
+{"order":2,"time":1758253748156,"meta":"create window start"}
+{"order":3,"time":1758253748156,"meta":"create window finish"}
