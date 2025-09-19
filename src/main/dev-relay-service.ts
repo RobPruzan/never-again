@@ -17,15 +17,15 @@ import { ListneingProject, ProcessLogsMapping, StartingProject } from '../shared
 // we probably want super json so we don't have to think about serializing that kind of obj
 export class DevRelayService {
   processLogsMapping: Record<number, Array<string>> = {}
-  onProcessLogsMappingUpdate?: (logs: ProcessLogsMapping) => void
-  onProjectListen?: (projectListen: ListneingProject) => void
+  onProcessLogsMappingUpdate?: (logs: ProcessLogsMapping, isSeeeing: boolean) => void
+  onProjectListen?: (projectListen: ListneingProject, isSeeding: boolean) => void
 
   constructor({
     onProcessLogsMappingUpdate,
     onProjectListen
   }: {
-    onProcessLogsMappingUpdate?: (logs: ProcessLogsMapping) => void
-    onProjectListen?: (project: ListneingProject) => void
+    onProcessLogsMappingUpdate?: (logs: ProcessLogsMapping, isSeeding: boolean) => void
+    onProjectListen?: (project: ListneingProject, isSeeding: boolean) => void
   }) {
     this.onProcessLogsMappingUpdate = onProcessLogsMappingUpdate
     this.onProjectListen = onProjectListen
@@ -34,14 +34,19 @@ export class DevRelayService {
     string,
     { server: ReturnType<typeof createServer>; proc: ChildProcess; sock }
   >()
-
+  /**
+   * somewhere we're ignoring seeded items
+   */
   async start(
     projectDir: string,
     opts?: {
       port?: number
       onProjectStart?: (project: StartingProject) => void
+      isSeeding?: boolean
     }
   ) {
+    console.log('CALL START', new Error().stack)
+
     const cwd = resolve(projectDir)
     const sock = join(cwd, '.devrelay.sock') // i believe this sock is for future connectors, yes quite confident
     // why would forward be logging it to the process and not sending it over the sock?
@@ -123,6 +128,7 @@ export class DevRelayService {
     proc.on('exit', () => cleanup())
 
     server.listen(sock)
+
     opts?.onProjectStart?.({
       kind: 'unknown',
       cwd,
@@ -133,7 +139,10 @@ export class DevRelayService {
     // todo: we need to hide this from user and internally hold metadata about how to map ths
     writeFileSync(join(cwd, '.devrelay.json'), JSON.stringify({ pid: proc.pid, sock }), 'utf8')
 
+    console.log('detecting for', projectDir)
+
     const prev = await detectDevServersForDir(projectDir)
+    console.log('prev', prev)
 
     // fairily confinident this is infinite looping
     /**
@@ -148,7 +157,11 @@ export class DevRelayService {
      * well of course dumbass there's no lock its just an id mapping
      *
      * then we can transfer it over and clean it up after it ups, and if we make sure this actually works we're chillin
+     * 
      */
+
+
+    // todo: this is still infinite looping
     const project = await new Promise<
       Awaited<NonNullable<ReturnType<typeof detectDevServersForDir>>>[number]
     >((res, rej) => {
@@ -159,6 +172,7 @@ export class DevRelayService {
 
       const poll = async () => {
         const newPorts = await detectDevServersForDir(projectDir)
+        console.log('new length', newPorts)
         // console.log('polling for new ports, found:', newPorts.length, 'ports')
         // console.log('previous ports:', prev.length)
 
@@ -186,14 +200,24 @@ export class DevRelayService {
       }
       poll()
     })
+
     // delete delete delete
 
-    this.onProjectListen?.({
+    const listenignProject: ListneingProject = {
       ...project,
       runningKind: 'listening',
       pid // why is this pid not the same as what project returned? subprocess weirndess maybe?
-    })
-    this.onProcessLogsMappingUpdate?.(this.processLogsMapping)
+    }
+    console.log('on project listen', listenignProject)
+    console.log('are there callbacks?', this.onProjectListen, this.onProcessLogsMappingUpdate);
+    
+
+    // if (!opts?.isSeeding) {
+      // the client should not know about these projects and will be instantly started
+      // this current impl has a bug if its a miss it should dispatch this, todo
+      this.onProjectListen?.(listenignProject, opts?.isSeeding ?? false)
+      this.onProcessLogsMappingUpdate?.(this.processLogsMapping, opts?.isSeeding ?? false)
+    // }
 
     return { sock, pid: proc.pid!, project } // daijobu meme
   }

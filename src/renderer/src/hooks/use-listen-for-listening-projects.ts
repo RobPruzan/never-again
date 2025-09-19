@@ -12,10 +12,12 @@ export const useListenForListeningProjects = () => {
   const { focusedProject, setFocusedProject } = useAppContext()
 
   useEffect(() => {
+    // fucking tipc
     let isSubscribed = true
 
     const handler = (project: ListneingProject) => {
       if (!isSubscribed) return
+      console.log('got listening projects', project)
 
       const prevData = queryClient.getQueryData(['devServers']) as Array<RunningProject> | undefined
       const newData = iife(() => {

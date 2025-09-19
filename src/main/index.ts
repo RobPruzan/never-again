@@ -266,10 +266,17 @@ app.whenReady().then(async () => {
   // Ensure terminal events can be sent to the renderer
   terminalManagerV2.setMainWindow(mainWindow)
   const devRelayService = new DevRelayService({
-    onProcessLogsMappingUpdate: (logsObj) => {
+    onProcessLogsMappingUpdate: (logsObj, isSeeding) => {
+      // we don't want to leak details about seeding/buffering create servers to client, will result in flicker of project in tabs when optimistic update rolllsback since we ignore this in query (we make sure no items in the buffer are returned)
+      if (isSeeding) {
+        return
+      }
       handlers.onProcessLogsMappingUpdate.send(logsObj)
     },
-    onProjectListen: (project) => {
+    onProjectListen: (project, isSeeding) => {
+      if (isSeeding) {
+        return
+      }
       handlers.onProjectListen.send(project)
     }
   })

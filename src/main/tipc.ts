@@ -3,7 +3,13 @@ import type { PortsManager } from './ports-manager'
 // import type { TerminalManager } from './terminal-manager-v2'
 import { TerminalManagerV2 } from './terminal-manager-v2'
 import { BrowserController } from './browser-controller'
-import { ensuredListeningProjects, mainWindow, portalViews, startingProjects, startProjectIndexing } from './index'
+import {
+  ensuredListeningProjects,
+  mainWindow,
+  portalViews,
+  startingProjects,
+  startProjectIndexing
+} from './index'
 import path, { join, resolve } from 'path'
 import { homedir } from 'os'
 import { access as fsAccess, readFile, readdir, appendFile, writeFile } from 'fs/promises'
@@ -212,6 +218,7 @@ export const createRouter = ({
     }
 
     t3 = Date.now()
+    console.log('looking for project here', meta)
 
     const project = (await findProjectsBFS(meta.dir)).at(0) // this is too slow
     t4 = Date.now()
@@ -242,9 +249,9 @@ export const createRouter = ({
         findProjectsBfsMs: t4 - t3
       }
     }
-    // console.table(report)
-    // console.log('[createProject] Performance report:')
-    // console.table(report)
+    console.table(report)
+    console.log('[createProject] Performance report:')
+    console.table(report)
 
     return {
       project,
@@ -285,11 +292,11 @@ export const createRouter = ({
       ...startRes.project,
       runningKind: 'listening'
     }
-    console.log('SENDING LISTENING PROJECT, ALL RETURN ENTRIES AFTER THIS MUST HAVE THIS PROJECT',runningProject);
-    
-// invoke is breaking, why? otherwise we have a race
-ensuredListeningProjects.add(runningProject)
-     handlers.onProjectListen.send(runningProject)
+    // console.log('SENDING LISTENING PROJECT, ALL RETURN ENTRIES AFTER THIS MUST HAVE THIS PROJECT',runningProject);
+
+    // invoke is breaking, why? otherwise we have a race
+    ensuredListeningProjects.add(runningProject)
+    handlers.onProjectListen.send(runningProject)
 
     // await delay(1000) // hacky for now
     // const serverFromPath = await detectDevServersForDir(input.projectPath)
@@ -368,17 +375,11 @@ ensuredListeningProjects.add(runningProject)
 
     const runningProjects = filteredStarting.concat(listening)
     // .sort((a, b) => a.cwd.localeCompare(b.cwd)) // i don't care rn
-    console.log(
-      'returning back new projects',
-      runningProjects,
-      'here are the ones starting',
-      starting
-    )
 
     // Handle ensured listening projects to avoid race conditions
     // This should be handled by canceling any requests instead of doing this
     for (const ensuredProject of ensuredListeningProjects) {
-      const existsInRunning = runningProjects.some(project => project.cwd === ensuredProject.cwd)
+      const existsInRunning = runningProjects.some((project) => project.cwd === ensuredProject.cwd)
       if (!existsInRunning) {
         runningProjects.push(ensuredProject)
       }

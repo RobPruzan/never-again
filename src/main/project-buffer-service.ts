@@ -107,8 +107,7 @@ export class ProjectBufferService {
     // i mean should be parallel but fine
     const metas: BufferedMeta[] = []
     for (let i = 0; i < count; i++) {
-
-      const meta = await this.createBufferedProject(opts)
+      const meta = await this.createBufferedProject({ ...opts, isSeeding: true })
       if (meta) {
         const url = `http://localhost:${meta.port}`
         const tabId = deriveRunningProjectId({
@@ -143,13 +142,13 @@ export class ProjectBufferService {
         throw new Error("tood validate this earlier, but this shouldn't happen")
       }
 
-        const tabId = deriveRunningProjectId({
-          runningKind: 'listening',
-          cwd: meta.dir,
-          kind: 'unknown', // idc
-          pid: meta.pid,
-          port: meta.port
-        })
+      const tabId = deriveRunningProjectId({
+        runningKind: 'listening',
+        cwd: meta.dir,
+        kind: 'unknown', // idc
+        pid: meta.pid,
+        port: meta.port
+      })
       await browserController.createTab({
         tabId,
         url: meta.url
@@ -316,9 +315,11 @@ export class ProjectBufferService {
     return `${pick(adjectives)}-${pick(animals)}-${num}`
   }
   async createBufferedProject({
-    devRelayService
+    devRelayService,
+    isSeeding
   }: {
     devRelayService: DevRelayService
+    isSeeding?: boolean
   }): Promise<BufferedMeta | null> {
     const ok = await this.ensureTemplate()
     if (!ok) return null
@@ -327,7 +328,7 @@ export class ProjectBufferService {
     this.ensureDir(dir)
     const copy = await this.cpCOW(this.templateRoot, dir)
     if (!copy.ok) return null
-    const started = await this.startDev(dir, { devRelayService })
+    const started = await this.startDev(dir, { devRelayService, isSeeding })
     if (!started.port || !started.pid) return null
     const meta: BufferedMeta = {
       id,
@@ -414,6 +415,7 @@ export class ProjectBufferService {
     opts: {
       port?: number
       devRelayService: DevRelayService
+      isSeeding?: boolean
     }
   ): Promise<{ pid: number | null; port: number | null; ms: number }> {
     const chosen =
@@ -423,7 +425,7 @@ export class ProjectBufferService {
     if (!chosen) return { pid: null, port: null, ms: 0 }
     const t0 = Date.now()
 
-    const child = await opts.devRelayService.start(dir, { port: chosen })
+    const child = await opts.devRelayService.start(dir, { port: chosen, isSeeding: opts.isSeeding })
     // const child = await (async () => {
     //   if (opts?.startDev) {
     //     const child = await opts.startDev({ port: chosen, cwd: dir })
@@ -449,19 +451,17 @@ export class ProjectBufferService {
     //   return child
     // })()
 
-
     await this.waitForReady(chosen, 1500)
     // okay do we need to create/load tab here?
     // todo: do we need the double i don't think so this is probably not needed
 
-
-        const tabId = deriveRunningProjectId({
-          runningKind: 'listening',
-          cwd: dir,
-          kind: 'unknown', // idc
-          pid: child.pid,
-          port:chosen
-        })
+    const tabId = deriveRunningProjectId({
+      runningKind: 'listening',
+      cwd: dir,
+      kind: 'unknown', // idc
+      pid: child.pid,
+      port: chosen
+    })
     browserController.createTab({ tabId, url: `http://localhost:${chosen}` })
 
     return { pid: child.pid ?? null, port: chosen, ms: Date.now() - t0 }

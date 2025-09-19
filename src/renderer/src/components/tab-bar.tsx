@@ -21,7 +21,6 @@ interface Tab {
   cwd?: string
 }
 
-
 export function TabBar() {
   const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
   // same issue, this should be grouped projects we map over the wrong item and are really creating the wrong item all together
@@ -30,7 +29,7 @@ export function TabBar() {
   // it does use structual refs so maybe something weird is happening here
   // oh and because it re-orders maybe it loses ref i buy that we are mapping
   // console.log('grouped projects did we reorder', groupedProjects);
-  
+
   const { setRoute, setFocusedProject, route } = useAppContext()
 
   const createProjectMutation = useCreateProjectMutation()
@@ -81,10 +80,14 @@ export function TabBar() {
       </div>
       <button
         onClick={async () => {
-          const start = performance.now()
+          // const start = performance.now()
+          console.log('creating');
+          
           await createProjectMutation.mutate()
+          console.log('done creating');
+          
 
-          console.log('end', performance.now() - start, 'ms')
+          // console.log('end', performance.now() - start, 'ms')
         }}
         className="h-full px-4 hover:bg-[#0F0F0F] text-gray-500 hover:text-gray-300 border-l border-[#1A1A1A] "
         style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
