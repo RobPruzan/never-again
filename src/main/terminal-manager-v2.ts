@@ -148,7 +148,6 @@ export class TerminalManagerV2 {
         ? options.startCommand.join(' ')
         : options.startCommand
       : null
-    console.log('starting start command', startCmd)
 
     const handlersStart = performance.now()
     const onData = (data: string) => {
@@ -226,14 +225,14 @@ export class TerminalManagerV2 {
     const totalTime = performance.now() - startTime
     timings.total = totalTime
 
-    console.table({
-      Setup: `${timings.setup.toFixed(2)}ms`,
-      'PTY Spawn': `${timings.ptySpawn.toFixed(2)}ms`,
-      'Terminal Setup': `${timings.terminalSetup.toFixed(2)}ms`,
-      'Event Handlers': `${timings.eventHandlers.toFixed(2)}ms`,
-      'Session Setup': `${timings.sessionSetup.toFixed(2)}ms`,
-      Total: `${totalTime.toFixed(2)}ms`
-    })
+    // console.table({
+    //   Setup: `${timings.setup.toFixed(2)}ms`,
+    //   'PTY Spawn': `${timings.ptySpawn.toFixed(2)}ms`,
+    //   'Terminal Setup': `${timings.terminalSetup.toFixed(2)}ms`,
+    //   'Event Handlers': `${timings.eventHandlers.toFixed(2)}ms`,
+    //   'Session Setup': `${timings.sessionSetup.toFixed(2)}ms`,
+    //   Total: `${totalTime.toFixed(2)}ms`
+    // })
 
     return { id, title: session.title, cwd: session.cwd, projectName: session.projectName }
   }

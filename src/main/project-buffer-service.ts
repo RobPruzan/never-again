@@ -36,10 +36,8 @@ export class ProjectBufferService {
       ? resolve(opts.rootDir)
       : resolve(process.env.HOME || '.', '.zenbu-buffer')
     this.dotDirRoot = root
-    console.log('brotha', this.dotDirRoot)
 
     this.bufferRoot = join(root, 'project-buffer')
-    console.log('what is buffer root', this.bufferRoot)
 
     this.projectsRoot = opts?.projectsDir ? resolve(opts.projectsDir) : join(root, 'projects')
     this.templateRoot = opts?.templateDir
@@ -109,7 +107,6 @@ export class ProjectBufferService {
     // i mean should be parallel but fine
     const metas: BufferedMeta[] = []
     for (let i = 0; i < count; i++) {
-      console.log('seeding da buffer')
 
       const meta = await this.createBufferedProject(opts)
       if (meta) {
@@ -125,12 +122,10 @@ export class ProjectBufferService {
           tabId,
           url
         })
-        console.log('loaded and created', browserViews)
 
         metas.push(meta)
       }
     }
-    console.log('metas now', metas)
 
     return metas
   }
@@ -148,13 +143,13 @@ export class ProjectBufferService {
         throw new Error("tood validate this earlier, but this shouldn't happen")
       }
 
-      const tabId = deriveRunningProjectId({
-        runningKind: 'listening',
-        cwd: meta.dir,
-        kind: 'unknown', // idc
-        pid: meta.pid,
-        port: meta.port
-      })
+        const tabId = deriveRunningProjectId({
+          runningKind: 'listening',
+          cwd: meta.dir,
+          kind: 'unknown', // idc
+          pid: meta.pid,
+          port: meta.port
+        })
       await browserController.createTab({
         tabId,
         url: meta.url
@@ -341,7 +336,6 @@ export class ProjectBufferService {
       port: started.port,
       createdAt: Date.now()
     }
-    console.log('we have meta, this view should exist now', meta)
 
     try {
       writeFileSync(join(dir, '.buffer-meta.json'), JSON.stringify(meta), 'utf8')
@@ -455,21 +449,19 @@ export class ProjectBufferService {
     //   return child
     // })()
 
-    console.log('starting dev on', chosen, dir)
 
     await this.waitForReady(chosen, 1500)
-    console.log('DONE!')
     // okay do we need to create/load tab here?
     // todo: do we need the double i don't think so this is probably not needed
-    console.log('THE PORT WE HAVE WHY IS THIS UNDEFINED', chosen)
 
-    const tabId = deriveRunningProjectId({
-      runningKind: 'listening',
-      cwd: dir,
-      kind: 'unknown', // idc
-      pid: child.pid,
-      port: chosen
-    })
+
+        const tabId = deriveRunningProjectId({
+          runningKind: 'listening',
+          cwd: dir,
+          kind: 'unknown', // idc
+          pid: child.pid,
+          port:chosen
+        })
     browserController.createTab({ tabId, url: `http://localhost:${chosen}` })
 
     return { pid: child.pid ?? null, port: chosen, ms: Date.now() - t0 }

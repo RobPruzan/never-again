@@ -61,7 +61,6 @@ export const browserController = {
 
     const activeTab = tabs.find((t) => t.isActive)
 
-    console.log('the active tab thats fucking our butt', activeTab)
 
     return {
       tabs,
@@ -76,7 +75,6 @@ export const browserController = {
 
   // },
   async createTab(args: { tabId: string; url: string }) {
-    // console.log('creating tab')
 
     if (!mainWindow) throw new Error('Window not ready')
 
@@ -103,7 +101,6 @@ export const browserController = {
         if (mainWindow && !mainWindow.isDestroyed()) {
           try {
             const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
-            console.log('DOM READY', browserController.getCurrentState().isLoaded)
 
             handlers.browserStateUpdate.send(browserController.getCurrentState())
           } catch {}
@@ -113,7 +110,6 @@ export const browserController = {
       view.webContents.on('did-finish-load', () => {
         if (mainWindow && !mainWindow.isDestroyed()) {
           try {
-            console.log('FINISHED LOAD', browserController.getCurrentState().isLoaded)
 
             const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
             handlers.browserStateUpdate.send(browserController.getCurrentState())
@@ -496,7 +492,6 @@ export const browserController = {
           y: -1
         })
       } catch (e) {
-        console.log('sheet', e)
       }
       //   try {
       //     view.setVisible(false)
@@ -535,7 +530,6 @@ export const browserController = {
     // }
     // }
 
-    console.log('hiding tab')
 
     await this.hideAll()
 

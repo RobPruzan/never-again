@@ -29,7 +29,7 @@ export default function App() {
       <Suspense
         fallback={
           <div className="flex items-center justify-center h-screen bg-[#0A0A0A]">
-            {(console.log("SUSPENDING"), null)}
+            {(console.log('SUSPENDING'), null)}
             <div className="text-white text-2xl font-bold">Loading...</div>
           </div>
         }
@@ -55,12 +55,17 @@ const AppLoader = () => {
 
   useEffect(() => {
     const unlistenNewTab = handlers.menuNewTab.listen(() => {
+      // console.log('pallete opened', Date.now());
+      client.writeToStitchedLog({
+        order: 1,
+        time: Date.now(),
+        meta: 'shortcut recv'
+      })
+
       setCommandPaletteOpen(true)
     })
 
     const unlistenTabSwitcher = handlers.tabSwitcher.listen(() => {
-      console.log('listen for recent tabs')
-
       setTabSwitcherOpen(true)
     })
 

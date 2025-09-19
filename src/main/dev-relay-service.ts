@@ -68,7 +68,6 @@ export class DevRelayService {
       childProc.on('error', reject)
     })
     const pid = proc.pid
-    console.log('proc pid', proc.pid, 'vs our pid', process.pid)
 
     if (!pid) {
       throw new Error('invariant')
@@ -135,7 +134,6 @@ export class DevRelayService {
     writeFileSync(join(cwd, '.devrelay.json'), JSON.stringify({ pid: proc.pid, sock }), 'utf8')
 
     const prev = await detectDevServersForDir(projectDir)
-    console.log('prev ports found', prev)
 
     // fairily confinident this is infinite looping
     /**

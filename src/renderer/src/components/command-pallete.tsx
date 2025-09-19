@@ -11,6 +11,13 @@ import { useOpenOrStartProject } from '@renderer/hooks/use-open-or-start-project
 import { useCreateProjectMutation } from '@renderer/hooks/use-create-project-mutation'
 
 export const CommandPalette = () => {
+  client.writeToStitchedLog({
+    order: 4,
+    time: Date.now(),
+                meta: "pallete open"
+  })
+  client.writeToStitchedLog("MARKER END")
+
   const { setCommandPaletteOpen, setFocusedProject, setRoute } = useAppContext()
   const runningProjects = useRunningProjects().data
   const allProjects = useProjects().data

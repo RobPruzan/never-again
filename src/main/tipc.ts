@@ -20,6 +20,11 @@ import { findProjectsBFS } from '../utility/index-projects'
 import { resolveProjectFavicon } from './utilts/favicon'
 import { RendererHandlers } from './renderer-handlers'
 
+export const writeToStitchedLog = async (data: any) => {
+  const logPath = '/Users/robby/ide/src/main/stitched-lop.jsonl'
+  const jsonLine = JSON.stringify(data) + '\n'
+  await appendFile(logPath, jsonLine)
+}
 const logToFile = async (message: any) => {
   const logFile = join(process.cwd(), 'log.txt')
   const safeStringify = (obj: any) => {
@@ -115,6 +120,9 @@ export const createRouter = ({
 
   devRelayService: DevRelayService
 }) => ({
+  writeToStitchedLog: t.procedure.input<any>().action(async ({ input }) => {
+    await writeToStitchedLog(input)
+  }),
   getProcessLogsMapping: t.procedure.action(async () => {
     return devRelayService.processLogsMapping
   }),
@@ -178,56 +186,35 @@ export const createRouter = ({
     // i wish i had an easy kill button
     // maybe i can just do that eh
 
-    console.log('[createProject] Starting project creation process')
-
     const t0 = Date.now()
     let t1, t2, t3, t4
 
     t1 = Date.now()
-    console.log(
-      'creating a project!!! do we have items in the buffer available?',
-      bufferService.listBuffer()
-    )
-    console.log(
-      '[createProject] Buffer status check - available items:',
-      bufferService.listBuffer()
-    )
 
-    console.log('[createProject] Calling bufferService.create...')
     const meta = await bufferService.create({ devRelayService })
     t2 = Date.now()
 
     if (!meta) {
-      console.log('wtf')
-      console.error('[createProject] bufferService.create returned null/undefined')
-
       throw new Error('oh no') // i assume this just forwards it hopefully
     }
-    console.log('created new project', meta)
-    console.log('[createProject] Created new project metadata:', meta)
 
     /**
      *
      * TODO: this should be instant, and no flicker, currently there's a flicker which makes no sense
      */
     const url = `http://localhost:${meta.port}`
-    console.log('[createProject] Checking HTTP availability at:', url)
     await bufferService.httpOk(url)
-    console.log('[createProject] HTTP check passed')
 
     try {
       // await browser.loadUrl({ tabId: meta.dir, url })
     } catch (e) {
-      console.log('e', e)
       console.warn('[createProject] Browser loadUrl failed:', e)
     }
 
     t3 = Date.now()
 
-    console.log('[createProject] Searching for projects at directory:', meta.dir)
     const project = (await findProjectsBFS(meta.dir)).at(0) // this is too slow
     t4 = Date.now()
-    console.log('[createProject] Project search completed, found:', project)
 
     // what the fuck why
     if (!project) {
@@ -245,7 +232,6 @@ export const createRouter = ({
       pid: meta.pid,
       port: meta.port
     }
-    console.log('[createProject] Created running project object:', runningProject)
 
     const totalMs = t4 - t0
     const report = {
@@ -256,11 +242,10 @@ export const createRouter = ({
         findProjectsBfsMs: t4 - t3
       }
     }
-    console.table(report)
-    console.log('[createProject] Performance report:')
-    console.table(report)
+    // console.table(report)
+    // console.log('[createProject] Performance report:')
+    // console.table(report)
 
-    console.log('[createProject] Project creation completed successfully')
     return {
       project,
       runningProject,
@@ -272,14 +257,10 @@ export const createRouter = ({
     return browser.backNav()
   }),
   forwardNav: t.procedure.action(async () => {
-    console.log('forwardNav')
-
     return browser.forwardNav()
   }),
 
   startDevRelay: t.procedure.input<{ projectPath: string }>().action(async ({ input }) => {
-    console.log('attempting relay on ', input.projectPath)
-
     let startProjectResolve: null | ((p: StartingProject) => void) = null
     const startingProjectPromise = new Promise<StartingProject>(
       (res) => (startProjectResolve = res)
@@ -288,7 +269,6 @@ export const createRouter = ({
       onProjectStart: (startingProject) => {
         startingProjects.add(startingProject)
         handlers.onProjectStart.send(startingProject)
-        console.log('setting', startingProject)
 
         startProjectResolve?.(startingProject)
       }
@@ -299,7 +279,6 @@ export const createRouter = ({
       //   console.error('stderr', chunk)
       // }
     })
-    console.log('started!', startRes)
 
     // i could do a start update? and just do streaming that might be fine... i think
     const runningProject: ListneingProject = {
@@ -337,7 +316,6 @@ export const createRouter = ({
       poll()
     })
     const startingProjectObj = await startingProjectPromise
-    console.log('deleting', startingProjectObj)
     startingProjects.delete(startingProjectObj)
 
     await browser.createTab({
@@ -391,14 +369,11 @@ export const createRouter = ({
     // for now filter unknown but this needs to be much better
   }),
   reIndexProjects: t.procedure.action(async () => {
-    console.log('reindexing...')
-
     const projects = await new Promise<Array<Project>>((res) => {
       startProjectIndexing((projects) => {
         res(projects)
       })
     })
-    console.log('found ', projects.length, 'projects')
 
     return projects
   }),
@@ -420,11 +395,6 @@ export const createRouter = ({
     }
 
     const projects = await pollForFile()
-    console.log(
-      'projects with undefined paths',
-      JSON.parse(projects).filter((p: Project) => p.path === undefined)
-    )
-
     return JSON.parse(projects) as Array<Project>
   }),
   getProjectsMeta: t.procedure
@@ -474,8 +444,6 @@ export const createRouter = ({
       const results = await Promise.all(
         paths.map(async (p) => {
           if (typeof p !== 'string') {
-            console.log('wats going on', p)
-
             return null!
           }
           const root = resolve(p) // this is whats breaking
@@ -619,8 +587,6 @@ export const createRouter = ({
       return terminalManager.create(input)
     }),
   terminalWrite: t.procedure.input<{ id: string; data: string }>().action(async ({ input }) => {
-    console.log('terminal writing', input.data)
-
     terminalManager.write(input.id, input.data)
     return { ok: true }
   }),
@@ -707,14 +673,10 @@ export const createRouter = ({
   }),
 
   focusPortalWindow: t.procedure.input<string>().action(async ({ input }) => {
-    console.log('tryin to fcosu')
-
     if (!mainWindow) throw new Error('Invariant')
     const portalView = portalViews.get(input)
     if (!portalView) throw new Error(`Portal ${input} not found`)
     try {
-      console.log('portal focused', portalView)
-
       portalView.webContents.focus()
       return { success: true, portalId: input }
     } catch (error) {

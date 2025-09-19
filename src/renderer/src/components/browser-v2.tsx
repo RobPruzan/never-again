@@ -45,7 +45,7 @@ export const BrowserV2 = () => {
     useAppContext()
   const projects = useProjects().data
 
-  const focusedProject = useFocusedProject()
+  // const focusedProject = useFocusedProject()
   if (projects.length === 0) {
     throw new Error('Invariant at least one tab should exist (should be default tab if none)')
   }

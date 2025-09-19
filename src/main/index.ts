@@ -16,7 +16,7 @@ import { nativeImage } from 'electron'
 import { TerminalManagerV2 } from './terminal-manager-v2'
 // import { PortsManager } from './ports-manager'
 import { registerIpcMain, getRendererHandlers } from '@egoist/tipc/main'
-import { createRouter } from './tipc'
+import { createRouter, writeToStitchedLog } from './tipc'
 import { browserController, layoutAllBrowserViews } from './browser-controller'
 import { RendererHandlers } from './renderer-handlers'
 import * as net from 'net'
@@ -132,12 +132,27 @@ function createWindow() {
       return {
         action: 'allow',
         createWindow: (options) => {
+          // console.log('create window start', Date.now())
+          writeToStitchedLog({
+            order: 2,
+            time: Date.now(),
+                    meta: "create window start"
+          })
+
           const wc = (options as any).webContents as Electron.WebContents
           const view = new WebContentsView({ webContents: wc })
           view.setBackgroundColor('#00000000')
           view.setBounds({ x: 0, y: 0, width: 1, height: 1 })
           mainWindow!.contentView.addChildView(view)
           portalViews.set(portalId, view)
+          console.log('port view set', Date.now())
+
+          writeToStitchedLog({
+            order: 3,
+            time: Date.now(),
+            meta: "create window finish"
+          })
+
           wc.once('destroyed', () => {
             try {
               mainWindow?.contentView.removeChildView(view)
@@ -170,8 +185,6 @@ function createWindow() {
   )
 
   ipcMain.on('portal:close', (_e, id: string) => {
-    console.log('on portal close')
-
     const view = portalViews.get(id)
     if (!view) return
     try {
@@ -191,9 +204,7 @@ function createWindow() {
 
   // Clipboard handlers
   ipcMain.handle('clipboard:write-text', (_e, text: string) => {
-    console.log('Copying to clipboard:', text)
     clipboard.writeText(text)
-    console.log('Clipboard content after write:', clipboard.readText())
     return true
   })
 
@@ -240,25 +251,15 @@ app.whenReady().then(async () => {
   // portsManager = new PortsManager()
   // await portsManager.startWatching()
 
-  console.log('pre index start')
-
   startProjectIndexing((projects: Project[]) => {
     const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
     // this is technically a race condition, but its fine for now
-    console.log('found projects', projects.length)
-    console.log(
-      'any .xtra projects',
-      projects.filter((p) => p.path.includes('.xtra'))
-    )
 
     handlers.projectsFound.send({ projects })
     //
   })
 
-  console.log('pre create window')
-
   const mainWindow = createWindow()
-  console.log('creating window!')
 
   const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
   terminalManagerV2 = new TerminalManagerV2(handlers)
@@ -286,11 +287,8 @@ app.whenReady().then(async () => {
       bufferService
     })
   )
-  console.log('do we need to seed, how many items in buffer:', bufferService.listBuffer().length)
 
   if (bufferService.listBuffer().length === 0) {
-    console.log('seeding')
-
     bufferService.seed(5, { devRelayService })
   }
   // im an idiot i should of just made it a property what am i doing
@@ -301,8 +299,6 @@ app.whenReady().then(async () => {
   if (process.env.NODE_ENV === 'development' || is.dev) {
     startReloadServer()
   }
-
-  // console.log('ports?', portsManager.getAll())
 
   // Restore existing terminal sessions and ensure project terminals exist
   // await terminalManager.restoreSessionsOnStartup()
@@ -318,12 +314,7 @@ app.whenReady().then(async () => {
   //       url: `http://localhost:${port}?wrapper=false`
   //     })
   //     .catch((e) => {
-  //       console.log('failed dis', e)
-  //     })
-  // })
-  // // eh this is blocking and bad, will cause white screen flash
-  // await Promise.all(promises).catch((e) => {
-  //   console.log('noo', e)
+  //       console.log('noo', e)
   // })
 
   // const [firstPort, firstData] = ports[0]
@@ -334,8 +325,6 @@ app.whenReady().then(async () => {
   //   })
 
   // await browserController.switchTab(firstData.name)
-
-  console.log('setting up menu!')
 
   const menu = Menu.buildFromTemplate([
     {
@@ -371,6 +360,12 @@ app.whenReady().then(async () => {
           label: 'New Tab',
           accelerator: process.platform === 'darwin' ? 'Cmd+T' : 'Ctrl+T',
           click: () => {
+            writeToStitchedLog("MARKER START")
+            writeToStitchedLog({
+              order: 0,
+              time: Date.now(),
+              meta: "shortcut start"
+            })
             if (terminalManagerV2) {
               const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
               handlers.menuNewTab.send()
@@ -413,8 +408,6 @@ app.whenReady().then(async () => {
           accelerator: 'Escape',
           click: () => {
             if (!mainWindow) {
-              console.log('no main window!')
-
               return
             }
 
@@ -429,7 +422,6 @@ app.whenReady().then(async () => {
             if (!mainWindow) {
               return
             }
-            console.log('sending over')
 
             const handlers = getRendererHandlers<RendererHandlers>(mainWindow!.webContents)
             handlers.tabSwitcher.send()
@@ -633,8 +625,6 @@ app.whenReady().then(async () => {
     }
   ])
 
-  console.log('setup menu!')
-
   Menu.setApplicationMenu(menu)
 
   app.on('activate', function () {
@@ -688,7 +678,6 @@ function startReloadServer() {
     socket.on('data', (data) => {
       const command = data.toString().trim()
       if (command === 'RELOAD') {
-        console.log('Received reload signal from Cursor extension')
         socket.write('Reloading...')
         socket.end()
 
@@ -700,22 +689,17 @@ function startReloadServer() {
       }
     })
 
-    socket.on('error', (err) => {
-      console.log('Reload server socket error:', err)
-    })
+    socket.on('error', (err) => {})
   })
 
   // Try different ports if 9999 is in use
   const tryPort = (port: number) => {
-    server.listen(port, 'localhost', () => {
-      console.log(`Zenbu reload server listening on port ${port}`)
-    })
+    server.listen(port, 'localhost', () => {})
 
     server.on('error', (err: any) => {
       if (err.code === 'EADDRINUSE' && port < 10010) {
         tryPort(port + 1)
       } else {
-        console.log('Reload server error:', err)
       }
     })
   }
