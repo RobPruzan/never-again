@@ -11,6 +11,7 @@ import { Loader2, Plus } from 'lucide-react'
 import { useProjects } from '@renderer/hooks/use-projects'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
 import { deriveRunningProjectId, iife } from '@renderer/lib/utils'
+import { useProgressive } from '@renderer/hooks/use-progressive'
 
 type ProjectWithSize = Project & {
   sizeInBytes: number
@@ -213,6 +214,7 @@ export const Home = () => {
 
     return filtered
   }, [projectsWithSizes, searchQuery, currentWorkspace, runningProjects, workspaces])
+  const progressiveProjects = useProgressive(filteredProjects)
 
   return (
     <div className="flex flex-col flex-1 bg-[#080808] text-[#a0a0a0] font-sans overflow-hidden">
@@ -367,7 +369,7 @@ export const Home = () => {
               </div>
             </div>
 
-            {filteredProjects.map((project) => (
+            {progressiveProjects.map((project) => (
               <ProjectItem key={project.path} project={project} />
             ))}
           </div>

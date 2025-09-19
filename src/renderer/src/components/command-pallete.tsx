@@ -9,6 +9,7 @@ import { useProjects } from '@renderer/hooks/use-projects'
 import { deriveRunningProjectId } from '@renderer/lib/utils'
 import { useOpenOrStartProject } from '@renderer/hooks/use-open-or-start-project'
 import { useCreateProjectMutation } from '@renderer/hooks/use-create-project-mutation'
+import { useProgressive } from '@renderer/hooks/use-progressive'
 
 export const CommandPalette = () => {
   client.writeToStitchedLog({
@@ -23,7 +24,7 @@ export const CommandPalette = () => {
 
   const { setCommandPaletteOpen, setFocusedProject, setRoute } = useAppContext()
   const runningProjects = useRunningProjects().data
-  const allProjects = useProjects().data.slice(0, 10)
+  const allProjects = useProgressive(useProjects().data)
   const { openOrStart } = useOpenOrStartProject()
   const createProject = useCreateProjectMutation()
   const [input, setInput] = useState('')

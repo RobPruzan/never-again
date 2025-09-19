@@ -283,3 +283,317 @@
 {"kind":"MARKER END","time":1758256650402}
 {"order":4,"time":1758256650404,"meta":"pallete open"}
 {"kind":"MARKER END","time":1758256650404}
+{"order":2,"time":1758256792776,"meta":"create window start"}
+{"order":3,"time":1758256792777,"meta":"create window finish"}
+{"order":2,"time":1758256793359,"meta":"create window start"}
+{"order":3,"time":1758256793359,"meta":"create window finish"}
+{"order":2,"time":1758256794318,"meta":"create window start"}
+{"order":3,"time":1758256794319,"meta":"create window finish"}
+{"order":2,"time":1758256795112,"meta":"create window start"}
+{"order":3,"time":1758256795112,"meta":"create window finish"}
+{"order":2,"time":1758256795891,"meta":"create window start"}
+{"order":3,"time":1758256795892,"meta":"create window finish"}
+{"order":2,"time":1758256796505,"meta":"create window start"}
+{"order":3,"time":1758256796505,"meta":"create window finish"}
+{"order":3,"time":1758256797228,"meta":"create window finish"}
+{"order":2,"time":1758256797227,"meta":"create window start"}
+{"order":2,"time":1758256797930,"meta":"create window start"}
+{"order":3,"time":1758256797931,"meta":"create window finish"}
+{"order":2,"time":1758256798857,"meta":"create window start"}
+{"order":3,"time":1758256798857,"meta":"create window finish"}
+{"order":2,"time":1758256817601,"meta":"create window start"}
+{"order":3,"time":1758256817602,"meta":"create window finish"}
+{"order":2,"time":1758256821711,"meta":"create window start"}
+{"order":3,"time":1758256821711,"meta":"create window finish"}
+{"order":2,"time":1758256822270,"meta":"create window start"}
+{"order":3,"time":1758256822270,"meta":"create window finish"}
+{"order":2,"time":1758256822950,"meta":"create window start"}
+{"order":3,"time":1758256822951,"meta":"create window finish"}
+{"order":2,"time":1758256823628,"meta":"create window start"}
+{"order":3,"time":1758256823628,"meta":"create window finish"}
+{"order":2,"time":1758256824731,"meta":"create window start"}
+{"order":3,"time":1758256824732,"meta":"create window finish"}
+{"order":2,"time":1758256825916,"meta":"create window start"}
+{"order":3,"time":1758256825917,"meta":"create window finish"}
+{"order":2,"time":1758256826931,"meta":"create window start"}
+{"order":3,"time":1758256826932,"meta":"create window finish"}
+{"order":2,"time":1758256828420,"meta":"create window start"}
+{"order":3,"time":1758256828420,"meta":"create window finish"}
+{"order":2,"time":1758256829632,"meta":"create window start"}
+{"order":3,"time":1758256829633,"meta":"create window finish"}
+{"order":2,"time":1758256830541,"meta":"create window start"}
+{"order":3,"time":1758256830542,"meta":"create window finish"}
+{"order":2,"time":1758256832413,"meta":"create window start"}
+{"order":3,"time":1758256832413,"meta":"create window finish"}
+{"order":2,"time":1758256832851,"meta":"create window start"}
+{"order":3,"time":1758256832852,"meta":"create window finish"}
+{"order":2,"time":1758256833214,"meta":"create window start"}
+{"order":3,"time":1758256833214,"meta":"create window finish"}
+{"order":2,"time":1758256833726,"meta":"create window start"}
+{"order":3,"time":1758256833727,"meta":"create window finish"}
+{"order":2,"time":1758256834111,"meta":"create window start"}
+{"order":3,"time":1758256834111,"meta":"create window finish"}
+{"order":2,"time":1758256834457,"meta":"create window start"}
+{"order":3,"time":1758256834458,"meta":"create window finish"}
+{"order":2,"time":1758256834864,"meta":"create window start"}
+{"order":3,"time":1758256834864,"meta":"create window finish"}
+{"kind":"MARKER START","time":1758257459566}
+{"order":0,"time":1758257459566,"meta":"shortcut start"}
+{"order":1,"time":1758257459566,"meta":"shortcut recv"}
+{"order":1,"time":1758257459566,"meta":"shortcut recv"}
+{"order":1,"time":1758257459566,"meta":"shortcut recv"}
+{"order":1,"time":1758257459567,"meta":"shortcut recv"}
+{"order":1,"time":1758257459567,"meta":"shortcut recv"}
+{"order":1,"time":1758257459567,"meta":"shortcut recv"}
+{"order":1,"time":1758257459567,"meta":"shortcut recv"}
+{"order":1,"time":1758257459567,"meta":"shortcut recv"}
+{"order":1,"time":1758257459567,"meta":"shortcut recv"}
+{"order":1,"time":1758257459567,"meta":"shortcut recv"}
+{"order":1,"time":1758257459566,"meta":"shortcut recv"}
+{"order":1,"time":1758257459567,"meta":"shortcut recv"}
+{"order":1,"time":1758257459567,"meta":"shortcut recv"}
+{"order":1,"time":1758257459567,"meta":"shortcut recv"}
+{"order":1,"time":1758257459568,"meta":"shortcut recv"}
+{"order":1,"time":1758257459567,"meta":"shortcut recv"}
+{"order":4,"time":1758257459615,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257459615}
+{"order":2,"time":1758257459624,"meta":"create window start"}
+{"order":3,"time":1758257459625,"meta":"create window finish"}
+{"order":4,"time":1758257459694,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257459694}
+{"order":4,"time":1758257459706,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257459706}
+{"order":4,"time":1758257459870,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257459870}
+{"order":4,"time":1758257460073,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257460073}
+{"order":0,"time":1758257473352,"meta":"shortcut start"}
+{"kind":"MARKER START","time":1758257473352}
+{"order":1,"time":1758257473353,"meta":"shortcut recv"}
+{"order":1,"time":1758257473353,"meta":"shortcut recv"}
+{"order":1,"time":1758257473353,"meta":"shortcut recv"}
+{"order":1,"time":1758257473353,"meta":"shortcut recv"}
+{"order":1,"time":1758257473353,"meta":"shortcut recv"}
+{"order":1,"time":1758257473354,"meta":"shortcut recv"}
+{"order":1,"time":1758257473354,"meta":"shortcut recv"}
+{"order":1,"time":1758257473354,"meta":"shortcut recv"}
+{"order":1,"time":1758257473354,"meta":"shortcut recv"}
+{"order":1,"time":1758257473354,"meta":"shortcut recv"}
+{"order":1,"time":1758257473354,"meta":"shortcut recv"}
+{"order":1,"time":1758257473354,"meta":"shortcut recv"}
+{"order":1,"time":1758257473354,"meta":"shortcut recv"}
+{"order":1,"time":1758257473354,"meta":"shortcut recv"}
+{"order":1,"time":1758257473355,"meta":"shortcut recv"}
+{"order":1,"time":1758257473355,"meta":"shortcut recv"}
+{"order":4,"time":1758257473361,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257473361}
+{"order":2,"time":1758257473369,"meta":"create window start"}
+{"order":3,"time":1758257473369,"meta":"create window finish"}
+{"order":4,"time":1758257473425,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257473425}
+{"order":4,"time":1758257473440,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257473440}
+{"order":4,"time":1758257473622,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257473622}
+{"order":4,"time":1758257473833,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257473833}
+{"order":4,"time":1758257474043,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257474043}
+{"order":0,"time":1758257474426,"meta":"shortcut start"}
+{"kind":"MARKER START","time":1758257474426}
+{"order":1,"time":1758257474426,"meta":"shortcut recv"}
+{"order":1,"time":1758257474426,"meta":"shortcut recv"}
+{"order":1,"time":1758257474426,"meta":"shortcut recv"}
+{"order":1,"time":1758257474427,"meta":"shortcut recv"}
+{"order":1,"time":1758257474427,"meta":"shortcut recv"}
+{"order":1,"time":1758257474427,"meta":"shortcut recv"}
+{"order":1,"time":1758257474427,"meta":"shortcut recv"}
+{"order":1,"time":1758257474427,"meta":"shortcut recv"}
+{"order":1,"time":1758257474427,"meta":"shortcut recv"}
+{"order":1,"time":1758257474428,"meta":"shortcut recv"}
+{"order":1,"time":1758257474428,"meta":"shortcut recv"}
+{"order":1,"time":1758257474428,"meta":"shortcut recv"}
+{"order":1,"time":1758257474428,"meta":"shortcut recv"}
+{"order":1,"time":1758257474428,"meta":"shortcut recv"}
+{"order":1,"time":1758257474428,"meta":"shortcut recv"}
+{"order":1,"time":1758257474428,"meta":"shortcut recv"}
+{"order":4,"time":1758257474441,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257474441}
+{"order":2,"time":1758257474451,"meta":"create window start"}
+{"order":3,"time":1758257474451,"meta":"create window finish"}
+{"kind":"MARKER END","time":1758257474498}
+{"order":4,"time":1758257474498,"meta":"pallete open"}
+{"order":4,"time":1758257474514,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257474514}
+{"order":4,"time":1758257474692,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257474692}
+{"order":4,"time":1758257474855,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257474855}
+{"order":4,"time":1758257474903,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257474903}
+{"order":4,"time":1758257475121,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475121}
+{"order":4,"time":1758257475267,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475267}
+{"order":4,"time":1758257475300,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475300}
+{"order":4,"time":1758257475333,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475333}
+{"order":4,"time":1758257475349,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475349}
+{"order":4,"time":1758257475367,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475367}
+{"order":4,"time":1758257475400,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475400}
+{"order":4,"time":1758257475433,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475433}
+{"order":4,"time":1758257475467,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475467}
+{"order":4,"time":1758257475501,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475501}
+{"order":4,"time":1758257475535,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475535}
+{"order":4,"time":1758257475563,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475563}
+{"order":4,"time":1758257475772,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475772}
+{"order":4,"time":1758257475997,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257475997}
+{"order":4,"time":1758257476220,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257476220}
+{"order":4,"time":1758257476347,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257476347}
+{"order":4,"time":1758257476365,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257476365}
+{"order":4,"time":1758257476428,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257476428}
+{"order":4,"time":1758257476435,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257476435}
+{"order":4,"time":1758257476563,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257476563}
+{"order":4,"time":1758257476566,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257476566}
+{"order":4,"time":1758257476630,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257476630}
+{"kind":"MARKER END","time":1758257476632}
+{"order":4,"time":1758257476632,"meta":"pallete open"}
+{"kind":"MARKER START","time":1758257477653}
+{"order":0,"time":1758257477654,"meta":"shortcut start"}
+{"order":1,"time":1758257477654,"meta":"shortcut recv"}
+{"order":1,"time":1758257477654,"meta":"shortcut recv"}
+{"order":1,"time":1758257477654,"meta":"shortcut recv"}
+{"order":1,"time":1758257477654,"meta":"shortcut recv"}
+{"order":1,"time":1758257477654,"meta":"shortcut recv"}
+{"order":1,"time":1758257477655,"meta":"shortcut recv"}
+{"order":1,"time":1758257477655,"meta":"shortcut recv"}
+{"order":1,"time":1758257477655,"meta":"shortcut recv"}
+{"order":1,"time":1758257477655,"meta":"shortcut recv"}
+{"order":1,"time":1758257477655,"meta":"shortcut recv"}
+{"order":1,"time":1758257477655,"meta":"shortcut recv"}
+{"order":1,"time":1758257477655,"meta":"shortcut recv"}
+{"order":1,"time":1758257477655,"meta":"shortcut recv"}
+{"order":1,"time":1758257477655,"meta":"shortcut recv"}
+{"order":1,"time":1758257477656,"meta":"shortcut recv"}
+{"order":1,"time":1758257477656,"meta":"shortcut recv"}
+{"order":4,"time":1758257477666,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257477666}
+{"order":2,"time":1758257477674,"meta":"create window start"}
+{"order":3,"time":1758257477674,"meta":"create window finish"}
+{"order":4,"time":1758257477734,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257477734}
+{"order":4,"time":1758257477748,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257477748}
+{"order":4,"time":1758257477928,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257477928}
+{"order":4,"time":1758257478140,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478140}
+{"order":4,"time":1758257478352,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478352}
+{"order":4,"time":1758257478441,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478441}
+{"order":4,"time":1758257478448,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478448}
+{"order":4,"time":1758257478534,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478534}
+{"order":4,"time":1758257478538,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478538}
+{"order":4,"time":1758257478565,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478565}
+{"order":4,"time":1758257478626,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478626}
+{"order":4,"time":1758257478628,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478628}
+{"order":4,"time":1758257478703,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478703}
+{"order":4,"time":1758257478704,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478704}
+{"order":4,"time":1758257478769,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478769}
+{"order":4,"time":1758257478971,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257478971}
+{"kind":"MARKER START","time":1758257479854}
+{"order":0,"time":1758257479854,"meta":"shortcut start"}
+{"order":1,"time":1758257479855,"meta":"shortcut recv"}
+{"order":1,"time":1758257479855,"meta":"shortcut recv"}
+{"order":1,"time":1758257479855,"meta":"shortcut recv"}
+{"order":1,"time":1758257479856,"meta":"shortcut recv"}
+{"order":1,"time":1758257479856,"meta":"shortcut recv"}
+{"order":1,"time":1758257479856,"meta":"shortcut recv"}
+{"order":1,"time":1758257479856,"meta":"shortcut recv"}
+{"order":1,"time":1758257479856,"meta":"shortcut recv"}
+{"order":1,"time":1758257479856,"meta":"shortcut recv"}
+{"order":1,"time":1758257479857,"meta":"shortcut recv"}
+{"order":1,"time":1758257479857,"meta":"shortcut recv"}
+{"order":1,"time":1758257479857,"meta":"shortcut recv"}
+{"order":1,"time":1758257479857,"meta":"shortcut recv"}
+{"order":1,"time":1758257479857,"meta":"shortcut recv"}
+{"order":1,"time":1758257479858,"meta":"shortcut recv"}
+{"order":1,"time":1758257479858,"meta":"shortcut recv"}
+{"order":4,"time":1758257479871,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257479871}
+{"order":2,"time":1758257479879,"meta":"create window start"}
+{"order":3,"time":1758257479879,"meta":"create window finish"}
+{"order":4,"time":1758257479936,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257479936}
+{"order":4,"time":1758257479949,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257479949}
+{"order":4,"time":1758257480130,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257480130}
+{"order":4,"time":1758257480342,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257480342}
+{"order":4,"time":1758257480557,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257480557}
+{"order":4,"time":1758257480780,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257480780}
+{"order":4,"time":1758257481006,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257481006}
+{"order":4,"time":1758257481240,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257481240}
+{"order":4,"time":1758257481461,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257481462}
+{"order":4,"time":1758257481685,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257481685}
+{"order":4,"time":1758257482197,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257482197}
+{"order":4,"time":1758257482220,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257482220}
+{"order":4,"time":1758257482479,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257482479}
+{"order":4,"time":1758257482527,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257482527}
+{"order":4,"time":1758257482584,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257482584}
+{"kind":"MARKER END","time":1758257482612}
+{"order":4,"time":1758257482612,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257482724}
+{"order":4,"time":1758257482724,"meta":"pallete open"}
+{"order":4,"time":1758257482730,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257482730}
+{"order":4,"time":1758257482794,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257482794}
+{"order":4,"time":1758257482796,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257482796}
+{"order":4,"time":1758257482899,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257482900}
+{"order":4,"time":1758257482902,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758257482902}

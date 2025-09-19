@@ -109,7 +109,7 @@ export const TabSwitcher = () => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-[60] pointer-events-none">
-      <div className="bg-black rounded-xl border border-white/10 p-8 pointer-events-auto max-w-[1000px] shadow-2xl">
+      <div className="bg-black rounded-xl border border-white/10 p-8 pointer-events-auto max-w-[90vw] shadow-2xl">
         <div className="flex items-center gap-6 flex-wrap justify-center">
           {/* <input
             ref={(ref) => ref?.focus()}
