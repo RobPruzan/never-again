@@ -84,9 +84,10 @@ export const useFocusedProject = (): RunningProject | null => {
     )
 
     if (isStartingProject && listeningProjects.length > 0) {
-      if (listeningProjects.length > 1) {
-        throw new Error('invariant: multiple listening projects with same cwd')
-      }
+      // this is not an invariant but maybe concerning
+      // if (listeningProjects.length > 1) {
+      //   throw new Error('invariant: multiple listening projects with same cwd')
+      // }
 
       const listeningProject = listeningProjects.reduce((lowest, current) => {
         return current.port < lowest.port ? current : lowest

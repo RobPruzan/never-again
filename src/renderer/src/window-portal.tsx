@@ -85,11 +85,12 @@ export function WindowPortal({
     d.body.appendChild(containerRef.current!)
 
     // this is awful, should be reactive
-    setTimeout(() => {
-      console.log('focus portal window?')
+    // setTimeout(() => {
+    //   console.log('focus portal window?')
 
-      client.focusPortalWindow(id).catch(console.error)
-    }, 150) // is there that much latency when creating a portal winodw?? do we need to preopen? i need to profile
+    //   client.focusPortalWindow(id).catch(console.error)
+    // }, 150) // is there that much latency when creating a portal winodw?? do we need to preopen? i need to profile
+    // okay so why does this take so long?
     // wow 150 is the number
 
     // this is all useless, old experiment
@@ -190,7 +191,20 @@ export function WindowPortal({
 
   return (
     <WindowContext value={{ winRef }}>
-      {ReactDOM.createPortal(children, containerRef.current!)}
+      {ReactDOM.createPortal(
+        <>
+          <FocusPortal id={id} />
+          {children}
+        </>,
+        containerRef.current!
+      )}
     </WindowContext>
   )
+}
+
+const FocusPortal = ({ id }: { id: string }) => {
+  React.useEffect(() => {
+    client.focusPortalWindow(id)
+  }, [])
+  return null
 }

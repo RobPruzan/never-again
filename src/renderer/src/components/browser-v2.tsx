@@ -76,7 +76,20 @@ export const BrowserV2 = () => {
             setCommandPaletteOpen(false)
           }}
         >
-          <Suspense>
+          <Suspense
+            fallback={
+              <div
+                style={{
+                  backgroundColor: 'white',
+                  height: '100vh',
+                  width: '100vw'
+                }}
+              >
+                {' '}
+                I AM LOADING
+              </div>
+            }
+          >
             <CommandPalette />
           </Suspense>
         </WindowPortal>

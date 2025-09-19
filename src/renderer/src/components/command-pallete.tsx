@@ -14,13 +14,16 @@ export const CommandPalette = () => {
   client.writeToStitchedLog({
     order: 4,
     time: Date.now(),
-                meta: "pallete open"
+    meta: 'pallete open'
   })
-  client.writeToStitchedLog("MARKER END")
+  client.writeToStitchedLog({
+    kind: 'MARKER END',
+    time: Date.now()
+  })
 
   const { setCommandPaletteOpen, setFocusedProject, setRoute } = useAppContext()
   const runningProjects = useRunningProjects().data
-  const allProjects = useProjects().data
+  const allProjects = useProjects().data.slice(0, 10)
   const { openOrStart } = useOpenOrStartProject()
   const createProject = useCreateProjectMutation()
   const [input, setInput] = useState('')

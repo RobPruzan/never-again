@@ -360,7 +360,10 @@ app.whenReady().then(async () => {
           label: 'New Tab',
           accelerator: process.platform === 'darwin' ? 'Cmd+T' : 'Ctrl+T',
           click: () => {
-            writeToStitchedLog("MARKER START")
+            writeToStitchedLog({
+              kind: "MARKER START",
+              time: Date.now()
+            })
             writeToStitchedLog({
               order: 0,
               time: Date.now(),
