@@ -54,16 +54,14 @@ export const browserController = {
       url: view.webContents.getURL() || 'about:blank',
       title: view.webContents.getTitle() || tabId,
       isActive: tabId === activeBrowserViewId.current,
-      canGoBack:
-        typeof view.webContents.canGoBack === 'function' ? view.webContents.canGoBack() : false,
-      canGoForward:
-        typeof view.webContents.canGoForward === 'function'
-          ? view.webContents.canGoForward()
-          : false,
+      canGoBack: view.webContents.navigationHistory.canGoBack(),
+      canGoForward: view.webContents.navigationHistory.canGoForward(),
       isLoaded: !view.webContents.isLoading()
     }))
 
     const activeTab = tabs.find((t) => t.isActive)
+
+    console.log('the active tab thats fucking our butt', activeTab)
 
     return {
       tabs,
@@ -101,11 +99,12 @@ export const browserController = {
         )
       })
 
-
       view.webContents.on('dom-ready', () => {
         if (mainWindow && !mainWindow.isDestroyed()) {
           try {
             const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
+            console.log('DOM READY', browserController.getCurrentState().isLoaded)
+
             handlers.browserStateUpdate.send(browserController.getCurrentState())
           } catch {}
         }
@@ -114,16 +113,16 @@ export const browserController = {
       view.webContents.on('did-finish-load', () => {
         if (mainWindow && !mainWindow.isDestroyed()) {
           try {
+            console.log('FINISHED LOAD', browserController.getCurrentState().isLoaded)
+
             const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
             handlers.browserStateUpdate.send(browserController.getCurrentState())
           } catch {}
         }
       })
 
-
-
       // Track URL changes
-      view.webContents.on('did-navigate', (_event, url) => {
+      view.webContents.on('did-navigate', (_event) => {
         if (mainWindow && !mainWindow.isDestroyed()) {
           try {
             const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
@@ -132,7 +131,7 @@ export const browserController = {
         }
       })
 
-      view.webContents.on('did-navigate-in-page', (_event, url) => {
+      view.webContents.on('did-navigate-in-page', (_event) => {
         if (mainWindow && !mainWindow.isDestroyed()) {
           try {
             const handlers = getRendererHandlers<RendererHandlers>(mainWindow.webContents)
@@ -488,7 +487,7 @@ export const browserController = {
     browserViews.forEach((view) => {
       try {
         // Force hide by setting bounds to 0x0 first
-        console.log('im fucking trying', view)
+        // console.log('im fucking trying', view)
 
         view.setBounds({
           height: 0,

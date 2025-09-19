@@ -5,6 +5,7 @@ import { join, resolve, basename } from 'node:path'
 import { browserController } from './browser-controller'
 import { browserViews } from '.'
 import { DevRelayService } from './dev-relay-service'
+import { RunningProject } from '../shared/types'
 
 const execFile = promisify(_execFile)
 
@@ -99,9 +100,12 @@ export class ProjectBufferService {
     return true
   }
 
-  async seed(count: number, opts: {
-    devRelayService: DevRelayService
-  }): Promise<BufferedMeta[]> {
+  async seed(
+    count: number,
+    opts: {
+      devRelayService: DevRelayService
+    }
+  ): Promise<BufferedMeta[]> {
     // i mean should be parallel but fine
     const metas: BufferedMeta[] = []
     for (let i = 0; i < count; i++) {
@@ -110,7 +114,13 @@ export class ProjectBufferService {
       const meta = await this.createBufferedProject(opts)
       if (meta) {
         const url = `http://localhost:${meta.port}`
-        const tabId = meta.dir
+        const tabId = deriveRunningProjectId({
+          runningKind: 'listening',
+          cwd: meta.dir,
+          kind: 'unknown', // idc
+          pid: meta.pid,
+          port: meta.port
+        })
         await browserController.createTab({
           tabId,
           url
@@ -138,8 +148,15 @@ export class ProjectBufferService {
         throw new Error("tood validate this earlier, but this shouldn't happen")
       }
 
+      const tabId = deriveRunningProjectId({
+        runningKind: 'listening',
+        cwd: meta.dir,
+        kind: 'unknown', // idc
+        pid: meta.pid,
+        port: meta.port
+      })
       await browserController.createTab({
-        tabId: meta.dir,
+        tabId,
         url: meta.url
       })
       this.seed(1, opts)
@@ -147,7 +164,7 @@ export class ProjectBufferService {
     }
     const meta = this.instantCreate()
 
-    this.seed(1 ,opts)
+    this.seed(1, opts)
     return meta
   }
 
@@ -236,7 +253,7 @@ export class ProjectBufferService {
     return this.readIndex()
   }
 
-  async ensureBufferStarted({devRelayService}:{devRelayService:DevRelayService}) {
+  async ensureBufferStarted({ devRelayService }: { devRelayService: DevRelayService }) {
     const buffer = this.listBuffer()
 
     const promises = buffer.map((b) => {
@@ -303,7 +320,11 @@ export class ProjectBufferService {
     const num = Math.floor(Math.random() * 900) + 100
     return `${pick(adjectives)}-${pick(animals)}-${num}`
   }
-  async createBufferedProject({devRelayService} : {devRelayService:DevRelayService}): Promise<BufferedMeta | null> {
+  async createBufferedProject({
+    devRelayService
+  }: {
+    devRelayService: DevRelayService
+  }): Promise<BufferedMeta | null> {
     const ok = await this.ensureTemplate()
     if (!ok) return null
     const id = String(Date.now())
@@ -311,7 +332,7 @@ export class ProjectBufferService {
     this.ensureDir(dir)
     const copy = await this.cpCOW(this.templateRoot, dir)
     if (!copy.ok) return null
-    const started = await this.startDev(dir, {devRelayService})
+    const started = await this.startDev(dir, { devRelayService })
     if (!started.port || !started.pid) return null
     const meta: BufferedMeta = {
       id,
@@ -442,7 +463,14 @@ export class ProjectBufferService {
     // todo: do we need the double i don't think so this is probably not needed
     console.log('THE PORT WE HAVE WHY IS THIS UNDEFINED', chosen)
 
-    browserController.createTab({ tabId: dir, url: `http://localhost:${chosen}` })
+    const tabId = deriveRunningProjectId({
+      runningKind: 'listening',
+      cwd: dir,
+      kind: 'unknown', // idc
+      pid: child.pid,
+      port: chosen
+    })
+    browserController.createTab({ tabId, url: `http://localhost:${chosen}` })
 
     return { pid: child.pid ?? null, port: chosen, ms: Date.now() - t0 }
   }
@@ -514,5 +542,16 @@ export class ProjectBufferService {
       if (!used.has(p)) return p
     }
     throw new Error('invariant')
+  }
+}
+
+export const deriveRunningProjectId = (project: RunningProject) => {
+  switch (project.runningKind) {
+    case 'listening': {
+      return `${project.cwd}-${project.port}`
+    }
+    case 'starting': {
+      return `starting-${project.cwd}`
+    }
   }
 }

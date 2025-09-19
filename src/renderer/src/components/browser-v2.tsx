@@ -218,11 +218,11 @@ const WebContentViewArea = () => {
         <ResizablePanel defaultSize={75}>
           <StartingProject project={runningProject}>
             {(listeningProject) =>
-              deriveRunningProjectId(listeningProject) === focusedProject.projectId &&
+              deriveRunningProjectId(listeningProject) === focusedProject.projectId && // maybe this is kinda fucked????????????????/
               route === 'webview' && (
                 <>
                   <WebContentView
-                    key={deriveRunningProjectId(runningProject)} // i think?
+                    key={deriveRunningProjectId(listeningProject)} // i think?
                     url={`http://localhost:${listeningProject.port}`}
                     id={deriveRunningProjectId(listeningProject)}
                   />
@@ -252,11 +252,14 @@ const StartingProject = ({
 }) => {
   const logsObjQuery = useLogObj()
   const browserStateQuery = useBrowserState()
-  console.log('the logs obj', logsObjQuery.data)
-  console.log('the project', project)
+  // const isTabLoaded = browserStateQuery.data.tabs.find(tab => tab.)
+  console.log('browser state', browserStateQuery.data)
 
-  console.log('is it loaded?', browserStateQuery.data.isLoaded)
-  console.log('logs?', logsObjQuery.data[project.pid])
+  // console.log('the logs obj', logsObjQuery.data)
+  // console.log('the project', project)
+
+  // console.log('is it loaded?', browserStateQuery.data.isLoaded)
+  // console.log('logs?', logsObjQuery.data[project.pid])
 
   /**
    * now what we want to do is get the logs for the parent process
@@ -264,26 +267,40 @@ const StartingProject = ({
 
   switch (project.runningKind) {
     case 'listening': {
-      const isLoaded = Boolean(browserStateQuery.data?.isLoaded)
+      const ourTab = browserStateQuery.data.tabs.find(
+        (tab) => tab.tabId === deriveRunningProjectId(project)
+      )
+      console.log('our tab?',ourTab)
+
+      const isLoaded = Boolean(ourTab?.isLoaded)
       const logs = logsObjQuery.data[project.pid] ?? []
       if (!isLoaded) {
         return (
-          <div className="flex-1 h-full w-full bg-[#0A0A0A] overflow-hidden flex items-center justify-center">
-            <div className="w-[900px] max-w-full">
-              <PhaseHeader phase="loading" />
-              <StartingLogViewer lines={logs} />
+          <div className="relative flex-1 h-full w-full bg-[#0A0A0A] overflow-hidden">
+            {children(project)}
+            <div
+              className={
+                'absolute inset-0 flex items-center justify-center transition-opacity duration-300 ' +
+                (isLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100')
+              }
+            >
+              <div className="w-[min(900px,calc(100%-2rem))] max-w-full">
+                <PhaseHeader phase="loading" />
+                <StartingLogViewer lines={logs} />
+              </div>
             </div>
           </div>
         )
       }
+
       return children(project)
     }
     case 'starting': {
       const logs = logsObjQuery.data[project.pid] ?? []
       return (
-        <div className="flex-1 h-full w-full flex items-center justify-center bg-[#0A0A0A] text-white overflow-hidden">
-          <div className="w-[900px] max-w-full">
-            <PhaseHeader phase="loading" />
+        <div className="relative flex-1 h-full w-full flex items-center justify-center bg-[#0A0A0A] text-white overflow-hidden">
+          <div className="relative w-[min(900px,calc(100%-2rem))] max-w-full">
+            <PhaseHeader phase="starting" />
             <StartingLogViewer lines={logs} />
           </div>
         </div>

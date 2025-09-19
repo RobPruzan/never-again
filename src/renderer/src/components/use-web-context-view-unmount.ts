@@ -14,7 +14,7 @@ export const useWebContentViewUnmount = (id: string) => {
     abortSignal.addEventListener('abort', handler)
 
     return () => {
-      // abortSignal.removeEventListener('abort' ,handler)
+      // abortSignal.removeEventListener('abort' ,handler) why does uncommenting this break tab removal wut
     }
   }, [id, abortSignal])
 }

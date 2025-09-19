@@ -123,7 +123,6 @@ export class DevRelayService {
 
     proc.on('exit', () => cleanup())
 
-    
     server.listen(sock)
     opts?.onProjectStart?.({
       kind: 'unknown',
@@ -132,6 +131,7 @@ export class DevRelayService {
       runningKind: 'starting'
     })
     this.servers.set(cwd, { server, proc, sock })
+    // todo: we need to hide this from user and internally hold metadata about how to map ths
     writeFileSync(join(cwd, '.devrelay.json'), JSON.stringify({ pid: proc.pid, sock }), 'utf8')
 
     const prev = await detectDevServersForDir(projectDir)
