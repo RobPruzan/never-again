@@ -26,6 +26,7 @@ export function TabBar() {
   // same issue, this should be grouped projects we map over the wrong item and are really creating the wrong item all together
 
   const groupedProjects = useGroupedProjects()
+  const sortedGroupedProjects = useHackyTabStability(groupedProjects)
   // it does use structual refs so maybe something weird is happening here
   // oh and because it re-orders maybe it loses ref i buy that we are mapping
   // console.log('grouped projects did we reorder', groupedProjects);
@@ -72,20 +73,17 @@ export function TabBar() {
             <HomeIcon className="w-4 h-4" />
           </Button>
         </React.Fragment>
-        {groupedProjects
-          .sort((a, b) => a.cwdGroup.localeCompare(b.cwdGroup))
-          .map((groupedProject) => (
-            <GroupedTab key={groupedProject.cwdGroup} groupedProject={groupedProject} />
-          ))}
+        {sortedGroupedProjects.map((groupedProject) => (
+          <GroupedTab key={groupedProject.cwdGroup} groupedProject={groupedProject} />
+        ))}
       </div>
       <button
         onClick={async () => {
           // const start = performance.now()
-          console.log('creating');
-          
+          console.log('creating')
+
           await createProjectMutation.mutate()
-          console.log('done creating');
-          
+          console.log('done creating')
 
           // console.log('end', performance.now() - start, 'ms')
         }}
@@ -135,4 +133,27 @@ export const useMinTimeSpinner = ({
   }, [createProjectMutation.isPending])
 
   return showSpinner
+}
+
+export const useHackyTabStability = (groupedProjects: ReturnType<typeof useGroupedProjects>) => {
+  const orderMap = useRef<Map<string, number>>(new Map())
+  const nextOrder = useRef(0)
+
+  const sortedGroupedProjects = useMemo(() => {
+    // Track new projects and assign them increasing order numbers
+    groupedProjects.forEach((project) => {
+      if (!orderMap.current.has(project.cwdGroup)) {
+        orderMap.current.set(project.cwdGroup, nextOrder.current++)
+      }
+    })
+
+    // Sort by the assigned order
+    return [...groupedProjects].sort((a, b) => {
+      const orderA = orderMap.current.get(a.cwdGroup) ?? 0
+      const orderB = orderMap.current.get(b.cwdGroup) ?? 0
+      return orderA - orderB
+    })
+  }, [groupedProjects])
+
+  return sortedGroupedProjects
 }

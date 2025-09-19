@@ -275,7 +275,7 @@ export const createRouter = ({
     const startRes = await devRelayService.start(input.projectPath, {
       onProjectStart: (startingProject) => {
         startingProjects.add(startingProject)
-        handlers.onProjectStart.send(startingProject)
+        handlers.onProjectStart.send({ ...startingProject, }) // started at is wrong idc
 
         startProjectResolve?.(startingProject)
       }

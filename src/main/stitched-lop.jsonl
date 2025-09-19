@@ -183,3 +183,103 @@
 {"order":2,"time":1758253747427,"meta":"create window start"}
 {"order":2,"time":1758253748156,"meta":"create window start"}
 {"order":3,"time":1758253748156,"meta":"create window finish"}
+{"order":2,"time":1758256603722,"meta":"create window start"}
+{"order":3,"time":1758256603722,"meta":"create window finish"}
+{"order":2,"time":1758256605278,"meta":"create window start"}
+{"order":3,"time":1758256605279,"meta":"create window finish"}
+{"order":2,"time":1758256606400,"meta":"create window start"}
+{"order":3,"time":1758256606400,"meta":"create window finish"}
+{"order":2,"time":1758256607778,"meta":"create window start"}
+{"order":3,"time":1758256607779,"meta":"create window finish"}
+{"order":2,"time":1758256609164,"meta":"create window start"}
+{"order":3,"time":1758256609164,"meta":"create window finish"}
+{"order":2,"time":1758256610888,"meta":"create window start"}
+{"order":3,"time":1758256610889,"meta":"create window finish"}
+{"order":2,"time":1758256613853,"meta":"create window start"}
+{"order":3,"time":1758256613853,"meta":"create window finish"}
+{"order":2,"time":1758256615112,"meta":"create window start"}
+{"order":3,"time":1758256615112,"meta":"create window finish"}
+{"order":2,"time":1758256615869,"meta":"create window start"}
+{"order":3,"time":1758256615870,"meta":"create window finish"}
+{"order":2,"time":1758256616770,"meta":"create window start"}
+{"order":3,"time":1758256616771,"meta":"create window finish"}
+{"order":2,"time":1758256618329,"meta":"create window start"}
+{"order":3,"time":1758256618329,"meta":"create window finish"}
+{"order":2,"time":1758256619577,"meta":"create window start"}
+{"order":3,"time":1758256619577,"meta":"create window finish"}
+{"order":2,"time":1758256621016,"meta":"create window start"}
+{"order":3,"time":1758256621017,"meta":"create window finish"}
+{"order":2,"time":1758256621676,"meta":"create window start"}
+{"order":3,"time":1758256621676,"meta":"create window finish"}
+{"order":2,"time":1758256622636,"meta":"create window start"}
+{"order":3,"time":1758256622636,"meta":"create window finish"}
+{"order":2,"time":1758256623701,"meta":"create window start"}
+{"order":3,"time":1758256623702,"meta":"create window finish"}
+{"order":2,"time":1758256625092,"meta":"create window start"}
+{"order":3,"time":1758256625092,"meta":"create window finish"}
+{"order":2,"time":1758256626100,"meta":"create window start"}
+{"order":3,"time":1758256626101,"meta":"create window finish"}
+{"order":2,"time":1758256626582,"meta":"create window start"}
+{"order":3,"time":1758256626582,"meta":"create window finish"}
+{"order":2,"time":1758256627024,"meta":"create window start"}
+{"order":3,"time":1758256627025,"meta":"create window finish"}
+{"order":2,"time":1758256627367,"meta":"create window start"}
+{"order":3,"time":1758256627367,"meta":"create window finish"}
+{"order":2,"time":1758256627947,"meta":"create window start"}
+{"order":3,"time":1758256627948,"meta":"create window finish"}
+{"order":2,"time":1758256628951,"meta":"create window start"}
+{"order":3,"time":1758256628952,"meta":"create window finish"}
+{"order":2,"time":1758256629919,"meta":"create window start"}
+{"order":3,"time":1758256629920,"meta":"create window finish"}
+{"order":2,"time":1758256631145,"meta":"create window start"}
+{"order":3,"time":1758256631145,"meta":"create window finish"}
+{"order":2,"time":1758256633489,"meta":"create window start"}
+{"order":3,"time":1758256633489,"meta":"create window finish"}
+{"order":2,"time":1758256638242,"meta":"create window start"}
+{"order":3,"time":1758256638243,"meta":"create window finish"}
+{"order":2,"time":1758256638889,"meta":"create window start"}
+{"order":3,"time":1758256638889,"meta":"create window finish"}
+{"order":2,"time":1758256639488,"meta":"create window start"}
+{"order":3,"time":1758256639488,"meta":"create window finish"}
+{"order":2,"time":1758256640398,"meta":"create window start"}
+{"order":3,"time":1758256640399,"meta":"create window finish"}
+{"kind":"MARKER START","time":1758256649719}
+{"order":0,"time":1758256649719,"meta":"shortcut start"}
+{"order":1,"time":1758256649719,"meta":"shortcut recv"}
+{"order":1,"time":1758256649719,"meta":"shortcut recv"}
+{"order":1,"time":1758256649719,"meta":"shortcut recv"}
+{"order":1,"time":1758256649719,"meta":"shortcut recv"}
+{"order":1,"time":1758256649719,"meta":"shortcut recv"}
+{"order":1,"time":1758256649719,"meta":"shortcut recv"}
+{"order":1,"time":1758256649719,"meta":"shortcut recv"}
+{"order":1,"time":1758256649719,"meta":"shortcut recv"}
+{"order":1,"time":1758256649719,"meta":"shortcut recv"}
+{"order":1,"time":1758256649720,"meta":"shortcut recv"}
+{"order":1,"time":1758256649720,"meta":"shortcut recv"}
+{"order":1,"time":1758256649720,"meta":"shortcut recv"}
+{"order":1,"time":1758256649720,"meta":"shortcut recv"}
+{"order":1,"time":1758256649720,"meta":"shortcut recv"}
+{"order":4,"time":1758256649727,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758256649727}
+{"order":2,"time":1758256649731,"meta":"create window start"}
+{"order":3,"time":1758256649731,"meta":"create window finish"}
+{"order":4,"time":1758256649773,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758256649773}
+{"order":4,"time":1758256649779,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758256649779}
+{"order":4,"time":1758256650034,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758256650036}
+{"kind":"MARKER END","time":1758256650034}
+{"order":4,"time":1758256650036,"meta":"pallete open"}
+{"order":4,"time":1758256650196,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758256650196}
+{"kind":"MARKER END","time":1758256650197}
+{"order":4,"time":1758256650197,"meta":"pallete open"}
+{"order":4,"time":1758256650308,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758256650308}
+{"order":4,"time":1758256650309,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758256650309}
+{"order":4,"time":1758256650402,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758256650402}
+{"order":4,"time":1758256650404,"meta":"pallete open"}
+{"kind":"MARKER END","time":1758256650404}

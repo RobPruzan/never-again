@@ -1,4 +1,4 @@
-import { spawn, ChildProcess } from 'node:child_process'
+ import { spawn, ChildProcess } from 'node:child_process'
 import { createServer, Socket, connect } from 'node:net'
 import { unlinkSync, existsSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
@@ -133,7 +133,7 @@ export class DevRelayService {
       kind: 'unknown',
       cwd,
       pid: pid,
-      runningKind: 'starting'
+      runningKind: 'starting',
     })
     this.servers.set(cwd, { server, proc, sock })
     // todo: we need to hide this from user and internally hold metadata about how to map ths

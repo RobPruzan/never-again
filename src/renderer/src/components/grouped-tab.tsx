@@ -39,8 +39,8 @@ export const GroupedTab = ({ groupedProject }: { groupedProject: GroupedProject 
   return (
     <div
       className={cn(
-        'h-full min-w-fit flex items-stretch relative rounded-sm overflow-hidden',
-        isGrouped && (isGroupActive ? 'ring-1 ring-blue-500' : 'ring-1 ring-[#1A1A1A]')
+        'h-full min-w-fit flex items-stretch relative overflow-hidden',
+        isGrouped && (isGroupActive ? 'border-x border-gray-600' : 'border-x border-[#1A1A1A]')
       )}
       title={`${groupLabel} (${sortedProjects.length})`}
       data-group-size={sortedProjects.length}
@@ -50,7 +50,10 @@ export const GroupedTab = ({ groupedProject }: { groupedProject: GroupedProject 
       {sortedProjects.map((project) => (
         <React.Fragment key={deriveRunningProjectId(project)}>
           <BrowserTab projectId={deriveRunningProjectId(project)}>
-            {project.runningKind === 'listening' && <span>:{project.port}</span>}
+
+            <span className="text-xs ml-auto text-gray-500 ">
+              {project.runningKind === 'listening' && <span>:{project.port}</span>}
+            </span>
           </BrowserTab>
         </React.Fragment>
       ))}

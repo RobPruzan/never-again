@@ -63,7 +63,7 @@ export function BrowserTab({
   return (
     <div
       className={`
-        group flex items-center gap-2 px-4 h-full cursor-pointer select-none
+        group flex items-center gap-2 pl-4 pr-1 h-full cursor-pointer select-none
         border-r border-[#1A1A1A] min-w-[180px] max-w-[280px]
         relative
         ${isActive ? 'bg-[#1A1A1A] text-gray-200' : 'bg-[#0A0A0A] text-gray-500 hover:bg-[#0F0F0F]'}

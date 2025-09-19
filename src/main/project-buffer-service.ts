@@ -115,7 +115,7 @@ export class ProjectBufferService {
           cwd: meta.dir,
           kind: 'unknown', // idc
           pid: meta.pid,
-          port: meta.port
+          port: meta.port,
         })
         await browserController.createTab({
           tabId,
@@ -147,7 +147,7 @@ export class ProjectBufferService {
         cwd: meta.dir,
         kind: 'unknown', // idc
         pid: meta.pid,
-        port: meta.port
+        port: meta.port,
       })
       await browserController.createTab({
         tabId,
@@ -195,7 +195,7 @@ export class ProjectBufferService {
     return {
       url: `http://localhost:${started.port}`,
       copyMs: copy.ms,
-      startMs: started.ms,
+      startMs: started.startedAt!, // daijobu
       dir: dest,
       port: started.port,
       pid: started.pid! // whatever fix later izza fine
@@ -421,12 +421,12 @@ export class ProjectBufferService {
       devRelayService: DevRelayService
       isSeeding?: boolean
     }
-  ): Promise<{ pid: number | null; port: number | null; ms: number }> {
+  ): Promise<{ pid: number | null; port: number | null; ms: number; startedAt: number | null }> {
     const chosen =
       opts?.port && Number.isFinite(opts?.port)
         ? opts.port
         : await this.pickPortFromRange(this.basePort, this.portRangeEnd)
-    if (!chosen) return { pid: null, port: null, ms: 0 }
+    if (!chosen) return { pid: null, port: null, ms: 0, startedAt: null }
     const t0 = Date.now()
 
     const child = await opts.devRelayService.start(dir, { port: chosen, isSeeding: opts.isSeeding })
@@ -459,16 +459,17 @@ export class ProjectBufferService {
     // okay do we need to create/load tab here?
     // todo: do we need the double i don't think so this is probably not needed
 
+    const startedAt = Date.now()
     const tabId = deriveRunningProjectId({
       runningKind: 'listening',
       cwd: dir,
       kind: 'unknown', // idc
       pid: child.pid,
-      port: chosen
+      port: chosen,
     })
     browserController.createTab({ tabId, url: `http://localhost:${chosen}` })
 
-    return { pid: child.pid ?? null, port: chosen, ms: Date.now() - t0 }
+    return { pid: child.pid ?? null, port: chosen, ms: Date.now() - t0, startedAt }
   }
 
   private async waitForReady(port: number, timeoutMs: number): Promise<boolean> {
