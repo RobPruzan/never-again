@@ -10,7 +10,7 @@ import { client, handlers } from '@renderer/lib/tipc'
 import { Loader2, Plus } from 'lucide-react'
 import { useProjects } from '@renderer/hooks/use-projects'
 import { useRunningProjects } from '@renderer/hooks/use-running-projects'
-import { deriveRunningProjectId } from '@renderer/lib/utils'
+import { deriveRunningProjectId, iife } from '@renderer/lib/utils'
 
 type ProjectWithSize = Project & {
   sizeInBytes: number
@@ -91,6 +91,8 @@ export const Home = () => {
 
   useEffect(() => {
     const unsub = handlers.onProjectStart.listen((project) => {
+      console.log('got a new listenign project', project)
+
       // const thisIsAwfulFixMe: Project = {
       //   devScript: 'idc',
       //   name: project.cwd,
@@ -104,25 +106,28 @@ export const Home = () => {
       // queryClient.setQueryData(['projects'], (prev: undefined | Project[]) =>
       //   prev ? ([...prev, thisIsAwfulFixMe] satisfies Array<Project>) : [thisIsAwfulFixMe]
       // )
-      queryClient.setQueryData(['devServers'], (data: Array<RunningProject> | undefined) => {
-        // todo: i don't think i know how handlers works, there are multiple subscribers and this plagued terminal too
-        if (data?.some((p) => p.cwd === project.cwd)) {
-          return data
+      const existing = queryClient.getQueryData(['devServers']) as Array<RunningProject> | undefined
+      const newData = iife(() => {
+        if (existing?.some((p) => p.cwd === project.cwd)) {
+          return existing
         }
-        if (!data) {
+        if (!existing) {
           return [project]
         }
-        return [...data, project]
+        return [...existing, project]
       })
+      console.log('setting new data', newData)
+
+      queryClient.setQueryData(['devServers'], newData)
 
       setRoute('webview')
-      console.log()
+      // console.log()
       const newFocused = {
         projectCwd: project.cwd,
         projectId: deriveRunningProjectId(project),
         runningKind: project.runningKind
       }
-      console.log('focusing new project', newFocused)
+      // console.log('focusing new project', newFocused)
 
       setFocusedProject(newFocused)
     })

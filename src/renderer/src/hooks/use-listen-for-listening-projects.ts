@@ -13,20 +13,20 @@ export const useListenForListeningProjects = () => {
 
   useEffect(() => {
     let isSubscribed = true
-    
+
     const handler = (project: ListneingProject) => {
       if (!isSubscribed) return
-      
-      console.log('project recv', project)
-      console.log('focused project', focusedProject)
 
       const prevData = queryClient.getQueryData(['devServers']) as Array<RunningProject> | undefined
       const newData = iife(() => {
-        if (prevData?.some((p) => p.runningKind === 'listening' && p.port === project.port)) return prevData
+        if (prevData?.some((p) => p.runningKind === 'listening' && p.port === project.port))
+          return prevData
         if (!prevData) return [project]
-        
+
         // Remove any starting projects with the same cwd and add the new listening project
-        const filteredData = prevData.filter((p) => !(p.runningKind === 'starting' && p.cwd === project.cwd))
+        const filteredData = prevData.filter(
+          (p) => !(p.runningKind === 'starting' && p.cwd === project.cwd)
+        )
         return [...filteredData, project]
       })
 
@@ -45,7 +45,7 @@ export const useListenForListeningProjects = () => {
     }
 
     const unlisten = handlers.onProjectListen.listen(handler)
-    
+
     return () => {
       isSubscribed = false
       unlisten()

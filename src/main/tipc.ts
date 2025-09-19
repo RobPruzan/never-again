@@ -3,7 +3,7 @@ import type { PortsManager } from './ports-manager'
 // import type { TerminalManager } from './terminal-manager-v2'
 import { TerminalManagerV2 } from './terminal-manager-v2'
 import { BrowserController } from './browser-controller'
-import { mainWindow, portalViews, startingProjects, startProjectIndexing } from './index'
+import { ensuredListeningProjects, mainWindow, portalViews, startingProjects, startProjectIndexing } from './index'
 import path, { join, resolve } from 'path'
 import { homedir } from 'os'
 import { access as fsAccess, readFile, readdir, appendFile, writeFile } from 'fs/promises'
@@ -275,7 +275,7 @@ export const createRouter = ({
       // onStdout: (chunk) => {
       //   console.log('stdout', chunk)
       // },
-      // onStderr: (chunk) => {
+      // onStderr: (chunk) => {j
       //   console.error('stderr', chunk)
       // }
     })
@@ -285,36 +285,46 @@ export const createRouter = ({
       ...startRes.project,
       runningKind: 'listening'
     }
+    console.log('SENDING LISTENING PROJECT, ALL RETURN ENTRIES AFTER THIS MUST HAVE THIS PROJECT',runningProject);
+    
+// invoke is breaking, why? otherwise we have a race
+ensuredListeningProjects.add(runningProject)
+     handlers.onProjectListen.send(runningProject)
 
     // await delay(1000) // hacky for now
     // const serverFromPath = await detectDevServersForDir(input.projectPath)
 
     // should promisify this or something
-    const project = await new Promise<Project>((res) => {
-      startProjectIndexing((projects) => {
-        const project = projects.find((p) => p.path === input.projectPath)
-        if (!project) throw new Error('Invariant no project found')
-        res(project)
-      }, input.projectPath)
-    })
-    const startedProjectCwd = startRes.project.cwd
+    // const project = await new Promise<Project>((res) => {
+    //   startProjectIndexing((projects) => {
+    //     const project = projects.find((p) => p.path === input.projectPath)
+    //     if (!project) throw new Error('Invariant no project found')
+    //     res(project)
+    //   }, input.projectPath)
+    // })
+    // const startedProjectCwd = startRes.project.cwd
 
-    // this ensures that the project is discoverable as a started project before we determine if its in listening state
-    // previously we relied on the startProjectIndexing race condition
-    await new Promise<Awaited<ReturnType<typeof detectDevServersForDir>>>((resolve) => {
-      const poll = async () => {
-        const servers = await detectDevServersForDir(homedir())
-        const matchingServer = servers.find((server) => server.cwd === startedProjectCwd)
+    // i dont think this is needed anymor
 
-        if (matchingServer) {
-          resolve(servers)
-          return
-        }
+    // // this ensures that the project is discoverable as a started project before we determine if its in listening state
+    // // previously we relied on the startProjectIndexing race condition
+    // await new Promise<Awaited<ReturnType<typeof detectDevServersForDir>>>((resolve) => {
+    //   const poll = async () => {
+    //     const servers = await detectDevServersForDir(homedir())
+    //     const matchingServer = servers.find((server) => server.cwd === startedProjectCwd)
 
-        setTimeout(poll, 100)
-      }
-      poll()
-    })
+    //     if (matchingServer) {
+    //       resolve(servers)
+    //       return
+    //     }
+
+    //     setTimeout(poll, 100)
+    //   }
+    //   poll()
+    // })
+    // what if the endpoint was the one that had to delete this object?
+    // but then it would be wrong and would have to switch to listening
+    // i don't understand the ordering enough, why would it not return it if it executed after
     const startingProjectObj = await startingProjectPromise
     startingProjects.delete(startingProjectObj)
 
@@ -327,7 +337,7 @@ export const createRouter = ({
     //   tabId: input.projectPath,
     //   url: `http://localhost:${started.sock}?wrapper=false`
     // })
-    return { project, runningProject }
+    return { runningProject }
   }),
   stopDevRelay: t.procedure.input<{ projectPath: string }>().action(async ({ input }) => {
     return devRelayService.stop(input.projectPath)
@@ -337,11 +347,11 @@ export const createRouter = ({
     await logToFile(devServers)
     const buffer = await bufferService.listBuffer()
     // console.log(' the current buffer', buffer)
-    const startingProjectsArr = [...startingProjects.values()]
+    const starting: Array<RunningProject> = [...startingProjects.values()]
     const listening: Array<RunningProject> = devServers
       .filter(
         (server) =>
-          (server.command == 'node' || server.kind !== 'unknown') &&
+          (server.command == 'node' || server.kind !== 'unknown') && // hm forgot why we did this but i think it was a valid early case to ignore but not logner term
           !buffer.some((b) => b.dir === server.cwd)
       )
       .map((project) => ({
@@ -350,20 +360,30 @@ export const createRouter = ({
       }))
     // .sort((a, b) => a.cwd.localeCompare(b.cwd)) // for stability, id prefer alpahbetical name or port but this is fine for nwo // nvm thsi doens't work for some reason need to investigate
 
-    // typescript stinks here
-    // startingProjects should be a getter not property due to timing issues with stale state
-    const starting: Array<RunningProject> = startingProjectsArr
-
     // dedup: if there's a listening project, discard the starting one
     const filteredStarting = starting.filter(
       (startingProject) =>
         !listening.some((listeningProject) => listeningProject.cwd === startingProject.cwd)
     )
 
-    const runningProjects = filteredStarting
-      .concat(listening)
-      .sort((a, b) => a.cwd.localeCompare(b.cwd))
-    // console.log('returned running projects what do we got', runningProjects)
+    const runningProjects = filteredStarting.concat(listening)
+    // .sort((a, b) => a.cwd.localeCompare(b.cwd)) // i don't care rn
+    console.log(
+      'returning back new projects',
+      runningProjects,
+      'here are the ones starting',
+      starting
+    )
+
+    // Handle ensured listening projects to avoid race conditions
+    // This should be handled by canceling any requests instead of doing this
+    for (const ensuredProject of ensuredListeningProjects) {
+      const existsInRunning = runningProjects.some(project => project.cwd === ensuredProject.cwd)
+      if (!existsInRunning) {
+        runningProjects.push(ensuredProject)
+      }
+      ensuredListeningProjects.delete(ensuredProject)
+    }
 
     return runningProjects
     // for now filter unknown but this needs to be much better

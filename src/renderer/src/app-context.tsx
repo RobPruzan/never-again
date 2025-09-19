@@ -49,7 +49,7 @@ export const AppContext = createContext<{
 export const useAppContext = () => useContext(AppContext)
 
 export const useFocusedProject = (): RunningProject | null => {
-  const { focusedProject, setFocusedProject, route } = useAppContext()
+  const { focusedProject, setFocusedProject, route, setRoute } = useAppContext()
 
   const runningProjectsQuery = useRunningProjects()
   if (!focusedProject) {
@@ -92,13 +92,18 @@ export const useFocusedProject = (): RunningProject | null => {
       const listeningProject = listeningProjects.reduce((lowest, current) => {
         return current.port < lowest.port ? current : lowest
       })
-      const newFocusedProject = {
-        ...focusedProject,
-        projectId: deriveRunningProjectId(listeningProject)
+      const newFocusedProject: FocusedProject = {
+        projectId: deriveRunningProjectId(listeningProject),
+        runningKind: 'listening',
+        port: listeningProject.port,
+        projectCwd: listeningProject.cwd
       }
-      flushSync(() => {
-        setFocusedProject(newFocusedProject)
-      })
+      // flushSync(() => {
+      console.log('setting to first call')
+      console.table(newFocusedProject)
+
+      setFocusedProject(newFocusedProject)
+      // })
       return listeningProject
     }
 
@@ -124,33 +129,81 @@ export const useFocusedProject = (): RunningProject | null => {
      *
      */
 
-    const projectsWithSameCwd = runningProjectsQuery.data.filter(
-      (project) => project.cwd === focusedProject.projectCwd
-    )
+    const isSyncNeeded =
+      focusedProject.runningKind === 'listening' &&
+      !listeningProjects.some((p) => p.port === focusedProject.port)
 
-    if (projectsWithSameCwd.length > 0) {
-      const listeningProjects = projectsWithSameCwd.filter((p) => p.runningKind === 'listening')
-      const startingProjects = projectsWithSameCwd.filter((p) => p.runningKind === 'starting')
-
-      let newFocusedProject: typeof focusedProject
-      let projectUsed: RunningProject
-
-      if (listeningProjects.length > 0) {
-        const projectWithLowestPort = listeningProjects.reduce((lowest, current) =>
-          current.port < lowest.port ? current : lowest
-        )
-        newFocusedProject = toFocusedProject(projectWithLowestPort)
-        projectUsed = projectWithLowestPort
+    if (isSyncNeeded) {
+      const projectWithSameCwd = runningProjectsQuery.data.find(
+        (p) => p.cwd === focusedProject.projectCwd
+      )
+      if (projectWithSameCwd) {
+        setFocusedProject(toFocusedProject(projectWithSameCwd))
+        return projectWithSameCwd
       } else {
-        newFocusedProject = toFocusedProject(startingProjects[0])
-        projectUsed = startingProjects[0]
-      }
+        // we should tell the user something, ideally, this means that the project got destroyed behind the scenes
+        // really the user would want a button to click "restart and not do what we're doing now", but that's a todo
+        console.log('set route home 1')
 
-      flushSync(() => {
-        setFocusedProject(newFocusedProject)
-      })
-      return projectUsed
+        setRoute('home')
+        return null
+      }
+    } else if (focusedProject.runningKind === 'starting') {
+      const projectWithSameCwd = runningProjectsQuery.data.find(
+        (p) => p.cwd === focusedProject.projectCwd
+      )
+
+      if (!projectWithSameCwd) {
+        // this is a destroy case, same as below, we should have ui for this case but too lazy will do that when i fix this monstrosity of a hook
+        console.log(
+          'set route home 2, we did it because there is no project mapping to this foucsed project',
+          focusedProject,
+          runningProjectsQuery.data
+        )
+        setFocusedProject(null)
+
+        setRoute('home')
+        return null
+      }
+      return projectWithSameCwd
+    } else {
+      const associatedProject = runningProjectsQuery.data.find(
+        (p) => deriveRunningProjectId(p) === focusedProject.projectId
+      )
+      if (!associatedProject) {
+        throw new Error(
+          'invariant we just said this project exists, since sync is not needed and its listening'
+        )
+      }
+      // then we don't need to setState in render and we're fine, this __should__ be base case
+      return associatedProject
     }
+
+    // if (projectsWithSameCwd.length > 0) {
+    //   const listeningProjects = projectsWithSameCwd.filter((p) => p.runningKind === 'listening')
+    //   const startingProjects = projectsWithSameCwd.filter((p) => p.runningKind === 'starting')
+
+    //   let newFocusedProject: typeof focusedProject
+    //   let projectUsed: RunningProject
+
+    //   if (listeningProjects.length > 0) {
+    //     const projectWithLowestPort = listeningProjects.reduce((lowest, current) =>
+    //       current.port < lowest.port ? current : lowest
+    //     )
+    //     newFocusedProject = toFocusedProject(projectWithLowestPort)
+    //     projectUsed = projectWithLowestPort
+    //   } else {
+    //     newFocusedProject = toFocusedProject(startingProjects[0])
+    //     projectUsed = startingProjects[0]
+    //   }
+
+    //   console.log('setting to second call');
+    //   console.table(newFocusedProject)
+    //   // flushSync(() => {
+    //   setFocusedProject(newFocusedProject)
+    //   // })
+    //   return projectUsed
+    // }
 
     // const oldProject = runningProjectsQuery.data.find(
     //   (project) => deriveRunningProjectId({

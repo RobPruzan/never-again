@@ -29,7 +29,6 @@ export default function App() {
       <Suspense
         fallback={
           <div className="flex items-center justify-center h-screen bg-[#0A0A0A]">
-            {(console.log('SUSPENDING'), null)}
             <div className="text-white text-2xl font-bold">Loading...</div>
           </div>
         }
@@ -55,7 +54,6 @@ const AppLoader = () => {
 
   useEffect(() => {
     const unlistenNewTab = handlers.menuNewTab.listen(() => {
-      // console.log('pallete opened', Date.now());
       client.writeToStitchedLog({
         order: 1,
         time: Date.now(),
@@ -126,7 +124,6 @@ const AppLoader = () => {
         route,
         setRoute,
         setFocusedProject: (project) => {
-          console.log('setFocusedProject called with:', project)
           setFocusedProject(project)
         },
         focusedProject,

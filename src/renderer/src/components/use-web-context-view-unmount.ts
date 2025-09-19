@@ -7,7 +7,7 @@ export const useWebContentViewUnmount = (id: string) => {
 
   useEffect(() => {
     const handler = () => {
-      console.log('trying to abort', id)
+      // console.log('trying to abort', id)
 
       client.hideTab(id) // set timeout may jank stuff tbd
     }

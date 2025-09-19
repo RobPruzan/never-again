@@ -1,0 +1,136 @@
+SENDING LISTENING PROJECT, ALL RETURN ENTRIES AFTER THIS MUST HAVE THIS PROJECT {
+  port: 3002,
+  pid: 55914,
+  cwd: '/Users/robby/anotha-one',
+  command: 'node',
+  kind: 'unknown',
+  runningKind: 'listening'
+}
+returning back new projects [
+  {
+    port: 3000,
+    pid: 53455,
+    cwd: '/Users/robby/playin-around',
+    command: 'node',
+    kind: 'next',
+    runningKind: 'listening'
+  },
+  {
+    port: 3001,
+    pid: 54512,
+    cwd: '/Users/robby/yep-anotha',
+    command: 'node',
+    kind: 'next',
+    runningKind: 'listening'
+  },
+  {
+    port: 5173,
+    pid: 52560,
+    cwd: '/Users/robby/ide',
+    command: 'node',
+    kind: 'unknown',
+    runningKind: 'listening'
+  }
+] here are the ones starting []
+returning back new projects [
+  {
+    port: 3000,
+    pid: 53455,
+    cwd: '/Users/robby/playin-around',
+    command: 'node',
+    kind: 'next',
+    runningKind: 'listening'
+  },
+  {
+    port: 3001,
+    pid: 54512,
+    cwd: '/Users/robby/yep-anotha',
+    command: 'node',
+    kind: 'next',
+    runningKind: 'listening'
+  },
+  {
+    port: 3002,
+    pid: 55914,
+    cwd: '/Users/robby/anotha-one',
+    command: 'node',
+    kind: 'next',
+    runningKind: 'listening'
+  },
+  {
+    port: 5173,
+    pid: 52560,
+    cwd: '/Users/robby/ide',
+    command: 'node',
+    kind: 'unknown',
+    runningKind: 'listening'
+  }
+] here are the ones starting []
+returning back new projects [
+  {
+    port: 3000,
+    pid: 53455,
+    cwd: '/Users/robby/playin-around',
+    command: 'node',
+    kind: 'next',
+    runningKind: 'listening'
+  },
+  {
+    port: 3001,
+    pid: 54512,
+    cwd: '/Users/robby/yep-anotha',
+    command: 'node',
+    kind: 'next',
+    runningKind: 'listening'
+  },
+  {
+    port: 3002,
+    pid: 55914,
+    cwd: '/Users/robby/anotha-one',
+    command: 'node',
+    kind: 'next',
+    runningKind: 'listening'
+  },
+  {
+    port: 5173,
+    pid: 52560,
+    cwd: '/Users/robby/ide',
+    command: 'node',
+    kind: 'unknown',
+    runningKind: 'listening'
+  }
+] here are the ones starting []
+returning back new projects [
+  {
+    port: 3000,
+    pid: 53455,
+    cwd: '/Users/robby/playin-around',
+    command: 'node',
+    kind: 'next',
+    runningKind: 'listening'
+  },
+  {
+    port: 3001,
+    pid: 54512,
+    cwd: '/Users/robby/yep-anotha',
+    command: 'node',
+    kind: 'next',
+    runningKind: 'listening'
+  },
+  {
+    port: 3002,
+    pid: 55914,
+    cwd: '/Users/robby/anotha-one',
+    command: 'node',
+    kind: 'next',
+    runningKind: 'listening'
+  },
+  {
+    port: 5173,
+    pid: 52560,
+    cwd: '/Users/robby/ide',
+    command: 'node',
+    kind: 'unknown',
+    runningKind: 'listening'
+  }
+] here are the ones starting []

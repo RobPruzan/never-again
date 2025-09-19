@@ -20,7 +20,7 @@ import { createRouter, writeToStitchedLog } from './tipc'
 import { browserController, layoutAllBrowserViews } from './browser-controller'
 import { RendererHandlers } from './renderer-handlers'
 import * as net from 'net'
-import { Project, StartingProject } from '../shared/types'
+import { ListneingProject, Project, StartingProject } from '../shared/types'
 // import { detectDevServersForDir } from './dev-server-detector'
 import { homedir } from 'os'
 import { DevRelayService } from './dev-relay-service'
@@ -34,6 +34,7 @@ export const activeBrowserViewId: { current: string | null } = { current: null }
 export let terminalManagerV2: TerminalManagerV2
 export let bufferService: ProjectBufferService
 export const startingProjects = new Set<StartingProject>()
+export const ensuredListeningProjects = new Set<ListneingProject>()
 // export let portsManager: PortsManager
 
 export const startProjectIndexing = (

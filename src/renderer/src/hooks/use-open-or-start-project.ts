@@ -10,12 +10,15 @@ export function useOpenOrStartProject() {
 
   const startMutation = useMutation({
     mutationFn: async (projectPath: string) => client.startDevRelay({ projectPath }),
-    onSuccess: ({ project, runningProject }) => {
-      queryClient.setQueryData(['projects'], (prev: Project[] | undefined) => {
-        if (!prev) return [project]
-        if (prev.some((p) => p.path === project.path)) return prev
-        return [...prev, project]
-      })
+    onSuccess: ({
+      // project,
+      runningProject }) => {
+        // why would we want to optimsitic update the project itself? what?
+      // queryClient.setQueryData(['projects'], (prev: Project[] | undefined) => {
+      //   if (!prev) return [project]
+      //   if (prev.some((p) => p.path === project.path)) return prev
+      //   return [...prev, project]
+      // })
       queryClient.setQueryData(['devServers'], (prev: RunningProject[] | undefined) => {
         if (!prev) return [runningProject]
         if (prev.some((p) => p.cwd === runningProject.cwd)) return prev

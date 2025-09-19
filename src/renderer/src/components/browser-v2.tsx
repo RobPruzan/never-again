@@ -1,4 +1,13 @@
-import { useState, useEffect, useMemo, useRef, Suspense, Children, cloneElement } from 'react'
+import {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  Suspense,
+  Children,
+  cloneElement,
+  useId
+} from 'react'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './ui/resizable'
 import { WebContentView } from './web-content-view'
 // import { TerminalSidebar } from './TerminalSidebar'
@@ -208,11 +217,70 @@ const WebContentViewArea = () => {
    * lets just see why it completely doesn't work
    */
 
+  /**
+   * you define the order inside the key itself
+   *
+   * /a/b-1
+   *
+   * then if there are multiple you just increment it
+   *
+   */
+
+  const getProjectStableKey = ({
+    project,
+    projects
+  }: {
+    projects: typeof runningProjects
+    project: (typeof runningProjects)[0]
+  }) => {
+    const stableIds = projects.reduce(
+      (acc, proj, index) => {
+        const projectsWithSameCwd = projects.filter((p) => p.cwd === proj.cwd)
+
+        if (projectsWithSameCwd.length === 1) {
+          acc[`${proj.cwd}_1`] = proj
+        } else {
+          const sortedByPort = projectsWithSameCwd
+            .filter((p) => p.runningKind === 'listening')
+            .sort((a, b) => a.port - b.port)
+
+          const indexInSorted = sortedByPort.findIndex(
+            (p) =>
+              p.runningKind === 'listening' &&
+              proj.runningKind === 'listening' &&
+              p.port === proj.port
+          )
+
+          if (indexInSorted !== -1) {
+            acc[`${proj.cwd}_${indexInSorted + 1}`] = proj
+          }
+        }
+
+        return acc
+      },
+      {} as Record<string, (typeof projects)[0]>
+    )
+
+    // const getStableId = (project: (typeof projects)[0]): string => {
+    const entry = Object.entries(stableIds).find(
+      ([_, proj]) =>
+        proj.cwd === project.cwd &&
+        proj.runningKind === project.runningKind &&
+        (proj.runningKind === 'listening' && project.runningKind === 'listening'
+          ? proj.port === project.port
+          : proj.pid === project.pid)
+    )
+    return entry![0]
+    // }
+  }
+
   return runningProjects.map((runningProject) => (
     // <StartingProject project={runningProject}>
     //   {(listenignProject) => (
     <div
-      key={runningProject.cwd} // the lowest common denominator, the project. we want to maintain this parent layout for the project level, which is currently nothing meangifull
+      // oh this is wrong cause we have 2 shells
+      // we need to map inside this
+      key={getProjectStableKey({ project: runningProject, projects: runningProjects })} // the lowest common denominator, the project. we want to maintain this parent layout for the project level, which is currently nothing meangifull
       style={{
         display:
           deriveRunningProjectId(runningProject) !== focusedProject.projectId || route !== 'webview'
@@ -273,7 +341,6 @@ const StartingProject = ({
   const logsObjQuery = useLogObj()
   const browserStateQuery = useBrowserState()
   // const isTabLoaded = browserStateQuery.data.tabs.find(tab => tab.)
-  console.log('browser state', browserStateQuery.data)
 
   // console.log('the logs obj', logsObjQuery.data)
   // console.log('the project', project)
@@ -284,13 +351,25 @@ const StartingProject = ({
   /**
    * now what we want to do is get the logs for the parent process
    */
+  const focusedProject = useFocusedProject()
+
+  if (
+    focusedProject &&
+    deriveRunningProjectId(focusedProject) === deriveRunningProjectId(project)
+  ) {
+    // there is some niche case where the project itself goes from listening to starting
+    // the valid conclusion here is that it must be an optimistic update going wrong, or a bad read?
+    // like we get an update
+    // it refetches and is stale? Maybe? 
+    // lets just map through the flow and see
+// le(project)
+  }
 
   switch (project.runningKind) {
     case 'listening': {
       const ourTab = browserStateQuery.data.tabs.find(
         (tab) => tab.tabId === deriveRunningProjectId(project)
       )
-      console.log('our tab?', ourTab)
 
       const isLoaded = Boolean(ourTab?.isLoaded)
       const logs = logsObjQuery.data[project.pid] ?? []
