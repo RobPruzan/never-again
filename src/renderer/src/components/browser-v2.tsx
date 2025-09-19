@@ -199,9 +199,7 @@ const WebContentViewArea = () => {
     // <StartingProject project={runningProject}>
     //   {(listenignProject) => (
     <div
-      // key={runningProject.cwd}
-      // like really we want to say the cwd but we want to invalide the web content on new url, but right we dont have okay yeah thats it
-      //
+      key={runningProject.cwd} // the lowest common denominator, the project. we want to maintain this parent layout for the project level, which is currently nothing meangifull
       style={{
         display:
           deriveRunningProjectId(runningProject) !== focusedProject.projectId || route !== 'webview'
@@ -216,13 +214,14 @@ const WebContentViewArea = () => {
         direction="horizontal"
       >
         <ResizablePanel defaultSize={75}>
-          <StartingProject project={runningProject}>
+          {/* // the shell specifically can be any website being exposed from a process */}
+          <StartingProject key={runningProject.pid} project={runningProject}>
             {(listeningProject) =>
               deriveRunningProjectId(listeningProject) === focusedProject.projectId && // maybe this is kinda fucked????????????????/
               route === 'webview' && (
                 <>
                   <WebContentView
-                    key={deriveRunningProjectId(listeningProject)} // i think?
+                    key={deriveRunningProjectId(listeningProject)} // this id is load bearing over the port, i need to think harder if the cwd ever helps (maybe edge cases) but base case no
                     url={`http://localhost:${listeningProject.port}`}
                     id={deriveRunningProjectId(listeningProject)}
                   />
@@ -234,7 +233,15 @@ const WebContentViewArea = () => {
 
         <ResizableHandle className="bg-[#1A1A1A]" withHandle={false} />
         <ResizablePanel defaultSize={25}>
-          <MainSidebar runningProject={runningProject} />
+          <MainSidebar
+            key={runningProject.cwd} // we want this to be persistent across different procesess, ports (so intra)
+            // technically we are scoping the sidebar to the process, and its an invariant that we wont spawn another process with the dev server
+            // wait that makes no sense, that can't be an invariant the user can totally do it
+            // okay problem, the user may spawn another process, and then the pid is no longer valid
+            // fucker
+
+            runningProject={runningProject}
+          />
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
@@ -270,7 +277,7 @@ const StartingProject = ({
       const ourTab = browserStateQuery.data.tabs.find(
         (tab) => tab.tabId === deriveRunningProjectId(project)
       )
-      console.log('our tab?',ourTab)
+      console.log('our tab?', ourTab)
 
       const isLoaded = Boolean(ourTab?.isLoaded)
       const logs = logsObjQuery.data[project.pid] ?? []
